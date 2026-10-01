@@ -9,34 +9,43 @@ export async function POST(req: NextRequest) {
 
     if (!apiKey) {
       return NextResponse.json({
-        reply: `Berdasarkan skor CFI ${cfi?.cfiScore ?? 50}/100 dan status ${cfi?.impairmentTier ?? 'observasi'}, disarankan jeda layar 15 menit dan hidrasi cairan elektrolit sebelum kembali melanjutkan tugas.`,
+        reply: `Santai bro/sis! Berdasarkan skor CFI kamu (${cfi?.cfiScore ?? 50}/100), baterai kognitif kamu lagi butuh charging. Mending jeda layar 15 menit, teguk air putih dingin, dan stretching santai sebelum lanjut grinding ya!`,
       });
     }
 
     const ai = new GoogleGenAI({ apiKey });
     const prompt = `
-Context:
-Operator CFI Score: ${cfi?.cfiScore ?? 'N/A'}/100 (${cfi?.impairmentTier ?? 'N/A'})
-Diagnosis: ${analysis?.differentialDiagnosis?.clinicalRationale ?? 'N/A'}
-Prescription: ${analysis?.precisionRecoveryPrescription?.immediateAction ?? 'N/A'}
+Konteks Pengguna:
+- Skor Kelelahan CFI: ${cfi?.cfiScore ?? 50}/100 (${cfi?.impairmentTier ?? 'observasi'})
+- Diagnosis: ${analysis?.differentialDiagnosis?.clinicalRationale ?? 'N/A'}
+- Saran Pemulihan: ${analysis?.precisionRecoveryPrescription?.immediateAction ?? 'N/A'}
 
-User Query: "${message}"
+Pertanyaan Pengguna: "${message}"
 
-Answer as a clinical neurophysiologist in 2-3 concise, empathetic, medically-grounded sentences.
+Instruksi:
+Jawablah sebagai AI Neuro-Copilot & Health Buddy profesional bergaya Gen Z yang santai, suportif, relatable ("Halo bro/sis", "baterai kognitif", "recharge", "otak nge-lag", "grinding"), namun tetap berbobot neurosains dalam 2-3 kalimat padat.
 `.trim();
 
     const modelsToTry = [
       'gemini-3.5-flash-lite',
       'gemini-3.8-flash',
-      'gemini-2.5-flash',
       'gemini-3.1-flash-lite',
+      'gemini-2.5-flash',
+      'gemini-2.0-flash',
       'gemini-2.5-flash-lite',
     ];
+
+    const COPILOT_SYSTEM_INSTRUCTION = `
+Anda adalah AI Neuro-Copilot & Health Buddy profesional untuk operator dan digital worker.
+Gaya bicara: Santai, asyik, ramah, dan suportif khas Gen Z / tech-savvy worker.
+Format: Teks percakapan biasa (JANGAN gunakan JSON atau code block).
+Panjang: 2-3 kalimat ringkas dan jelas yang langsung menjawab pertanyaan dan memberi saran pemulihan yang tepat sasaran.
+`.trim();
 
     for (const modelName of modelsToTry) {
       try {
         const timeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error(`Copilot timeout ${modelName}`)), 3500)
+          setTimeout(() => reject(new Error(`Copilot timeout ${modelName}`)), 7500)
         );
 
         const callPromise = (async () => {
@@ -44,7 +53,7 @@ Answer as a clinical neurophysiologist in 2-3 concise, empathetic, medically-gro
             model: modelName,
             contents: prompt,
             config: {
-              systemInstruction: CLINICAL_SYSTEM_INSTRUCTION,
+              systemInstruction: COPILOT_SYSTEM_INSTRUCTION,
             },
           });
           return response.text;
@@ -60,12 +69,12 @@ Answer as a clinical neurophysiologist in 2-3 concise, empathetic, medically-gro
     }
 
     return NextResponse.json({
-      reply: `Berdasarkan skor CFI ${cfi?.cfiScore ?? 50}/100, prioritaskan jeda istirahat aktif 15 menit dan hidrasi elektrolit.`,
+      reply: `Baterai kognitif kamu lagi butuh recharge (CFI ${cfi?.cfiScore ?? 50}/100). Prioritaskan jeda layar 15 menit dan minum air putih dingin biar fokusmu kembali gacor!`,
     });
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : 'Fallback consultation response';
     return NextResponse.json({
-      reply: `[Konsultasi Medis Resilient]: Prioritas Anda adalah istirahat berkala untuk menurunkan kejenuhan reseptor saraf kognitif. (${errorMessage})`,
+      reply: `Baterai kognitifmu lagi agak low-bat nih. Ambil jeda istirahat sejenak dan minum air putih biar saraf kognitif kembali fresh! (${errorMessage})`,
     });
   }
 }

@@ -32,11 +32,11 @@ describe('PVT Dinges-Basner Metrics Engine', () => {
     expect(metrics.performanceIndex).toBe(100);
   });
 
-  it('mendeteksi attentional lapses (RT >= 355ms) dan false starts pada operator lelah', () => {
+  it('mendeteksi attentional lapses (RT >= 500ms) dan false starts pada operator lelah', () => {
     const trials: PVTTrial[] = [
       { trialIndex: 1, delayScheduledMs: 2000, stimulusRenderedAt: 1000, responseCapturedAt: 1050, reactionTimeMs: 50, isLapse: false, isFalseStart: true },
-      { trialIndex: 2, delayScheduledMs: 3000, stimulusRenderedAt: 3000, responseCapturedAt: 3450, reactionTimeMs: 450, isLapse: true, isFalseStart: false },
-      { trialIndex: 3, delayScheduledMs: 2200, stimulusRenderedAt: 5000, responseCapturedAt: 5400, reactionTimeMs: 400, isLapse: true, isFalseStart: false },
+      { trialIndex: 2, delayScheduledMs: 3000, stimulusRenderedAt: 3000, responseCapturedAt: 3550, reactionTimeMs: 550, isLapse: true, isFalseStart: false },
+      { trialIndex: 3, delayScheduledMs: 2200, stimulusRenderedAt: 5000, responseCapturedAt: 5600, reactionTimeMs: 600, isLapse: true, isFalseStart: false },
       { trialIndex: 4, delayScheduledMs: 2800, stimulusRenderedAt: 7000, responseCapturedAt: 7260, reactionTimeMs: 260, isLapse: false, isFalseStart: false },
     ];
 

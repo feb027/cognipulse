@@ -17,10 +17,10 @@ export const GeminiDifferentialView: React.FC<GeminiDifferentialViewProps> = ({
   const { differentialDiagnosis, aiEngineVersion, isFallback } = analysis;
 
   const typeLabels = {
-    optimal_vigilance: 'Kewaspadaan Optimal (Normal / Fit)',
-    cognitive_overload: 'Beban Kognitif Berlebih (Overload Prefrontal)',
-    sleep_deprived_microsleep: 'Defisit Tidur & Micro-Sleep Kognitif',
-    neuromuscular_exhaustion: 'Kelelahan Neuromuskular / Sensorimotor',
+    optimal_vigilance: 'Mode Gacor • Fokus Prima & On-Fire',
+    cognitive_overload: 'RAM Mental Overload • Butuh Refresh',
+    sleep_deprived_microsleep: 'Baterai Drop • Kantuk Berat & Bengong',
+    neuromuscular_exhaustion: 'Fisik Pegal • Otot & Saraf Lelah',
   };
 
   return (

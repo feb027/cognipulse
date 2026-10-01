@@ -9,7 +9,7 @@ export interface PVTTrial {
   stimulusRenderedAt: number; // Timestamp performance.now()
   responseCapturedAt: number; // Timestamp performance.now()
   reactionTimeMs: number;
-  isLapse: boolean; // RT >= 355 ms (Brief PVT threshold)
+  isLapse: boolean; // RT >= 500 ms (NASA PVT standard threshold)
   isFalseStart: boolean; // RT < 100 ms atau klik sebelum stimulus
 }
 
@@ -19,7 +19,7 @@ export interface PVTMetrics {
   meanReactionTimeMs: number;
   medianReactionTimeMs: number;
   responseSpeed: number; // Reciprocal Mean 1/RT (1000/RT, s^-1)
-  attentionalLapseCount: number; // Jumlah lapses (RT >= 355ms)
+  attentionalLapseCount: number; // Jumlah lapses (RT >= 500ms)
   lapseRatePercent: number;
   falseStartCount: number; // Anticipatory false responses
   slowestTenPercentRT: number; // Rata-rata 10% terburuk

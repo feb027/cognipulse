@@ -15,7 +15,7 @@ import { GEMINI_CLINICAL_ANALYSIS_SCHEMA } from './json-schema';
 import { generateLocalFallbackAnalysis } from './local-fallback-engine';
 
 const modelCooldownMap = new Map<string, number>();
-const COOLDOWN_DURATION_MS = 60_000;
+const COOLDOWN_DURATION_MS = 30_000;
 
 export async function analyzeFatigueTelemetry(
   cfi: CompositeFatigueResult,
@@ -39,8 +39,9 @@ export async function analyzeFatigueTelemetry(
   const candidateModels = [
     'gemini-3.8-flash',
     'gemini-3.5-flash-lite',
-    'gemini-2.5-flash',
     'gemini-3.1-flash-lite',
+    'gemini-2.5-flash',
+    'gemini-2.0-flash',
     'gemini-2.5-flash-lite',
   ];
 
@@ -55,7 +56,7 @@ export async function analyzeFatigueTelemetry(
   for (const modelName of modelsToTry) {
     try {
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error(`Model ${modelName} timeout`)), 3500)
+        setTimeout(() => reject(new Error(`Model ${modelName} timeout`)), 7500)
       );
 
       const callPromise = (async () => {

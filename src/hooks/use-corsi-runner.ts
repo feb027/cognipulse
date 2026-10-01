@@ -6,12 +6,20 @@ import { playTapClick, playStimulusBeep, playWarningTone } from '@/lib/audio/sou
 
 export type CorsiPhase = 'tutorial' | 'demonstrating' | 'recalling' | 'trial_feedback' | 'complete';
 
-const SPAN_SEQUENCES = [
-  [0, 4, 8],          // Span 3 (diagonal)
-  [1, 3, 5, 7],       // Span 4 (cross)
-  [2, 4, 6, 8],       // Span 4 (corners)
-  [0, 2, 4, 6, 8],    // Span 5 (complex)
-];
+const ROUND_SPANS = [3, 4, 5, 6];
+
+function generateDynamicSequences(): number[][] {
+  return ROUND_SPANS.map((span) => {
+    const seq: number[] = [];
+    while (seq.length < span) {
+      const block = Math.floor(Math.random() * 9);
+      if (!seq.includes(block)) {
+        seq.push(block);
+      }
+    }
+    return seq;
+  });
+}
 
 interface UseCorsiRunnerProps {
   onComplete: (trials: CorsiTrial[]) => void;
@@ -25,6 +33,7 @@ export function useCorsiRunner({ onComplete }: UseCorsiRunnerProps) {
   const [feedbackText, setFeedbackText] = useState<string>('Perhatikan urutan balok!');
 
   const trialsRef = useRef<CorsiTrial[]>([]);
+  const sequencesRef = useRef<number[][]>([]);
   const startTimeRef = useRef<number>(0);
   const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
   const isStartedRef = useRef(false);
@@ -79,17 +88,19 @@ export function useCorsiRunner({ onComplete }: UseCorsiRunnerProps) {
   }, [clearAllTimeouts]);
 
   const startNextRound = useCallback((roundIdx: number) => {
-    if (roundIdx >= SPAN_SEQUENCES.length) {
+    if (roundIdx >= ROUND_SPANS.length) {
       finishTest();
       return;
     }
     setCurrentRound(roundIdx);
-    playDemonstration(SPAN_SEQUENCES[roundIdx]);
+    const seq = sequencesRef.current[roundIdx] || [];
+    playDemonstration(seq);
   }, [finishTest, playDemonstration]);
 
   const startTest = useCallback(() => {
     if (isStartedRef.current) return;
     isStartedRef.current = true;
+    sequencesRef.current = generateDynamicSequences();
     startNextRound(0);
   }, [startNextRound]);
 
@@ -100,7 +111,7 @@ export function useCorsiRunner({ onComplete }: UseCorsiRunnerProps) {
     const nextTaps = [...userTaps, blockIndex];
     setUserTaps(nextTaps);
 
-    const currentSequence = SPAN_SEQUENCES[currentRound] || SPAN_SEQUENCES[0];
+    const currentSequence = sequencesRef.current[currentRound] || [];
     const stepIndex = nextTaps.length - 1;
     const isCorrectSoFar = currentSequence[stepIndex] === blockIndex;
 
@@ -137,7 +148,7 @@ export function useCorsiRunner({ onComplete }: UseCorsiRunnerProps) {
   return {
     phase,
     currentRound: currentRound + 1,
-    totalRounds: SPAN_SEQUENCES.length,
+    totalRounds: ROUND_SPANS.length,
     activeHighlightBlock,
     userTaps,
     feedbackText,

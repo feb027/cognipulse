@@ -6,7 +6,7 @@
 
 import { PVTTrial, PVTMetrics } from '@/types/pvt';
 
-export const BRIEF_PVT_LAPSE_THRESHOLD_MS = 355; // Threshold lapse brief PVT 3 menit
+export const BRIEF_PVT_LAPSE_THRESHOLD_MS = 500; // Standar emas NASA PVT (Dinges & Basner: RT >= 500ms) dengan kompensasi latensi browser
 export const FALSE_START_THRESHOLD_MS = 100; // Respon fisiologis mustahil < 100ms
 
 export function calculatePVTMetrics(trials: PVTTrial[]): PVTMetrics {

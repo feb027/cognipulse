@@ -69,7 +69,7 @@ export default function Home() {
       saveSession(cfi, data.analysis);
     } catch {
       const { generateLocalFallbackAnalysis } = await import('@/lib/ai/local-fallback-engine');
-      const fallback = generateLocalFallbackAnalysis(cfi, pvt, stroop, motor);
+      const fallback = generateLocalFallbackAnalysis(cfi, pvt, stroop, motor, corsi || undefined);
       setActiveAnalysis(fallback);
       saveSession(cfi, fallback);
     } finally {

@@ -21,28 +21,28 @@ export const ResultSummaryHeader: React.FC<ResultSummaryHeaderProps> = ({ cfi })
         return {
           stroke: '#34C759',
           textColor: 'text-apple-green',
-          title: 'Tubuh Bugar & Siap Bertugas',
-          badge: 'Bugar',
+          title: 'Mode Gacor: Baterai Penuh & On-Fire',
+          badge: 'Kondisi Prima',
           badgeClass: 'bg-apple-green/10 text-apple-green',
-          desc: 'Refleks dan fokus Anda dalam kondisi prima.',
+          desc: 'Refleks tajam, fokus jernih, siap grinding tugas berat.',
         };
       case 'critical_hazard':
         return {
           stroke: '#FF2D55',
           textColor: 'text-apple-red',
-          title: 'Kelelahan Kritis, Wajib Istirahat',
+          title: 'Danger Zone: Baterai Drop, Wajib Recharge',
           badge: 'Kritis',
           badgeClass: 'bg-apple-red/10 text-apple-red',
-          desc: 'Refleks menurun drastis, hindari aktivitas berisiko.',
+          desc: 'Refleks ngedrop parah & rawan micro-sleep. Wajib istirahat sekarang!',
         };
       default:
         return {
           stroke: '#FF9500',
           textColor: 'text-apple-orange',
-          title: 'Mulai Lelah, Perlu Jeda Sejenak',
-          badge: 'Lelah Sedang',
+          title: 'Mulai Nge-lag: Butuh Jeda Santai',
+          badge: 'Perlu Recharge',
           badgeClass: 'bg-apple-yellow/10 text-apple-yellow',
-          desc: 'Terdeteksi perlambatan respon dan fokus.',
+          desc: 'Fokus mulai buffering. Ambil jeda 15 menit biar gak bikin blunder.',
         };
     }
   };
@@ -56,7 +56,7 @@ export const ResultSummaryHeader: React.FC<ResultSummaryHeaderProps> = ({ cfi })
         <div className="flex items-start gap-2.5 p-3.5 rounded-2xl bg-apple-red/10 border border-apple-red/20 text-xs">
           <AlertTriangle className="w-4 h-4 text-apple-red shrink-0 mt-0.5" />
           <p className="text-zinc-700 dark:text-zinc-200 leading-relaxed font-medium">
-            <strong className="text-apple-red font-bold">Peringatan Kelelahan Tersembunyi:</strong> Anda merasa masih segar, namun alat tes merekam refleks yang melambat. Ini tanda tubuh mulai letih tanpa Anda sadari.
+            <strong className="text-apple-red font-bold">Silent Fatigue Alert:</strong> Merasa masih kuat tapi otak mulai nge-lag tanpa sadar. Refleks objektifmu melambat, jangan dipaksa multitasking!
           </p>
         </div>
       )}

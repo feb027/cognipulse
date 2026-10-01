@@ -30,29 +30,56 @@ export const PVTTimerDisplay: React.FC<PVTTimerDisplayProps> = ({
   }
 
   if (phase === 'feedback' && feedbackText) {
-    const isError = feedbackText.includes('FALSE') || feedbackText.includes('LAPSE');
+    const isFalseStart = feedbackText.includes('FALSE');
+    const isLapse = feedbackText.includes('LAPSE');
+
+    const msMatch = feedbackText.match(/\d+/);
+    const msValue = msMatch ? msMatch[0] : (liveMs !== null ? String(liveMs) : null);
+
+    if (isFalseStart) {
+      return (
+        <div className="flex flex-col items-center justify-center space-y-2.5 animate-springUp">
+          <div className="w-32 h-32 rounded-full flex flex-col items-center justify-center text-white shadow-applePill transition-transform bg-apple-red">
+            <span className="text-sm font-bold text-center px-3 leading-snug">
+              Terlalu Cepat
+            </span>
+          </div>
+          <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+            Hindari menekan sebelum warna hijau muncul
+          </span>
+        </div>
+      );
+    }
+
+    if (isLapse) {
+      return (
+        <div className="flex flex-col items-center justify-center space-y-2.5 animate-springUp">
+          <div className="w-32 h-32 rounded-full flex flex-col items-center justify-center text-white shadow-applePill transition-transform bg-apple-orange">
+            <span className="text-3xl font-extrabold font-mono tracking-tight tabular-nums">
+              {msValue ?? '500+'}
+            </span>
+            <span className="text-[11px] font-bold text-white/90">milidetik</span>
+            <span className="text-[10px] font-bold text-white/80 uppercase tracking-wider mt-0.5">
+              Respon Lambat
+            </span>
+          </div>
+          <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+            Refleks tercatat • Terdeteksi jeda atensi (&ge;500ms)
+          </span>
+        </div>
+      );
+    }
+
     return (
       <div className="flex flex-col items-center justify-center space-y-2.5 animate-springUp">
-        <div
-          className={`w-32 h-32 rounded-full flex flex-col items-center justify-center text-white shadow-applePill transition-transform ${
-            isError ? 'bg-apple-red' : 'bg-apple-green'
-          }`}
-        >
-          {isError ? (
-            <span className="text-sm font-bold text-center px-3 leading-snug">
-              {feedbackText.includes('FALSE') ? 'Terlalu Cepat' : 'Hilang Fokus'}
-            </span>
-          ) : (
-            <>
-              <span className="text-3xl font-extrabold font-mono tracking-tight tabular-nums">
-                {feedbackText.replace(' ms', '')}
-              </span>
-              <span className="text-[11px] font-bold text-white/80">milidetik</span>
-            </>
-          )}
+        <div className="w-32 h-32 rounded-full flex flex-col items-center justify-center text-white shadow-applePill transition-transform bg-apple-green">
+          <span className="text-3xl font-extrabold font-mono tracking-tight tabular-nums">
+            {msValue ?? feedbackText.replace(' ms', '')}
+          </span>
+          <span className="text-[11px] font-bold text-white/80">milidetik</span>
         </div>
         <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
-          {isError ? 'Hindari menekan sebelum warna hijau muncul' : 'Refleks tercatat'}
+          Refleks tercatat • Respon optimal
         </span>
       </div>
     );

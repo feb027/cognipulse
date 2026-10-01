@@ -33,36 +33,42 @@ export function generateLocalFallbackAnalysis(
   if (cfi.cfiScore >= 75 || pvt.attentionalLapseCount >= 4) {
     primaryType = 'sleep_deprived_microsleep';
     severityLevel = 'critical_hazard';
-    clinicalRationale = `Tubuh Anda sangat kelelahan dan sempat ${pvt.attentionalLapseCount} kali hilang fokus (bengong). Sangat disarankan tidur singkat 20 menit dan hindari mengemudi saat ini.`;
+    clinicalRationale = `Danger zone! Baterai kognitif Anda drop parah dan sempat ${pvt.attentionalLapseCount} kali bengong/micro-sleep. Jangan dipaksa lanjut kerja atau nyetir, wajib power nap 20 menit sekarang juga!`;
     riskIncrease = '+65%';
-    trajectory = 'Refleks akan makin menurun drastis jika memaksakan diri tanpa jeda.';
-    criticalAlert = 'Peringatan: Hindari mengemudi atau pekerjaan berisiko tinggi saat ini!';
-    immediateAction = 'Tidur singkat (power nap) 20 menit dan minum air putih.';
+    trajectory = 'Refleks bakal makin zonk dan risiko salah klik atau blunder fatal melonjak drastis.';
+    criticalAlert = 'RED FLAG: Otak rawan micro-sleep mendadak! Dilarang keras mengemudi atau tugas berisiko.';
+    immediateAction = 'Power nap 20 menit + teguk 400ml air dingin sekarang juga.';
     hydrationMl = 400;
     screenBreakMins = 30;
-    circadianNote = 'Tubuh membutuhkan waktu tidur untuk memulihkan kesiapan saraf.';
+    circadianNote = 'Baterai otak udah di titik kritis, segera jadwalkan tidur malam lebih awal.';
   } else if (cfi.cfiScore >= 55 || stroop.commissionErrors >= 2 || (corsi && corsi.workingMemoryScore < 50)) {
     primaryType = 'cognitive_overload';
     severityLevel = 'moderate_impairment';
-    clinicalRationale = `Fokus dan memori kerja mulai menurun akibat kelelahan mental. Sebaiknya istirahat sejenak 15 menit dan minum air putih agar kembali segar.`;
+    clinicalRationale = `Otak udah kena mental overload dan RAM kognitif kepenuhan task. Saatnya touch grass bentar 15 menit dan minum air putih biar gak makin nge-lag pas eksekusi.`;
     riskIncrease = '+38%';
-    trajectory = 'Kemampuan konsentrasi berisiko makin menurun dalam 2 jam ke depan.';
-    immediateAction = 'Istirahat sejenak 15 menit dan alihkan pandangan dari layar.';
-    hydrationMl = 300;
+    trajectory = 'Kemampuan fokus bakal makin ambyar dalam 2 jam ke depan kalau gak segera ambil jeda.';
+    immediateAction = 'Jeda layar 15 menit, jalan santai sebentar, dan hindari multitasking.';
+    hydrationMl = 350;
     screenBreakMins = 15;
-    circadianNote = 'Istirahatkan mata dan pikiran dari aktivitas layar terus-menerus.';
+    circadianNote = 'Istirahatkan mata dari blue-light biar saraf prefrontal bisa recharge.';
   } else if (cfi.cfiScore >= 30 || motor.itiStandardDeviationMs > 25) {
     primaryType = 'neuromuscular_exhaustion';
     severityLevel = 'mild_fatigue';
-    clinicalRationale = `Kondisi tubuh masih cukup baik, namun mulai terasa sedikit lelah. Lakukan peregangan santai dan minum segelas air untuk menyegarkan tubuh.`;
+    clinicalRationale = `Baterai tubuh mulai low-bat dan ada getaran mikro di ritme ketukan Anda. Masih aman buat grinding, tapi selingi stretching bahu dan teguk air putih biar tetap segar.`;
     riskIncrease = '+15%';
-    trajectory = 'Kecepatan ketukan dan respon cenderung stabil dengan jeda singkat.';
-    immediateAction = 'Peregangan santai pada bahu dan pergelangan tangan.';
+    trajectory = 'Kecepatan respon masih cukup aman, tapi bakal mulai melambat perlahan jika tanpa jeda.';
+    immediateAction = 'Stretching leher & bahu 3 menit, plus isi ulang botol minum.';
     hydrationMl = 300;
     screenBreakMins = 10;
-    circadianNote = 'Jaga ritme kerja santai dan hindari posisi duduk statis terlalu lama.';
+    circadianNote = 'Atur ritme kerja santai, jangan duduk mematung di posisi yang sama terus-menerus.';
   } else {
-    clinicalRationale = 'Kondisi kognitif, refleks visual, dan memori kerja Anda sangat prima. Siap menjalankan tugas secara optimal.';
+    clinicalRationale = 'Mode gacor parah! Refleks visual tajam, memori kerja prima, dan fokus on-fire. Gas lanjut grinding tugas pentingmu!';
+    riskIncrease = '+0%';
+    trajectory = 'Stabilitas fokus dan waktu respon dalam kondisi puncak.';
+    immediateAction = 'Pertahankan ritme kerja produktif dan tetap sediakan air minum di meja.';
+    hydrationMl = 250;
+    screenBreakMins = 5;
+    circadianNote = 'Ritme sirkadian optimal, energi tubuh sinkron dengan jam biologis.';
   }
 
   return {
