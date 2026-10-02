@@ -34,9 +34,12 @@ export const StroopStage: React.FC<StroopStageProps> = ({ onComplete }) => {
   }
 
   return (
-    <div className="w-full flex flex-col space-y-3">
-      {/* Progress Pill Bar */}
-      <div className="flex items-center justify-between px-4 py-2 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 text-xs">
+    <div
+      style={{ touchAction: 'none' }}
+      className="w-full flex-1 min-h-[calc(100dvh-12.5rem)] sm:min-h-[500px] flex flex-col justify-between py-1 select-none"
+    >
+      {/* Sub-Progress Trial Dots */}
+      <div className="flex items-center justify-between px-3.5 py-2 rounded-2xl bg-zinc-100/80 dark:bg-zinc-800/60 text-xs backdrop-blur-sm">
         <span className="font-bold text-zinc-700 dark:text-zinc-300">
           Uji Fokus Warna & Kata (Stroop)
         </span>
@@ -54,26 +57,25 @@ export const StroopStage: React.FC<StroopStageProps> = ({ onComplete }) => {
               }`}
             />
           ))}
-          <span className="text-zinc-400 font-semibold ml-1.5 text-[11px]">
+          <span className="text-zinc-400 font-semibold ml-1.5 text-[11px] font-mono tabular-nums">
             {currentTrialNumber}/{totalTrialsGoal}
           </span>
         </div>
       </div>
 
-      {/* Main Stimulus Screen */}
+      {/* Natural Eye-Level Stimulus Display */}
       <div
         onPointerDown={handleUserPress}
         role="button"
         tabIndex={0}
-        aria-label="Area Respon Stroop"
-        style={{ touchAction: 'none' }}
-        className="relative w-full h-72 sm:h-80 flex flex-col items-center justify-center p-6 rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 shadow-apple select-none cursor-pointer active:scale-[0.99] transition-all"
+        aria-label="Area Stimulus Stroop"
+        className="flex-1 flex flex-col items-center justify-center py-6 sm:py-8 cursor-pointer"
       >
         {phase === 'stimulus' || phase === 'feedback' ? (
           <div className="flex flex-col items-center justify-center space-y-3">
             <span
               style={{ color: currentColor }}
-              className="text-6xl sm:text-7xl font-black tracking-tight select-none uppercase transition-transform scale-105"
+              className="text-6xl sm:text-7xl font-black tracking-tight select-none uppercase transition-transform scale-105 drop-shadow-sm"
             >
               {currentWord}
             </span>
@@ -81,24 +83,26 @@ export const StroopStage: React.FC<StroopStageProps> = ({ onComplete }) => {
           </div>
         ) : (
           <span className="text-xs text-zinc-400 font-medium tracking-wide animate-pulse">
-            Menyiapkan kata...
+            Menyiapkan kata berikutnya...
           </span>
         )}
-
-        <div className="absolute bottom-4 text-xs text-zinc-500 dark:text-zinc-400 text-center px-4 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800/80 font-semibold">
-          Jika WARNA = KATA ➔ <span className="text-apple-green font-bold">KETUK</span> &bull; Jika BEDA ➔ <span className="text-apple-orange font-bold">TAHAN</span>
-        </div>
       </div>
 
-      {/* Action Button */}
-      <div className="flex justify-center pt-1">
+      {/* Bottom Thumb Zone Action Area */}
+      <div className="w-full space-y-2 pt-2">
+        <div className="text-center text-xs text-zinc-500 dark:text-zinc-400 font-medium py-1">
+          Jika WARNA = KATA ➔ <span className="text-apple-green font-bold">KETUK</span> &bull; Jika BEDA ➔ <span className="text-apple-orange font-bold">TAHAN</span>
+        </div>
+
         <button
           onPointerDown={handleUserPress}
-          className="w-full py-4 text-sm font-bold bg-apple-green hover:opacity-95 text-white rounded-2xl shadow-apple active:scale-[0.97] transition-all"
+          aria-label="Tombol Cocok Warna dan Kata"
+          className="w-full py-5 text-sm sm:text-base font-bold bg-apple-green hover:opacity-95 text-white rounded-3xl shadow-apple active:scale-[0.98] transition-all cursor-pointer"
         >
-          COCOK (KETUK LAYAR)
+          COCOK (WARNA = KATA)
         </button>
       </div>
     </div>
   );
 };
+

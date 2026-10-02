@@ -56,8 +56,8 @@ export const ContextCheckinModal: React.FC<ContextCheckinModalProps> = ({
           <div className="flex items-center bg-zinc-200/70 dark:bg-zinc-700/60 p-1 rounded-2xl border border-black/5 dark:border-white/10">
             <button
               type="button"
-              onClick={() => setHoursSlept((prev) => Math.max(1, +(prev - 0.5).toFixed(1)))}
-              disabled={hoursSlept <= 1}
+              onClick={() => setHoursSlept((prev) => Math.max(2, prev - 1))}
+              disabled={hoursSlept <= 2}
               aria-label="Kurangi jam tidur"
               className="w-9 h-9 rounded-xl bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 font-bold text-lg flex items-center justify-center shadow-sm active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all"
             >
@@ -68,7 +68,7 @@ export const ContextCheckinModal: React.FC<ContextCheckinModalProps> = ({
             </span>
             <button
               type="button"
-              onClick={() => setHoursSlept((prev) => Math.min(14, +(prev + 0.5).toFixed(1)))}
+              onClick={() => setHoursSlept((prev) => Math.min(14, prev + 1))}
               disabled={hoursSlept >= 14}
               aria-label="Tambah jam tidur"
               className="w-9 h-9 rounded-xl bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 font-bold text-lg flex items-center justify-center shadow-sm active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all"

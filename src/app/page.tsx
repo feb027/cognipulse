@@ -105,7 +105,7 @@ export default function Home() {
     : null;
 
   return (
-    <div className="min-h-screen pb-36 sm:pb-32 transition-colors">
+    <div className={`min-h-screen transition-colors ${isTestingActive ? 'pb-4 sm:pb-6' : 'pb-36 sm:pb-32'}`}>
       <AppleHeader
         title={activeTab === 'summary' ? 'Ringkasan' : activeTab === 'assessment' ? 'Asesmen' : 'Riwayat'}
         onOpenProfileDetails={() => setIsProfileDetailsOpen(true)}
@@ -179,7 +179,9 @@ export default function Home() {
         )}
       </main>
 
-      <AppleTabBar activeTab={activeTab} onTabChange={(t) => { setIsTestingActive(false); setActiveTab(t); }} />
+      {!isTestingActive && (
+        <AppleTabBar activeTab={activeTab} onTabChange={(t) => { setIsTestingActive(false); setActiveTab(t); }} />
+      )}
 
       <ProfileDetailsModal isOpen={isProfileDetailsOpen} onClose={() => setIsProfileDetailsOpen(false)} baselineMs={deviceBaselineMs} />
       <JuryPresetModal isOpen={isJuryPresetsOpen} onClose={() => setIsJuryPresetsOpen(false)} onApplyScenario={handleApplyScenario} isSimulating={isAiLoading} />

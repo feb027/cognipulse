@@ -106,10 +106,10 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
   const stepInfo = getStepInfo();
 
   return (
-    <div className="w-full max-w-xl mx-auto px-2 sm:px-4 py-1">
+    <div className="w-full max-w-xl mx-auto px-1 sm:px-4 py-1 flex flex-col min-h-[calc(100dvh-7.5rem)] sm:min-h-[560px]">
       {/* Segmented Progress Bar (Tahap 1-4) */}
       {stepInfo && (
-        <div className="mb-4">
+        <div className="mb-3 shrink-0">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">
               Tahap {stepInfo.step} dari 4 • {stepInfo.label}
@@ -149,7 +149,7 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
       {phase === 'motor_active' && <MotorStage onComplete={handleMotorComplete} />}
 
       {phase === 'computing_telemetry' && (
-        <div className="bg-white dark:bg-[#1C1C1E] rounded-3xl p-8 shadow-apple border border-black/[0.04] dark:border-white/[0.08] text-center flex flex-col items-center justify-center space-y-4 my-8">
+        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center space-y-4 my-auto">
           <div className="w-12 h-12 rounded-full bg-apple-blue/10 flex items-center justify-center text-apple-blue animate-pulse">
             <Sparkles className="w-6 h-6" />
           </div>

@@ -33,9 +33,13 @@ export const PVTStage: React.FC<PVTStageProps> = ({ onComplete }) => {
   }
 
   return (
-    <div className="w-full flex flex-col space-y-3">
-      {/* Progress Pill Bar */}
-      <div className="flex items-center justify-between px-4 py-2 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 text-xs">
+    <div
+      onPointerDown={handlePointerResponse}
+      style={{ touchAction: 'none' }}
+      className="w-full flex-1 min-h-[calc(100dvh-12.5rem)] sm:min-h-[500px] flex flex-col justify-between py-1 select-none cursor-pointer"
+    >
+      {/* Sub-Progress Trial Dots */}
+      <div className="flex items-center justify-between px-3.5 py-2 rounded-2xl bg-zinc-100/80 dark:bg-zinc-800/60 text-xs backdrop-blur-sm">
         <span className="font-bold text-zinc-700 dark:text-zinc-300">
           Uji Refleks Cepat (PVT)
         </span>
@@ -53,31 +57,44 @@ export const PVTStage: React.FC<PVTStageProps> = ({ onComplete }) => {
               }`}
             />
           ))}
-          <span className="text-zinc-400 font-semibold ml-1.5 text-[11px]">
+          <span className="text-zinc-400 font-semibold ml-1.5 text-[11px] font-mono tabular-nums">
             {currentTrialNumber}/{totalTrialsGoal}
           </span>
         </div>
       </div>
 
-      {/* Immersive Zen Stage Canvas */}
-      <div
-        onPointerDown={handlePointerResponse}
-        role="button"
-        tabIndex={0}
-        aria-label="Area Respon PVT"
-        style={{ touchAction: 'none' }}
-        className="relative w-full h-80 sm:h-96 flex flex-col items-center justify-center p-6 rounded-3xl select-none cursor-pointer bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 shadow-apple active:scale-[0.99] transition-all"
-      >
+      {/* Natural Eye-Level Stimulus Display */}
+      <div className="flex-1 flex flex-col items-center justify-center py-6 sm:py-8 pointer-events-none">
         <PVTTimerDisplay
           liveMs={liveDisplayMs}
           feedbackText={feedbackMessage}
           phase={phase}
         />
+      </div>
 
-        <div className="absolute bottom-4 text-xs font-semibold text-zinc-400 dark:text-zinc-500 text-center px-4">
-          Ketuk layar di mana saja segera setelah lingkaran hijau muncul
+      {/* Ergonomic Bottom Thumb Zone Tap Target */}
+      <div className="w-full pt-2">
+        <div
+          role="button"
+          tabIndex={0}
+          aria-label="Area Ketukan Respon PVT"
+          className={`w-full py-5 sm:py-6 px-4 rounded-3xl border transition-all text-center flex flex-col items-center justify-center ${
+            phase === 'stimulus'
+              ? 'bg-apple-green text-white border-apple-green shadow-apple ring-4 ring-apple-green/20 scale-[1.01]'
+              : 'bg-zinc-100/90 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 border-zinc-200/80 dark:border-zinc-700/60'
+          }`}
+        >
+          <span className="text-sm font-bold uppercase tracking-wider">
+            {phase === 'stimulus' ? 'KETUK SEKARANG!' : 'Area Ketukan Jempol'}
+          </span>
+          <span className="text-[11px] opacity-75 font-medium mt-0.5">
+            {phase === 'stimulus'
+              ? 'Sentuh layar di mana saja seketika'
+              : 'Tahan jari di sini, ketuk begitu hijau muncul'}
+          </span>
         </div>
       </div>
     </div>
   );
 };
+

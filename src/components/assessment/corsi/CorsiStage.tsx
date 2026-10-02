@@ -27,21 +27,24 @@ export const CorsiStage: React.FC<CorsiStageProps> = ({ onComplete }) => {
   }
 
   return (
-    <div className="w-full flex flex-col space-y-3">
+    <div
+      style={{ touchAction: 'none' }}
+      className="w-full flex-1 min-h-[calc(100dvh-12.5rem)] sm:min-h-[500px] flex flex-col justify-between py-1 select-none"
+    >
       {/* Progress Pill */}
-      <div className="flex items-center justify-between px-4 py-2 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 text-xs">
+      <div className="flex items-center justify-between px-3.5 py-2 rounded-2xl bg-zinc-100/80 dark:bg-zinc-800/60 text-xs backdrop-blur-sm">
         <span className="font-bold text-zinc-700 dark:text-zinc-300">
           Memori Kerja Spasial
         </span>
         <div className="flex items-center gap-1.5">
-          <span className="text-zinc-400 font-semibold text-[11px]">
+          <span className="text-zinc-400 font-semibold text-[11px] font-mono tabular-nums">
             Ronde {currentRound}/{totalRounds}
           </span>
         </div>
       </div>
 
       {/* Main Arena */}
-      <div className="relative w-full p-4 sm:p-7 rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 shadow-apple flex flex-col items-center justify-center space-y-4 sm:space-y-5">
+      <div className="flex-1 flex flex-col items-center justify-center py-4 space-y-3 sm:space-y-4">
         <div className="text-center space-y-1">
           <span className="inline-block px-3 py-0.5 rounded-full bg-apple-purple/10 text-apple-purple text-xs font-semibold">
             {phase === 'demonstrating' ? 'Amati Balok' : phase === 'recalling' ? 'Giliran Anda' : 'Memproses'}
@@ -64,7 +67,7 @@ export const CorsiStage: React.FC<CorsiStageProps> = ({ onComplete }) => {
                 disabled={phase !== 'recalling'}
                 onClick={() => handleBlockTap(idx)}
                 aria-label={`Balok ${idx + 1}`}
-                className={`aspect-square w-full h-full rounded-2xl border-2 transition-colors duration-150 flex items-center justify-center select-none ${
+                className={`aspect-square w-full h-full rounded-2xl border-2 transition-colors duration-150 flex items-center justify-center select-none cursor-pointer ${
                   isHighlighted
                     ? 'bg-apple-purple text-white border-apple-purple shadow-apple ring-4 ring-apple-purple/30'
                     : isUserTapped
@@ -83,14 +86,15 @@ export const CorsiStage: React.FC<CorsiStageProps> = ({ onComplete }) => {
             );
           })}
         </div>
+      </div>
 
-        {/* Hint footer */}
-        <div className="text-[11px] text-zinc-400 text-center font-medium">
-          {phase === 'recalling'
-            ? 'Ketuk kotak yang tadi menyala dengan urutan yang sama'
-            : 'Perhatikan posisi balok yang menyala ungu'}
-        </div>
+      {/* Hint footer */}
+      <div className="text-[11px] text-zinc-400 text-center font-medium py-1">
+        {phase === 'recalling'
+          ? 'Ketuk kotak yang tadi menyala dengan urutan yang sama'
+          : 'Perhatikan posisi balok yang menyala ungu'}
       </div>
     </div>
   );
 };
+
