@@ -12,13 +12,14 @@
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4_Tokens-38bdf8?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.8_Flash_API-4285f4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev/)
 [![Vitest](https://img.shields.io/badge/Vitest-10%2F10_Passing-6e9f18?style=flat-square&logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Live Production](https://img.shields.io/badge/Live_Demo-iconfest.febnawanfr.my.id-2563eb?style=flat-square&logo=cloudflare&logoColor=white)](https://iconfest.febnawanfr.my.id)
 [![Standards](https://img.shields.io/badge/Standard-NASA_Dinges--Basner_PVT-red?style=flat-square)](https://www.nasa.gov/)
 [![Privacy](https://img.shields.io/badge/Privacy-UU_PDP_No._27%2F2022_Compliant-emerald?style=flat-square)](https://peraturan.go.id/)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 
 <br />
 
-[Ringkasan](#ringkasan--urgensi-solusi) • [Landasan Ilmiah](#landasan-ilmiah-medis) • [4 Modalitas Asesmen](#4-modalitas-neurokognitif) • [Arsitektur Sistem](#arsitektur-sistem--resilience-ai) • [Panduan Memulai](#panduan-menjalankan-proyek) • [Verifikasi & Pengujian](#verifikasi--pengujian-sistem) • [Filosofi Desain](#filosofi-desain--anti-ai-slop) • [Struktur Repositori](#struktur-repositori-modular)
+[Live Demo](https://iconfest.febnawanfr.my.id) • [Ringkasan](#ringkasan--urgensi-solusi) • [Landasan Ilmiah](#landasan-ilmiah-medis) • [4 Modalitas Asesmen](#4-modalitas-neurokognitif) • [Tutorial Interaktif](#2-stage-interactive-tutorial-engine) • [Pengalaman Mobile-First](#pengalaman-mobile-first--ergonomi-sentuh) • [Arsitektur Sistem](#arsitektur-sistem--resilience-ai) • [Ketahanan Server](#ketahanan-server--self-healing-daemon) • [Panduan Memulai](#panduan-menjalankan-proyek) • [Struktur Repositori](#struktur-repositori-modular)
 
 <br />
 
@@ -29,6 +30,7 @@
 > [!TIP]
 > **Ajang Kompetisi:** ICONFEST 2026 (Informatics Conference & Festival, Universitas Siliwangi)  
 > **Kategori:** Software Development: Bidang Kesehatan  
+> **Akses Produksi (Live):** [https://iconfest.febnawanfr.my.id](https://iconfest.febnawanfr.my.id) (Cloudflare Zero Trust + Caddy + systemd)  
 > **Status Verifikasi:** 10/10 Vitest Unit Tests Passed (100%), 0 TypeScript Errors, Production Build Ready.
 
 ---
@@ -97,53 +99,91 @@ Menguji refleks sensorimotor terhadap kemunculan stimulus visual acak (interval 
   <img src="./docs/images/pvt-test.png" alt="Uji PVT-B Reaction Speed" width="700" style="border-radius: 8px; border: 1px solid #27272a;" />
 </div>
 
-* **Target Evaluasi:** Kecepatan respon milidetik murni, *lapses*, dan laju responsivitas sustained.
-* **Audio Feedback:** Synthesizer Web Audio API native menghasilkan nada feedback instan tanpa latensi file audio eksternal.
+* **Target Evaluasi:** Kecepatan respon milidetik murni, *attentional lapses* ($\ge 355\text{ ms}$), false start ($< 100\text{ ms}$), dan laju responsivitas sustained ($1/\text{RT} \times 1000$).
+* **Audio Feedback:** Synthesizer Web Audio API native menghasilkan nada feedback frekuensi presisi tanpa latensi I/O audio eksternal.
 
 ---
 
 ### 2. Stroop Cognitive Inhibition Task
-Pekerja diuji untuk memilih warna tinta teks, bukan kata yang tertulis, di bawah kondisi konflik semantik.
+Pekerja diuji untuk memilih warna tinta teks, bukan kata yang tertulis, di bawah kondisi konflik semantik (*Stroop Effect*).
 
 <div align="center">
   <img src="./docs/images/stroop-test.png" alt="Uji Inhibisi Kognitif Stroop" width="700" style="border-radius: 8px; border: 1px solid #27272a;" />
 </div>
 
-* **Target Evaluasi:** Efisiensi pemrosesan inhibisi, akurasi keputusan di bawah konflik, dan latensi keputusan kognitif.
-* **Fitur Edukatif:** Disertai tutorial interaktif sebelum tes untuk memastikan pemahaman tanpa menimbulkan bias frustrasi.
+* **Target Evaluasi:** Efisiensi pemrosesan inhibisi di korteks singulat anterior (ACC), akurasi keputusan di bawah stimulus inkongruen, dan latensi interferensi kognitif.
+* **Layout Presisi:** Dua target sentuh berukuran penuh di zona jempol bawah layar untuk respon motorik seimbang.
 
 ---
 
 ### 3. Corsi Block-Tapping Spatial Working Memory
-Pekerja mengingat dan mereplikasi urutan blok visual acak dengan panjang rangkaian yang bertahap.
+Pekerja mengingat dan mereplikasi urutan blok visual acak dengan panjang rentang bertahap.
 
 <div align="center">
   <img src="./docs/images/corsi-test.png" alt="Uji Memori Kerja Spasial Corsi" width="700" style="border-radius: 8px; border: 1px solid #27272a;" />
 </div>
 
-* **Target Evaluasi:** Rentang memori kerja spasial, latensi mengingat, dan resistensi terhadap kebingungan urutan.
-* **Arsitektur Stabil:** Dilengkapi sistem debounce state dan pembersihan timer otomatis untuk mencegah perulangan tak terbatas (*infinite render protection*).
+* **Target Evaluasi:** Rentang memori kerja spasial (*visuospatial sketchpad*), latensi penarikan memori, dan toleransi disorientasi spasial.
+* **Layout Rigid Zero-Shift:** Tata letak grid 3x3 terkunci dengan dimensi proporsional stabil, mengeliminasi getaran layout (*layout shift*) saat blok dipilih.
 
 ---
 
 ### 4. Neuromotor Fast-Tapping Test
-Uji ketukan cepat berirama untuk mengukur kecepatan transmisi neuromuskular dan konsistensi motorik halus.
+Uji ketukan cepat berirama untuk mengukur kecepatan konduksi neuromuskular dan konsistensi motorik halus.
 
-* **Target Evaluasi:** Frekuensi ketukan (Hz), jitter deviasi standar antar-ketukan ($\pm\text{ms}$), dan rasio perlambatan irama (*fatigue decay*).
+* **Target Evaluasi:** Frekuensi ketukan (Hz), *Inter-Tap Interval* (ITI), jitter deviasi standar ($\pm\text{ms}$), dan rasio perlambatan irama (*fatigue decay slope*).
+* **Surface Target Penuh:** Area sentuh memanjang tanpa batas kotak kaku, mengakomodasi teknik ketukan jempol tunggal maupun dua jari bergantian.
 
 ---
 
-## Pengalaman Mobile-First
+## 2-Stage Interactive Tutorial Engine
 
-CogniPulse dirancang dengan pendekatan **Mobile-First murni** mengacu pada standar *Apple Human Interface Guidelines*:
+Untuk mengeliminasi kebingungan pengguna (terutama pada tes konflik warna Stroop dan ketukan ritmis) tanpa membebani pekerja dengan teks panjang pasif, CogniPulse menghadirkan **Engine Tutorial 2-Tahap Interaktif** sebelum setiap tes dimulai (`PVTTutorial`, `StroopTutorial`, `CorsiTutorial`, `MotorTutorial`):
+
+```
++---------------------------------------------------------------------------------------+
+| ALUR TUTORIAL DUA TAHAP COGNIPULSE                                                    |
++---------------------------------------------------+-----------------------------------+
+| Tahap 1: Live Animated Demonstration             | Tahap 2: Interactive Sandbox      |
++---------------------------------------------------+-----------------------------------+
+| • Simulasi visual otomatis berjalan tanpa batas   | • Pengguna mencoba langsung       |
+| • Memperlihatkan skenario BENAR vs SALAH          | • Umpan balik audio & visual riil |
+| • Menghilangkan beban baca instruksi teks         | • Tanpa penalti & tanpa batas     |
+| • Menjelaskan aturan secara intuitif              | • Gerbang "Saya Mengerti" aktif   |
++---------------------------------------------------+-----------------------------------+
+```
+
+1. **Tahap 1 — Animasi Simulasi Otomatis (Demo):**
+   - Menampilkan siklus demonstrasi visual otomatis yang memperagakan bagaimana stimulus muncul dan aksi apa yang diharapkan.
+   - Contoh pada Stroop: mendemonstrasikan kata "MERAH" bertinta Biru, lalu kursor virtual memilih opsi warna "Biru", bukan "Merah".
+   - Contoh pada PVT: mengilustrasikan lingkaran stimulus berubah hijau dengan simulasi waktu reaksi, serta peringatan visual jika terjadi *False Start* (mengetuk terlalu dini).
+2. **Tahap 2 — Latihan Bebas Tanpa Penalti (Sandbox):**
+   - Pekerja dapat berlatih langsung mengetuk tombol atau memilih urutan blok secara mandiri.
+   - Sistem memberikan umpan balik mikro langsung (*"Tepat! Lanjutkan"*, *"Terlalu cepat"*, *"Pilih warna tinta"*).
+   - Tombol **"Saya Mengerti, Mulai Tes"** memberikan kendali penuh kepada pekerja untuk memulai sesi evaluasi hanya ketika mereka benar-benar telah siap.
+
+---
+
+## Pengalaman Mobile-First & Ergonomi Sentuh
+
+CogniPulse dirancang dari fondasi awal dengan pendekatan **Mobile-First Ergonomics** mengacu pada standar *Apple Human Interface Guidelines*:
 
 <div align="center">
   <img src="./docs/images/dashboard-mobile.png" alt="CogniPulse Mobile Experience" width="380" style="border-radius: 16px; border: 1px solid #27272a;" />
 </div>
 
-* **Desain Apple Bottom Sheet:** Kartu vital dapat ditekan untuk memunculkan lembar informasi bawah dengan gestur tarikan halus (*touch drag handle*).
-* **Zero Card Clutter:** Mengeliminasi kartu bertumpuk AI slop, digantikan oleh tipografi bernapas, pemisah garis 1px (*hairline borders*), dan angka tabular monospaced.
-* **Target Sentuh Ergonomis:** Seluruh elemen interaktif memenuhi ukuran minimum 44px dengan efek sentuh pegas mikro (*active:scale-[0.98]*).
+* **Zona Jempol Bawah Layar (Bottom Thumb-Zone Architecture):**
+  - Mengeliminasi desain lama kartu melayang (*floating cards*) di tengah atau atas layar yang memicu ketegangan jempol (*thumb reach strain*).
+  - Area respon tes PVT, tombol Stroop, dan pad Motor Tapping diposisikan di separuh bawah layar dengan area sentuh yang luas, mengikuti jangkauan natural satu tangan pekerja.
+* **Auto-Hiding Navigation Bar:**
+  - Bilah menu bawah (`AppleTabBar`) secara otomatis menyusut dan menghilang saat sesi tes aktif, memaksimalkan area vertikal layar dan mencegah ketidaksengajaan keluar tes.
+* **Input Presisi dengan Touch-Debounce:**
+  - Stepper pengatur durasi tidur dengan resolusi 0.5 jam dilengkapi filter *touch-debounce* 180ms, meniadakan lonjakan ganda (*double-fire touch event*) pada layar sentuh sensitif.
+  - Pemilih mood 3-segmen taktil (*Buruk*, *Biasa*, *Bugar*) yang cepat diakses sebelum tes.
+* **Desain Apple Bottom Sheet:**
+  - Detail diagnostik vital dapat diakses melalui lembar geser bawah interaktif dengan penarik gestur (*drag handle*) halus.
+* **Zero Card Clutter & Hairline Borders:**
+  - Menolak kartu bertumpuk AI slop, menggunakan pembatas tipis 1px (`border-zinc-800`), kontras tinggi, dan angka tabular monospaced.
 
 ---
 
@@ -176,25 +216,70 @@ flowchart TD
     A["Interaksi Pengguna (90s Asesmen)"] --> B["Telemetri Presisi Tinggi (ms)"]
     B --> C["Client-Side Mathematical Engine"]
     C --> D["Kalkulasi Skor CFI, PVT, Stroop, Corsi, Motor"]
-    D --> E["API Route /api/analyze"]
+    D --> E["Injeksi Kronobiologi Sirkadian & Jam Tes"]
+    E --> F["API Route /api/analyze"]
     
     subgraph "Resilience Failover Cascade"
-        E --> F{"Gemini 3.8 Flash<br/>(Primary Model)"}
-        F -- "Sukses" --> G["Diagnosis Klinis Terstruktur"]
-        F -- "503 / Timeout 4s" --> H{"Gemini 3.5 Flash Lite<br/>(Fast Secondary)"}
-        H -- "Sukses" --> G
-        H -- "Gagal / Cooldown" --> I{"Gemini 2.5 Flash<br/>(Tertiary Model)"}
-        I -- "Sukses" --> G
-        I -- "Offline / Semua Gagal" --> J["Local Clinical Deterministic Heuristics"]
-        J --> G
+        F --> G{"Gemini 3.8 Flash<br/>(Primary Model)"}
+        G -- "Sukses" --> H["Diagnosis Klinis Terstruktur"]
+        G -- "503 / Timeout 4s" --> I{"Gemini 3.5 Flash Lite<br/>(Fast Secondary)"}
+        I -- "Sukses" --> H
+        I -- "Gagal / Cooldown" --> J{"Gemini 2.5 Flash<br/>(Tertiary Model)"}
+        J -- "Sukses" --> H
+        J -- "Offline / Semua Gagal" --> K["Local Clinical Deterministic Heuristics"]
+        K --> H
     end
 
-    G --> K["Dashboard Hasil & Rekomendasi Presisi"]
+    H --> L["Dashboard Hasil & Rekomendasi Presisi"]
 ```
+
+### Telemetri Kronobiologi & Fisiologi Sirkadian Real-Time
+Untuk meningkatkan akurasi diagnosis diferensial, payload evaluasi Gemini dilengkapi parameter kronobiologi temporal:
+* **Injeksi Waktu & Fase Sirkadian:** Jam pengujian dipetakan secara matematis ke salah satu dari 6 fase fisiologis sirkadian:
+  1. `DAWN_CIRCADIAN_NADIR` (03:00 - 06:59): Titik terendah kewaspadaan biologis, penurunan suhu tubuh inti.
+  2. `MORNING_CORTISOL_PEAK` (07:00 - 11:59): Puncak pelepasan hormon kortisol, periode kesiapan kerja optimal.
+  3. `POST_PRANDIAL_DIP` (12:00 - 14:59): Penurunan kewaspadaan pasca-makan siang, dorongan tidur homeostatik sekunder.
+  4. `AFTERNOON_SUSTAINED` (15:00 - 18:59): Kewaspadaan sore stabil sebelum sintesis melatonin dimulai.
+  5. `EVENING_MELATONIN_ONSET` (19:00 - 22:59): Peningkatan sekresi melatonin endogen, penurunan kecepatan motorik.
+  6. `NIGHT_VULNERABILITY_WINDOW` (23:00 - 02:59): Jendela kerentanan malam hari, desinkronisasi sirkadian akut.
+* **Kompensasi Latensi Hardware Layar Sentuh:** Menghitung toleransi polling digitizer sentuh (8-16ms) pada perangkat seluler untuk memastikan data waktu reaksi murni tanpa bias latensi layar.
+* **Skor Keyakinan Klinis Ternormalisasi:** Skala keyakinan diagnosis AI distandarisasi pada rentang 0-100% untuk representasi kepastian medis yang akurat.
 
 ### Karakteristik Model AI
 * **Gemini 3.8 Flash:** Berfungsi sebagai *Clinical Neurophysiologist & Risk Copilot* yang menyintesis korelasi multi-faktor (ritme sirkadian, defisit tidur, waktu reaksi) untuk memproyeksikan risiko kerja 2-4 jam ke depan.
 * **Deterministic Fallback Engine:** Algoritma berbasis aturan medis lokal yang otomatis aktif dalam waktu $\le 4$ detik jika API Gemini mengalami lonjakan beban atau jaringan terputus, memastikan demonstrasi kompetisi dan operasional pabrik tidak pernah terhenti.
+
+---
+
+## Ketahanan Server & Self-Healing Daemon
+
+CogniPulse di-deploy pada server produksi mandiri (*self-hosted edge server*) dengan arsitektur ketahanan tinggi (*zero-downtime tolerance*):
+
+```
+[ Pengguna / Smartphone / Browser ]
+           │ (HTTPS / TLS 1.3 Terenkripsi)
+           ▼
+[ Cloudflare Zero Trust Edge (Anycast Global Network) ]
+           │ (Encrypted Tunnel / Protokol QUIC)
+           ▼
+[ Cloudflare Tunnel Daemon (cloudflared service) ]
+           │ (Local Loopback Forwarding)
+           ▼
+[ Caddy High-Performance Web Server (Port 80) ]
+           │ (Virtual Host Header Routing)
+           ▼
+[ CogniPulse Next.js 15 Standalone Daemon (Port 3000) ]
+└── Dikawal oleh systemd (cognipulse.service)
+```
+
+### Spesifikasi Infrastruktur Produksi
+* **Akses Publik (Live):** [https://iconfest.febnawanfr.my.id](https://iconfest.febnawanfr.my.id)
+* **Cloudflare Zero Trust Tunnel:** Mengeliminasi pembukaan port publik (tanpa *port-forwarding* pada router), memberikan mitigasi serangan DDoS otomatis, dan mengelola sertifikat SSL secara dinamis.
+* **Caddy Reverse-Proxy:** Menangani multi-domain virtual host dan perutean internal berkinerja tinggi dengan konsumsi memori minimal.
+* **Linux systemd Self-Healing Service (`cognipulse.service`):**
+  - **Otomatis Saat Booting (`WantedBy=multi-user.target`):** Server CogniPulse langsung aktif otomatis saat mesin dinyalakan kembali tanpa perlu intervensi manual.
+  - **Pemulihan Otomatis Mandiri (`Restart=always`, `RestartSec=3s`):** Jika terjadi crash atau kegagalan tak terduga, sistem mendeteksi dan menghidupkan kembali service dalam waktu $\le 3$ detik (telah terverifikasi dengan uji pematian paksa `kill -9`).
+  - **Batas Alokasi Sumber Daya (`MemoryMax=1.2G`, `LimitNOFILE=65535`):** Mencegah potensi kebocoran memori dari node worker dan menjaga stabilitas konkurensi server.
 
 ---
 
@@ -217,7 +302,7 @@ CogniPulse dibangun dengan prinsip **Privacy-by-Design** yang sepenuhnya selaras
 
 ### 1. Kloning Repositori
 ```bash
-git clone https://github.com/your-username/cognipulse.git
+git clone https://github.com/feb027/cognipulse.git
 cd cognipulse
 ```
 
@@ -264,17 +349,12 @@ npx tsc --noEmit
 
 ### Hasil Rangkaian Pengujian Vitest
 ```
- ✓ tests/pvt-scoring.test.ts (2 tests)
- ✓ tests/stroop-scoring.test.ts (2 tests)
- ✓ tests/motor-scoring.test.ts (2 tests)
- ✓ tests/corsi-scoring.test.ts (2 tests)
- ✓ tests/cfi-scoring.test.ts (1 test)
- ✓ tests/gemini-client.test.ts (1 test)
+ ✓ tests/scoring.test.ts (7 tests)
+ ✓ tests/fallback.test.ts (3 tests)
 
- Test Files  6 passed (6)
+ Test Files  2 passed (2)
       Tests  10 passed (10)
-   Start at  00:48:15
-   Duration  495ms (transform 182ms, setup 0ms, collect 389ms, tests 25ms, environment 0ms, prepare 276ms)
+   Duration  1.86s
 ```
 
 ---
@@ -302,23 +382,25 @@ cognipulse/
 ├── src/
 │   ├── app/                      # Next.js 15 App Router
 │   │   ├── api/analyze/          # Route handler Gemini 3.8 Flash & failover
-│   │   ├── layout.tsx            # Root layout & font configuration
-│   │   └── page.tsx              # Halaman utama & orchestrator tab
+│   │   ├── layout.tsx            # Root layout & konfigurasi font
+│   │   └── page.tsx              # Halaman utama & orkestrator tab
 │   ├── components/
 │   │   ├── assessment/           # Modul asesmen neurokognitif
-│   │   │   ├── pvt/              # Modul PVT-B (Timer, stage, HUD)
-│   │   │   ├── stroop/           # Modul Stroop (Tutorial, visual conflict)
-│   │   │   ├── corsi/            # Modul Corsi Block (Tutorial, memory grid)
-│   │   │   └── motor/            # Modul Tapping (Cadence, rhythmic target)
+│   │   │   ├── corsi/            # Modul Corsi Block (Memory grid stage)
+│   │   │   ├── motor/            # Modul Tapping (Cadence, rhythmic target)
+│   │   │   ├── pvt/              # Modul PVT-B (Timer display, stage)
+│   │   │   ├── stroop/           # Modul Stroop (Visual conflict stage)
+│   │   │   └── tutorials/        # 2-Stage Interactive Tutorials (Demo & Sandbox)
 │   │   ├── dashboard/            # Modul ringkasan, riwayat & bottom sheet
-│   │   ├── navigation/           # Apple profile dropdown & menu
+│   │   ├── navigation/           # Apple header, profile dropdown & tab bar
 │   │   ├── results/              # Diagnosis visual & rekomendasi pemulihan
-│   │   └── ui/                   # Primitif UI (Button, Card, Badge)
-│   ├── hooks/                    # Custom hooks untuk runner asesmen
+│   │   └── ui/                   # Primitif UI (Button, Card, Badge, Modal)
+│   ├── hooks/                    # Custom hooks untuk runner asesmen & session
 │   ├── lib/
 │   │   ├── ai/                   # Gemini client & local resilience fallback
 │   │   ├── audio/                # Web Audio API native synthesizer
-│   │   └── scoring/              # Kalkulator matematika murni (CFI, PVT, dll)
+│   │   ├── scoring/              # Kalkulator matematika murni (CFI, PVT, dll)
+│   │   └── session-utils.ts      # Utilitas sesi, waktu & kronobiologi
 │   └── types/                    # Kontrak TypeScript terpusat
 ├── tests/                        # 10 Unit tests Vitest
 ├── AGENTS.md                     # Aturan rekayasa workspace & antislop
