@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { UserContext, CaffeineIntake } from '@/types/assessment';
 
 interface ContextCheckinModalProps {
@@ -24,6 +24,18 @@ export const ContextCheckinModal: React.FC<ContextCheckinModalProps> = ({
   const [hoursSlept, setHoursSlept] = useState<number>(initialContext?.hoursSleptLastNight || 7);
   const [caffeine, setCaffeine] = useState<CaffeineIntake>(initialContext?.caffeineIntake || 'low');
   const [subjective, setSubjective] = useState<number>(initialContext?.subjectiveFatigueScore || 2);
+  const lastStepTimeRef = useRef<number>(0);
+
+  const handleStep = (delta: number) => {
+    const now = Date.now();
+    // Debounce 180ms mencegah double-event / ghost click saat disentuh di layar HP
+    if (now - lastStepTimeRef.current < 180) return;
+    lastStepTimeRef.current = now;
+    setHoursSlept((prev) => {
+      const next = +(prev + delta).toFixed(1);
+      return Math.min(14, Math.max(1, next));
+    });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,25 +65,25 @@ export const ContextCheckinModal: React.FC<ContextCheckinModalProps> = ({
             </label>
             <span className="text-[11px] text-zinc-400">Berapa jam Anda tidur?</span>
           </div>
-          <div className="flex items-center bg-zinc-200/70 dark:bg-zinc-700/60 p-1 rounded-2xl border border-black/5 dark:border-white/10">
+          <div className="flex items-center bg-zinc-200/70 dark:bg-zinc-700/60 p-1 rounded-2xl border border-black/5 dark:border-white/10 touch-manipulation select-none">
             <button
               type="button"
-              onClick={() => setHoursSlept((prev) => Math.max(2, prev - 1))}
-              disabled={hoursSlept <= 2}
+              onClick={() => handleStep(-0.5)}
+              disabled={hoursSlept <= 1}
               aria-label="Kurangi jam tidur"
-              className="w-9 h-9 rounded-xl bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 font-bold text-lg flex items-center justify-center shadow-sm active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all"
+              className="w-9 h-9 rounded-xl bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 font-bold text-lg flex items-center justify-center shadow-sm active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all touch-manipulation"
             >
               −
             </button>
-            <span className="min-w-16 px-1.5 text-center font-mono font-bold text-sm text-zinc-900 dark:text-white tabular-nums">
+            <span className="min-w-16 px-1.5 text-center font-mono font-bold text-sm text-zinc-900 dark:text-white tabular-nums select-none">
               {hoursSlept} <span className="font-sans text-[11px] font-medium text-zinc-400">jam</span>
             </span>
             <button
               type="button"
-              onClick={() => setHoursSlept((prev) => Math.min(14, prev + 1))}
+              onClick={() => handleStep(0.5)}
               disabled={hoursSlept >= 14}
               aria-label="Tambah jam tidur"
-              className="w-9 h-9 rounded-xl bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 font-bold text-lg flex items-center justify-center shadow-sm active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all"
+              className="w-9 h-9 rounded-xl bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 font-bold text-lg flex items-center justify-center shadow-sm active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all touch-manipulation"
             >
               +
             </button>
