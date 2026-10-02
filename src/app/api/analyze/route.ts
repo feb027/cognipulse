@@ -4,7 +4,7 @@ import { analyzeFatigueTelemetry } from '@/lib/ai/gemini-client';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { cfi, pvt, stroop, motor, context, corsi } = body;
+    const { cfi, pvt, stroop, motor, context, corsi, deviceBaselineMs, clientTimestamp } = body;
 
     if (!cfi || !pvt || !stroop || !motor) {
       return NextResponse.json(
@@ -20,7 +20,8 @@ export async function POST(req: NextRequest) {
       motor,
       context,
       undefined,
-      corsi
+      corsi,
+      { deviceBaselineMs, clientTimestamp }
     );
 
     return NextResponse.json({ analysis });

@@ -63,7 +63,7 @@ export default function Home() {
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cfi, pvt, stroop, motor, context, corsi }),
+        body: JSON.stringify({ cfi, pvt, stroop, motor, context, corsi, deviceBaselineMs, clientTimestamp: new Date().toISOString() }),
       });
       const data = await res.json();
       setActiveAnalysis(data.analysis);

@@ -33,9 +33,16 @@ export const DiagnosticReportCard: React.FC<DiagnosticReportCardProps> = ({
           </h3>
         </div>
 
-        <span className="text-zinc-500 font-medium text-[11px]">
-          Tingkat Keyakinan: {Math.round(differentialDiagnosis.confidenceScore * 100)}%
-        </span>
+        {(() => {
+          const rawConf = differentialDiagnosis.confidenceScore ?? 0.9;
+          const normalized = rawConf > 1 ? rawConf : rawConf * 100;
+          const displayPct = Math.min(100, Math.max(0, Math.round(normalized)));
+          return (
+            <span className="text-zinc-500 font-medium text-[11px]">
+              Tingkat Keyakinan: {displayPct}%
+            </span>
+          );
+        })()}
       </div>
 
       {/* Critical warning if present */}

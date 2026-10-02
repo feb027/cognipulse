@@ -24,7 +24,11 @@ export async function analyzeFatigueTelemetry(
   motor: MotorMetrics,
   context?: UserContext,
   apiKeyOverride?: string,
-  corsi?: CorsiMetrics
+  corsi?: CorsiMetrics,
+  options?: {
+    deviceBaselineMs?: number;
+    clientTimestamp?: string;
+  }
 ): Promise<GeminiClinicalAnalysis> {
   const apiKey =
     apiKeyOverride ||
@@ -35,7 +39,7 @@ export async function analyzeFatigueTelemetry(
     return generateLocalFallbackAnalysis(cfi, pvt, stroop, motor, corsi);
   }
 
-  const prompt = buildTelemetryPrompt(cfi, pvt, stroop, motor, context, corsi);
+  const prompt = buildTelemetryPrompt(cfi, pvt, stroop, motor, context, corsi, options);
   const candidateModels = [
     'gemini-3.8-flash',
     'gemini-3.5-flash-lite',
@@ -76,6 +80,10 @@ export async function analyzeFatigueTelemetry(
       const text = await Promise.race([callPromise, timeoutPromise]);
       if (text) {
         const parsed = JSON.parse(text) as GeminiClinicalAnalysis;
+        if (parsed.differentialDiagnosis) {
+          const raw = parsed.differentialDiagnosis.confidenceScore ?? 0.9;
+          parsed.differentialDiagnosis.confidenceScore = raw > 1 ? raw / 100 : raw;
+        }
         return {
           ...parsed,
           aiEngineVersion: `${modelName}`,

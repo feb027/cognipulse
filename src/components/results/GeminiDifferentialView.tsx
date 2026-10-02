@@ -57,7 +57,12 @@ export const GeminiDifferentialView: React.FC<GeminiDifferentialViewProps> = ({
           <span className="text-zinc-400">Tingkat Keyakinan Klinis:</span>
           <div className="flex items-center gap-1 text-emerald-400">
             <CheckCircle className="w-3.5 h-3.5" />
-            <span>{Math.round(differentialDiagnosis.confidenceScore * 100)}%</span>
+            {(() => {
+              const rawConf = differentialDiagnosis.confidenceScore ?? 0.9;
+              const normalized = rawConf > 1 ? rawConf : rawConf * 100;
+              const displayPct = Math.min(100, Math.max(0, Math.round(normalized)));
+              return <span>{displayPct}%</span>;
+            })()}
           </div>
         </div>
 

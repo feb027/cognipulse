@@ -25,7 +25,10 @@ export const GEMINI_CLINICAL_ANALYSIS_SCHEMA = {
           type: "STRING",
           enum: ["fit", "mild_fatigue", "moderate_impairment", "critical_hazard"],
         },
-        confidenceScore: { type: "NUMBER" },
+        confidenceScore: {
+          type: "NUMBER",
+          description: "Nilai desimal antara 0.0 sampai 1.0 (contoh 0.88, BUKAN 88)",
+        },
         clinicalRationale: { type: "STRING" },
       },
       required: [
