@@ -46,11 +46,12 @@ export const AppleHighlightsCard: React.FC<AppleHighlightsCardProps> = ({
           )}
         </div>
 
-        {/* 2-Sentence Concise & Friendly Rationale */}
+        {/* 1-2 Sentence Concise & Friendly Highlight */}
         <div className="mb-3.5">
           <p className="text-base sm:text-lg font-bold tracking-tight text-zinc-900 dark:text-white leading-relaxed">
             {latestResult
-              ? latestResult.diagnosis.differentialDiagnosis.clinicalRationale
+              ? latestResult.diagnosis.differentialDiagnosis.shortSummary ||
+                latestResult.diagnosis.differentialDiagnosis.clinicalRationale.split(/(?<=[.!?])\s+/)[0]
               : 'Belum ada data evaluasi hari ini. Luangkan 75 detik untuk memeriksa kesiapan refleks dan fokus Anda.'}
           </p>
 

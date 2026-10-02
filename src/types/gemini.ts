@@ -6,6 +6,7 @@
 export interface DifferentialDiagnosis {
   headlineTitle?: string;
   primaryCause?: string;
+  shortSummary?: string;
   primaryType:
     | 'cognitive_overload'
     | 'sleep_deprived_microsleep'

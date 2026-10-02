@@ -21,6 +21,7 @@ export function generateLocalFallbackAnalysis(
   let severityLevel: DifferentialDiagnosis['severityLevel'] = cfi.impairmentTier;
   let headlineTitle = 'Kesiapan Kerja Optimal';
   let primaryCause = 'Refleks Cepat & Sistem Saraf Prima';
+  let shortSummary = 'Sistem saraf prima dan refleks secepat kilat siap bertugas.';
   let clinicalRationale = '';
 
   let riskIncrease = '+0%';
@@ -37,6 +38,7 @@ export function generateLocalFallbackAnalysis(
     severityLevel = 'critical_hazard';
     headlineTitle = 'Otak Minta Kasur: Awas Microsleep!';
     primaryCause = `Defisit Tidur Akut & Terdeteksi ${pvt.attentionalLapseCount}x Bengong`;
+    shortSummary = 'Saraf mendeteksi momen bengong dan refleks melambat, tubuh butuh istirahat nyata.';
     clinicalRationale = `Sensor mendeteksi Anda sempat ${pvt.attentionalLapseCount} kali bengong dan refleks melambat drastis. Ini bukan lagi melamun romantis, tapi alarm biologis kalau kepala Anda sudah sangat butuh bantal. Melanjutkan aktivitas dalam kondisi begini cuma bakal bikin banyak blunder atau salah klik fatal.`;
     riskIncrease = '+65%';
     trajectory = 'Kalau nekat dipaksakan, 2 jam lagi Anda bakal lebih banyak melamun menatap kursor daripada kerja produktif.';
@@ -50,6 +52,7 @@ export function generateLocalFallbackAnalysis(
     severityLevel = 'moderate_impairment';
     headlineTitle = 'Kepala Mulai Penuh: Butuh Jeda Santai';
     primaryCause = 'Beban Pikiran Jenuh & Kontrol Fokus Menurun';
+    shortSummary = 'Kontrol fokus dan inhibisi mulai jenuh, luangkan jeda santai 15 menit.';
     clinicalRationale = `Hasil tes Stroop dan memori menunjukkan otak Anda mulai kewalahan memilah instruksi. Refleks dasar sebenarnya masih jalan, tapi ketelitian mulai menipis sehingga Anda rawan typo berkali-kali atau bingung mencari kacamata yang padahal sedang dipakai.`;
     riskIncrease = '+35%';
     trajectory = 'Daya konsentrasi bakal makin ngedrop dalam 2 jam ke depan kalau tidak segera diselingi jeda bernapas sejenak.';
@@ -62,6 +65,7 @@ export function generateLocalFallbackAnalysis(
     severityLevel = 'mild_fatigue';
     headlineTitle = 'Stamina Jari Menipis: Peregangan Dulu!';
     primaryCause = 'Fluktuasi Ketukan Jari & Ketegangan Otot Ringan';
+    shortSummary = 'Ketukan jari mulai berfluktuasi pegal, luangkan waktu relaksasi otot sejenak.';
     clinicalRationale = `Irama ketukan jari Anda mulai sedikit berfluktuasi tidak teratur. Fokus mata sebenarnya masih cukup tajam, tapi otot dan saraf motorik halus tangan sudah mengirim sinyal pegal. Waktunya lemaskan bahu dan pergelangan tangan sebelum jadi kaku betulan.`;
     riskIncrease = '+15%';
     trajectory = 'Waktu respon masih cukup aman, tapi koordinasi jari bakal pelan-pelan melorot kalau duduk mematung terus.';
@@ -72,6 +76,7 @@ export function generateLocalFallbackAnalysis(
   } else {
     headlineTitle = 'Refleks Secepat Kilat: Siap Babat Tugas!';
     primaryCause = 'Koordinasi Mata dan Jari Sedang di Puncak Kejayaan';
+    shortSummary = 'Sistem saraf prima dan refleks secepat kilat siap menuntaskan tugas hari ini.';
     clinicalRationale = `Refleks Anda secepat kilat (rerata ${Math.round(pvt.meanReactionTimeMs)} ms), bahkan nyamuk lewat pun sepertinya bakal kalah cepat. Tanpa satu pun momen bengong dan akurasi tinggi, sistem saraf Anda sedang dalam performa emas. Manfaatkan momen ini untuk menuntaskan tugas paling rumit sebelum energi alami tubuh turun sore nanti.`;
     riskIncrease = '+0%';
     trajectory = 'Fokus tajam diproyeksikan bertahan stabil 3–4 jam ke depan, asalkan jangan lupa berkedip dan tetap minum air.';
@@ -85,6 +90,7 @@ export function generateLocalFallbackAnalysis(
     differentialDiagnosis: {
       headlineTitle,
       primaryCause,
+      shortSummary,
       primaryType,
       severityLevel,
       confidenceScore: 0.94,

@@ -11,6 +11,7 @@ export const GEMINI_CLINICAL_ANALYSIS_SCHEMA = {
       properties: {
         headlineTitle: { type: "STRING" },
         primaryCause: { type: "STRING" },
+        shortSummary: { type: "STRING" },
         primaryType: {
           type: "STRING",
           enum: [
@@ -30,6 +31,7 @@ export const GEMINI_CLINICAL_ANALYSIS_SCHEMA = {
       required: [
         "headlineTitle",
         "primaryCause",
+        "shortSummary",
         "primaryType",
         "severityLevel",
         "confidenceScore",

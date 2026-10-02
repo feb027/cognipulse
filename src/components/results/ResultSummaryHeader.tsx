@@ -52,7 +52,11 @@ export const ResultSummaryHeader: React.FC<ResultSummaryHeaderProps> = ({ cfi, a
 
   const tier = getTierInfo();
   const dynamicTitle = analysis?.differentialDiagnosis.headlineTitle || tier.title;
-  const dynamicDesc = analysis?.differentialDiagnosis.clinicalRationale || tier.desc;
+  const dynamicDesc = analysis?.differentialDiagnosis.shortSummary || (() => {
+    if (!analysis?.differentialDiagnosis.clinicalRationale) return tier.desc;
+    const firstSentence = analysis.differentialDiagnosis.clinicalRationale.split(/(?<=[.!?])\s+/)[0];
+    return firstSentence || tier.desc;
+  })();
 
   return (
     <section className="bg-white dark:bg-[#1C1C1E] rounded-3xl p-5 sm:p-6 shadow-apple border border-black/[0.04] dark:border-white/[0.08] space-y-3.5">

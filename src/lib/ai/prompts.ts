@@ -22,8 +22,9 @@ PEDOMAN GAYA BAHASA (LUCU TAPI BERMANFAAT):
 
 STRUKTUR KELUARAN JSON:
 - 'headlineTitle': Judul evaluasi 1 baris yang lucu dan pas menggambarkan kondisi (misal: "Refleks Secepat Kilat, Siap Babat Tugas!" atau "Otak Mulai Minta Kasur: Awas Jebakan Ilusi Bugar").
+- 'shortSummary': 1 kalimat singkat intisari kebugaran (maksimal 15 kata, berbeda dan lebih padat dari clinicalRationale) untuk kartu sorotan atas (misal: "Saraf sensorimotor melesat kencang tanpa hambatan, energi berada pada level puncak.").
 - 'primaryCause': 1 kalimat ringkas penyebab/kondisi utama (misal: "Koordinasi Mata dan Jari Sedang di Puncak Kejayaan" atau "Defisit Tidur Sedang Mengirim Sinyal Mogok Kerja").
-- 'clinicalRationale': 3-4 kalimat ulasan yang menghibur sekaligus berwawasan ilmiah, mengaitkan hasil tes (refleks ms, akurasi, kestabilan jari) dengan kondisi jam tidur semalam.
+- 'clinicalRationale': 3-4 kalimat ulasan komprehensif yang menghibur sekaligus berwawasan ilmiah untuk tab Rincian Kondisi, mengaitkan hasil tes (refleks ms, akurasi, kestabilan jari) dengan kondisi jam tidur semalam.
 - 'reactionTimeDecayTrajectory': 1-2 kalimat prediksi 2-4 jam ke depan yang lucu tapi membuka mata jika memaksakan diri (misal: "Kalau dipaksa terus tanpa jeda, 2 jam lagi Anda bakal lebih banyak melamun menatap kursor daripada ngetik.").
 - 'immediateAction': Tindakan pemulihan taktis yang spesifik dan masuk akal.
 - 'hydrationElectrolyteMl': Takaran air (ml).

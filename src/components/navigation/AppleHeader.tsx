@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/components/theme/ThemeContext';
 import { ProfileDropdown } from './ProfileDropdown';
@@ -24,13 +24,28 @@ export function AppleHeader({
 }: AppleHeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [todayHeader, setTodayHeader] = useState<string>('');
+
+  useEffect(() => {
+    try {
+      const now = new Date();
+      const datePart = new Intl.DateTimeFormat('id-ID', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+      }).format(now).toUpperCase();
+      setTodayHeader(`${datePart} • FIT-FOR-DUTY`);
+    } catch {
+      setTodayHeader('HARI INI • FIT-FOR-DUTY');
+    }
+  }, []);
 
   return (
     <header className="relative pt-6 pb-3 px-4 sm:px-6 max-w-4xl mx-auto w-full">
       {/* Top Meta Bar: Date & Actions */}
       <div className="flex items-center justify-between mb-1.5">
         <span className="text-[11px] font-bold tracking-wider uppercase text-zinc-500 dark:text-zinc-400">
-          {subtitle || 'RABU, 30 SEPTEMBER • FIT-FOR-DUTY'}
+          {subtitle || todayHeader || 'FIT-FOR-DUTY MONITOR'}
         </span>
         <div className="flex items-center gap-2">
           {/* Theme Toggle Button */}
