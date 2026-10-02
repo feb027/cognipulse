@@ -15,7 +15,8 @@ import { AssessmentLandingCard } from '@/components/assessment/AssessmentLanding
 import { ResultSummaryHeader } from '@/components/results/ResultSummaryHeader';
 import { TelemetryBreakdown } from '@/components/results/TelemetryBreakdown';
 import { ClinicalDetailsTabs } from '@/components/results/ClinicalDetailsTabs';
-import { useSessionHistory } from '@/hooks/use-session-storage';
+import { useSessionHistory, StoredSession } from '@/hooks/use-session-storage';
+import { toAssessmentResult } from '@/lib/session-utils';
 import { CompositeFatigueResult, UserContext } from '@/types/assessment';
 import { PVTMetrics } from '@/types/pvt';
 import { StroopMetrics } from '@/types/stroop';
@@ -66,25 +67,29 @@ export default function Home() {
       });
       const data = await res.json();
       setActiveAnalysis(data.analysis);
-      saveSession(cfi, data.analysis);
+      saveSession(cfi, data.analysis, pvt, stroop, motor, corsi);
     } catch {
       const { generateLocalFallbackAnalysis } = await import('@/lib/ai/local-fallback-engine');
       const fallback = generateLocalFallbackAnalysis(cfi, pvt, stroop, motor, corsi || undefined);
       setActiveAnalysis(fallback);
-      saveSession(cfi, fallback);
+      saveSession(cfi, fallback, pvt, stroop, motor, corsi);
     } finally {
       setIsAiLoading(false);
     }
   };
 
+  const handleSelectHistorySession = (session: StoredSession) => {
+    const res = toAssessmentResult(session);
+    setActiveCfi(res.cfi); setActivePvt(res.pvt); setActiveStroop(res.stroop);
+    setActiveMotor(res.motor); setActiveCorsi(res.corsi || null); setActiveAnalysis(res.diagnosis);
+    setIsTestingActive(false);
+    setActiveTab('assessment');
+  };
+
   const handleClearAllHistory = () => {
     clearHistory();
-    setActiveCfi(null);
-    setActivePvt(null);
-    setActiveStroop(null);
-    setActiveMotor(null);
-    setActiveCorsi(null);
-    setActiveAnalysis(null);
+    setActiveCfi(null); setActivePvt(null); setActiveStroop(null);
+    setActiveMotor(null); setActiveCorsi(null); setActiveAnalysis(null);
   };
 
   const handleApplyScenario = async (pkg: DemoScenarioPackage) => {
@@ -93,8 +98,10 @@ export default function Home() {
     await handleAssessmentCompleted(pkg.cfi, pkg.pvt, pkg.stroop, pkg.motor, pkg.context, pkg.corsi);
   };
 
-  const latestResult = activeCfi && activePvt && activeStroop && activeMotor && activeAnalysis
+  const latestResult = (activeCfi && activePvt && activeStroop && activeMotor && activeAnalysis)
     ? { cfi: activeCfi, pvt: activePvt, stroop: activeStroop, motor: activeMotor, corsi: activeCorsi || undefined, diagnosis: activeAnalysis, timestamp: new Date().toISOString() }
+    : history.length > 0
+    ? toAssessmentResult(history[0])
     : null;
 
   return (
@@ -167,7 +174,7 @@ export default function Home() {
 
         {activeTab === 'history' && (
           <div className="animate-springUp">
-            <HistoryLogView history={history} />
+            <HistoryLogView history={history} onSelectSession={handleSelectHistorySession} />
           </div>
         )}
       </main>

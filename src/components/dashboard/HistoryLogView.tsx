@@ -6,9 +6,10 @@ import { Clock, ShieldAlert, CheckCircle2, AlertTriangle, AlertOctagon } from 'l
 
 interface HistoryLogViewProps {
   history: StoredSession[];
+  onSelectSession?: (session: StoredSession) => void;
 }
 
-export function HistoryLogView({ history }: HistoryLogViewProps) {
+export function HistoryLogView({ history, onSelectSession }: HistoryLogViewProps) {
   if (!history || history.length === 0) {
     return (
       <div className="p-8 text-center rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 my-4">
@@ -65,8 +66,21 @@ export function HistoryLogView({ history }: HistoryLogViewProps) {
         {history.map((session) => {
           const tier = getTierInfo(session.cfi.impairmentTier);
           const Icon = tier.icon;
+          const readiness = Math.max(0, Math.min(100, 100 - session.cfi.cfiScore));
           return (
-            <div key={session.id} className="p-4 sm:p-5 hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 transition-colors">
+            <div
+              key={session.id}
+              onClick={() => onSelectSession?.(session)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onSelectSession?.(session);
+                }
+              }}
+              className="p-4 sm:p-5 hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40 cursor-pointer transition-all active:scale-[0.99] group text-left"
+            >
               <div className="flex items-start justify-between gap-3">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -89,23 +103,29 @@ export function HistoryLogView({ history }: HistoryLogViewProps) {
 
                 <div className="text-right">
                   <div className="text-lg font-black font-mono tracking-tight text-zinc-900 dark:text-white">
-                    {session.cfi.cfiScore}
-                    <span className="text-xs font-normal text-zinc-400">/100</span>
+                    {readiness}%
                   </div>
-                  <span className="text-[10px] text-zinc-400 uppercase tracking-wider block">Skor CFI</span>
+                  <span className="text-[10px] text-zinc-400 uppercase tracking-wider block">Kesiapan Kerja</span>
                 </div>
               </div>
 
-              <div className="mt-2.5 pt-2.5 border-t border-black/5 dark:border-white/5 space-y-1">
-                <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300 leading-relaxed">
+              <div className="mt-2.5 pt-2.5 border-t border-black/5 dark:border-white/5 space-y-1.5">
+                {session.analysis?.differentialDiagnosis?.headlineTitle && (
+                  <h4 className="text-xs font-bold text-zinc-900 dark:text-white">
+                    {session.analysis.differentialDiagnosis.headlineTitle}
+                  </h4>
+                )}
+                <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300 leading-relaxed line-clamp-2">
                   {session.analysis?.differentialDiagnosis?.clinicalRationale || 'Analisis kebugaran reguler.'}
                 </p>
-                {session.analysis?.precisionRecoveryPrescription?.immediateAction && (
-                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
-                    <span className="font-semibold text-zinc-600 dark:text-zinc-300">Rekomendasi: </span>
-                    {session.analysis.precisionRecoveryPrescription.immediateAction}
-                  </p>
-                )}
+                <div className="flex items-center justify-between pt-1">
+                  <span className="text-[11px] font-semibold text-apple-blue group-hover:underline">
+                    Buka Hasil Lengkap Asesmen →
+                  </span>
+                  <span className="text-[10px] text-zinc-400 font-mono">
+                    Kelelahan: {session.cfi.cfiScore}%
+                  </span>
+                </div>
               </div>
             </div>
           );
