@@ -9,6 +9,8 @@ export const GEMINI_CLINICAL_ANALYSIS_SCHEMA = {
     differentialDiagnosis: {
       type: "OBJECT",
       properties: {
+        headlineTitle: { type: "STRING" },
+        primaryCause: { type: "STRING" },
         primaryType: {
           type: "STRING",
           enum: [
@@ -25,7 +27,14 @@ export const GEMINI_CLINICAL_ANALYSIS_SCHEMA = {
         confidenceScore: { type: "NUMBER" },
         clinicalRationale: { type: "STRING" },
       },
-      required: ["primaryType", "severityLevel", "confidenceScore", "clinicalRationale"],
+      required: [
+        "headlineTitle",
+        "primaryCause",
+        "primaryType",
+        "severityLevel",
+        "confidenceScore",
+        "clinicalRationale",
+      ],
     },
     fourHourRiskForecast: {
       type: "OBJECT",

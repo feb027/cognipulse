@@ -152,7 +152,7 @@ export default function Home() {
                     <span>Uji Ulang</span>
                   </button>
                 </div>
-                <ResultSummaryHeader cfi={activeCfi} />
+                <ResultSummaryHeader cfi={activeCfi} analysis={activeAnalysis} />
                 <TelemetryBreakdown pvt={activePvt} stroop={activeStroop} motor={activeMotor} />
                 <ClinicalDetailsTabs analysis={activeAnalysis} cfi={activeCfi} />
               </div>

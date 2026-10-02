@@ -19,6 +19,8 @@ export function generateLocalFallbackAnalysis(
 ): GeminiClinicalAnalysis {
   let primaryType: DifferentialDiagnosis['primaryType'] = 'optimal_vigilance';
   let severityLevel: DifferentialDiagnosis['severityLevel'] = cfi.impairmentTier;
+  let headlineTitle = 'Kesiapan Kerja Optimal';
+  let primaryCause = 'Refleks Cepat & Sistem Saraf Prima';
   let clinicalRationale = '';
 
   let riskIncrease = '+0%';
@@ -33,6 +35,8 @@ export function generateLocalFallbackAnalysis(
   if (cfi.cfiScore >= 75 || pvt.attentionalLapseCount >= 4) {
     primaryType = 'sleep_deprived_microsleep';
     severityLevel = 'critical_hazard';
+    headlineTitle = 'Kelelahan Kritis: Rawan Micro-Sleep';
+    primaryCause = `Defisit Tidur Akut & Terdeteksi ${pvt.attentionalLapseCount}x Lapses`;
     clinicalRationale = `Terdeteksi penurunan fungsi neurokognitif berat dengan ${pvt.attentionalLapseCount} kali jeda atensi (lapses) dan waktu respon melambat signifikan. Kondisi ini mencerminkan defisit tidur akut di mana sistem saraf pusat mengalami kelelahan struktural. Melanjutkan aktivitas kerja pada kondisi ini meningkatkan risiko kegagalan operasional secara tajam.`;
     riskIncrease = '+65%';
     trajectory = 'Refleks sensorimotor akan mengalami degradasi lebih lanjut, dengan lonjakan probabilitas micro-sleep saat mengerjakan tugas monoton.';
@@ -44,6 +48,8 @@ export function generateLocalFallbackAnalysis(
   } else if (cfi.cfiScore >= 55 || stroop.commissionErrors >= 2 || (corsi && corsi.workingMemoryScore < 50)) {
     primaryType = 'cognitive_overload';
     severityLevel = 'moderate_impairment';
+    headlineTitle = 'Beban Kognitif Tinggi: Kelelahan Mental';
+    primaryCause = 'Kelelahan Korteks Prefrontal & Hambatan Inhibisi';
     clinicalRationale = `Korteks prefrontal menunjukkan tanda beban kognitif tinggi dengan penurunan akurasi kontrol inhibisi dan rentang memori kerja. Meskipun refleks motorik dasar masih aktif, kemampuan pemecahan masalah dan pengambilan keputusan kompleks mulai mengalami penurunan efisiensi.`;
     riskIncrease = '+35%';
     trajectory = 'Tingkat ketelitian dan konsentrasi akan menurun bertahap dalam 2–3 jam ke depan jika tidak diselingi jeda istirahat teratur.';
@@ -54,6 +60,8 @@ export function generateLocalFallbackAnalysis(
   } else if (cfi.cfiScore >= 30 || motor.itiStandardDeviationMs > 25) {
     primaryType = 'neuromuscular_exhaustion';
     severityLevel = 'mild_fatigue';
+    headlineTitle = 'Kelelahan Neuromuskular Awal';
+    primaryCause = 'Fluktuasi Jitter Ketukan & Penurunan Stamina Motorik';
     clinicalRationale = `Telemetri menunjukkan ritme ketukan motorik mulai mengalami fluktuasi ringan (jitter meningkat), menandakan kelelahan neuromuscular awal. Tingkat fokus kognitif visual masih relatif terjaga, namun stamina motorik membutuhkan pemeliharaan agar tidak berlanjut ke kelelahan sedang.`;
     riskIncrease = '+15%';
     trajectory = 'Waktu reaksi visual masih cukup stabil, namun koordinasi motorik halus berpotensi melambat perlahan.';
@@ -62,6 +70,8 @@ export function generateLocalFallbackAnalysis(
     screenBreakMins = 10;
     circadianNote = 'Pertahankan postur kerja ergonomis dan atur ritme kerja agar ketegangan otot tidak terakumulasi.';
   } else {
+    headlineTitle = 'Kesiapan Kerja Puncak: Fokus Tajam';
+    primaryCause = 'Homeostasis Saraf Prima & Refleks Sensorimotor Cepat';
     clinicalRationale = `Profil neurokognitif berada pada tingkat kesiapan optimal. Kecepatan refleks sensorimotor (rata-rata ${Math.round(pvt.meanReactionTimeMs)} ms) sangat tajam dengan nol kejadian hilang fokus (lapses), kontrol inhibisi prima, dan koordinasi motorik stabil. Sistem saraf siap menjalankan tugas operasional berintensitas tinggi.`;
     riskIncrease = '+0%';
     trajectory = 'Stabilitas fokus dan ketepatan refleks diperkirakan bertahan stabil selama 2–4 jam ke depan dengan ritme kerja normal.';
@@ -73,6 +83,8 @@ export function generateLocalFallbackAnalysis(
 
   return {
     differentialDiagnosis: {
+      headlineTitle,
+      primaryCause,
       primaryType,
       severityLevel,
       confidenceScore: 0.94,

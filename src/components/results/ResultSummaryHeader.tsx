@@ -2,13 +2,15 @@
 
 import React from 'react';
 import { CompositeFatigueResult } from '@/types/assessment';
+import { GeminiClinicalAnalysis } from '@/types/gemini';
 import { AlertTriangle } from 'lucide-react';
 
 interface ResultSummaryHeaderProps {
   cfi: CompositeFatigueResult;
+  analysis?: GeminiClinicalAnalysis | null;
 }
 
-export const ResultSummaryHeader: React.FC<ResultSummaryHeaderProps> = ({ cfi }) => {
+export const ResultSummaryHeader: React.FC<ResultSummaryHeaderProps> = ({ cfi, analysis }) => {
   const fatigueScore = Math.max(0, Math.min(100, cfi.cfiScore));
   const readinessScore = Math.max(0, Math.min(100, 100 - cfi.cfiScore));
   const radius = 44;
@@ -49,6 +51,8 @@ export const ResultSummaryHeader: React.FC<ResultSummaryHeaderProps> = ({ cfi })
   };
 
   const tier = getTierInfo();
+  const dynamicTitle = analysis?.differentialDiagnosis.headlineTitle || tier.title;
+  const dynamicDesc = analysis?.differentialDiagnosis.clinicalRationale || tier.desc;
 
   return (
     <section className="bg-white dark:bg-[#1C1C1E] rounded-3xl p-5 sm:p-6 shadow-apple border border-black/[0.04] dark:border-white/[0.08] space-y-3.5">
@@ -113,10 +117,10 @@ export const ResultSummaryHeader: React.FC<ResultSummaryHeaderProps> = ({ cfi })
             </span>
           </div>
           <h2 className="text-lg sm:text-xl font-extrabold tracking-tight text-zinc-900 dark:text-white break-words">
-            {tier.title}
+            {dynamicTitle}
           </h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium leading-relaxed">
-            {tier.desc}
+            {dynamicDesc}
           </p>
         </div>
       </div>

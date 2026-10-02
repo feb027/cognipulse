@@ -52,7 +52,7 @@ export const DiagnosticReportCard: React.FC<DiagnosticReportCardProps> = ({
           Penyebab Utama Kelelahan
         </span>
         <span className="font-bold text-zinc-900 dark:text-white text-sm block">
-          {typeLabels[differentialDiagnosis.primaryType] || differentialDiagnosis.primaryType}
+          {differentialDiagnosis.primaryCause || typeLabels[differentialDiagnosis.primaryType] || differentialDiagnosis.primaryType}
         </span>
       </div>
 
