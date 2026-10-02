@@ -13,7 +13,6 @@ export const StroopTutorial: React.FC<StroopTutorialProps> = ({ onStartRealTest 
 
   const [practiceStep, setPracticeStep] = useState<1 | 2>(1);
   const [practiceFeedback, setPracticeFeedback] = useState<string>('');
-  const [isPracticeResolved, setIsPracticeResolved] = useState(false);
   const practiceHoldTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -27,13 +26,11 @@ export const StroopTutorial: React.FC<StroopTutorialProps> = ({ onStartRealTest 
   const initPractice = (step: 1 | 2) => {
     if (practiceHoldTimeoutRef.current) clearTimeout(practiceHoldTimeoutRef.current);
     setPracticeStep(step);
-    setIsPracticeResolved(false);
     if (step === 1) {
-      setPracticeFeedback('Ronde 1: Kata & Warna Cocok. Coba ketuk tombol hijau!');
+      setPracticeFeedback('Ronde 1: Kata & Warna Cocok. Coba ketuk tombol hijau di bawah!');
     } else {
       setPracticeFeedback('Ronde 2: Kata & Warna Beda! Tahan dan jangan ketuk selama 2 detik...');
       practiceHoldTimeoutRef.current = setTimeout(() => {
-        setIsPracticeResolved(true);
         setPracticeFeedback('Sempurna! Anda berhasil menahan dan tidak terkecoh!');
       }, 2000);
     }
@@ -41,17 +38,15 @@ export const StroopTutorial: React.FC<StroopTutorialProps> = ({ onStartRealTest 
 
   const handlePracticeTap = () => {
     if (practiceStep === 1) {
-      setIsPracticeResolved(true);
       setPracticeFeedback('Benar Sekali! Kata "HIJAU" berwarna hijau memang harus diketuk.');
     } else {
       if (practiceHoldTimeoutRef.current) clearTimeout(practiceHoldTimeoutRef.current);
-      setIsPracticeResolved(false);
       setPracticeFeedback('Oops, salah! Tinta Merah tapi katanya "BIRU". Seharusnya Anda TAHAN / JANGAN KETUK!');
     }
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 shadow-apple space-y-4 animate-springUp">
+    <div className="w-full max-w-md mx-auto p-4 sm:p-6 rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 shadow-apple space-y-3.5 animate-springUp">
       <div className="flex items-center justify-between">
         <div>
           <span className="text-[11px] font-bold uppercase tracking-wider text-apple-purple">
@@ -85,35 +80,35 @@ export const StroopTutorial: React.FC<StroopTutorialProps> = ({ onStartRealTest 
       </div>
 
       {tab === 'demo' ? (
-        <div className="space-y-4">
-          <div className="relative h-44 rounded-2xl bg-zinc-950 flex flex-col items-center justify-center border border-zinc-800 p-4">
+        <div className="space-y-3.5">
+          <div className="relative h-56 sm:h-64 rounded-3xl bg-zinc-50 dark:bg-zinc-900/40 flex flex-col items-center justify-center border border-black/5 dark:border-white/5 p-4 space-y-2">
             {demoScene === 'match' ? (
               <div className="flex flex-col items-center space-y-2 text-center animate-fadeIn">
-                <span className="text-4xl font-black tracking-tight" style={{ color: '#22c55e' }}>
+                <span className="text-5xl sm:text-6xl font-black tracking-tight uppercase" style={{ color: '#22c55e' }}>
                   HIJAU
                 </span>
-                <span className="text-[11px] text-zinc-400">Tinta Hijau = Kata HIJAU (Cocok)</span>
-                <div className="px-4 py-1.5 rounded-full bg-apple-green text-white font-bold text-xs flex items-center gap-1.5 shadow-apple ring-4 ring-apple-green/30">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>KETUK TOMBOL</span>
+                <span className="text-xs text-zinc-500 font-semibold">Tinta Hijau = Kata HIJAU (Cocok)</span>
+                <div className="px-4 py-2 rounded-full bg-apple-green text-white font-bold text-xs flex items-center gap-2 shadow-apple ring-4 ring-apple-green/30 mt-1">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>KETUK TOMBOL HIJAU</span>
                 </div>
               </div>
             ) : (
               <div className="flex flex-col items-center space-y-2 text-center animate-fadeIn">
-                <span className="text-4xl font-black tracking-tight" style={{ color: '#ef4444' }}>
+                <span className="text-5xl sm:text-6xl font-black tracking-tight uppercase" style={{ color: '#ef4444' }}>
                   BIRU
                 </span>
-                <span className="text-[11px] text-zinc-400">Tinta Merah ≠ Kata BIRU (Beda)</span>
-                <div className="px-4 py-1.5 rounded-full bg-apple-orange text-white font-bold text-xs flex items-center gap-1.5 shadow-apple ring-4 ring-apple-orange/30">
-                  <ShieldAlert className="w-3.5 h-3.5" />
+                <span className="text-xs text-zinc-500 font-semibold">Tinta Merah ≠ Kata BIRU (Beda)</span>
+                <div className="px-4 py-2 rounded-full bg-apple-orange text-white font-bold text-xs flex items-center gap-2 shadow-apple ring-4 ring-apple-orange/30 mt-1">
+                  <ShieldAlert className="w-4 h-4" />
                   <span>TAHAN • JANGAN KETUK</span>
                 </div>
               </div>
             )}
           </div>
-          <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed font-medium">
-            <strong>Aturan Utama:</strong> Cocokkan warna tinta dengan bacaan katanya. Jika <strong>SAMA</strong>, ketuk tombol. Jika <strong>BEDA</strong>, diamkan jangan diketuk!
-          </div>
+          <p className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed font-medium">
+            <strong>Aturan Utama:</strong> Cocokkan warna tinta dengan bacaan katanya. Jika <strong>SAMA</strong>, ketuk tombol. Jika <strong>BEDA</strong>, tahan dan jangan diketuk!
+          </p>
           <div className="flex gap-2">
             <button
               onClick={() => { setTab('practice'); initPractice(1); }}
@@ -131,31 +126,31 @@ export const StroopTutorial: React.FC<StroopTutorialProps> = ({ onStartRealTest 
           </div>
         </div>
       ) : (
-        <div className="space-y-4">
-          <div className="h-44 rounded-2xl bg-zinc-950 flex flex-col items-center justify-center border border-zinc-800 p-4 text-center">
+        <div className="space-y-3.5">
+          <div className="h-52 sm:h-56 rounded-3xl bg-zinc-50 dark:bg-zinc-900/40 flex flex-col items-center justify-center border border-black/5 dark:border-white/5 p-4 text-center space-y-2">
             {practiceStep === 1 ? (
-              <div className="space-y-2">
-                <span className="text-4xl font-black uppercase" style={{ color: '#22c55e' }}>
+              <div className="space-y-1">
+                <span className="text-5xl sm:text-6xl font-black uppercase tracking-tight" style={{ color: '#22c55e' }}>
                   HIJAU
                 </span>
-                <p className="text-xs text-zinc-400">Tinta Hijau & Kata HIJAU</p>
+                <p className="text-xs text-zinc-500 font-medium">Tinta Hijau & Kata HIJAU</p>
               </div>
             ) : (
-              <div className="space-y-2">
-                <span className="text-4xl font-black uppercase" style={{ color: '#ef4444' }}>
+              <div className="space-y-1">
+                <span className="text-5xl sm:text-6xl font-black uppercase tracking-tight" style={{ color: '#ef4444' }}>
                   KUNING
                 </span>
-                <p className="text-xs text-zinc-400">Tinta Merah tapi Kata KUNING</p>
+                <p className="text-xs text-zinc-500 font-medium">Tinta Merah tapi Kata KUNING</p>
               </div>
             )}
-            <p className="text-[11px] font-medium text-apple-purple mt-2">{practiceFeedback}</p>
+            <p className="text-xs font-bold text-apple-purple pt-1">{practiceFeedback}</p>
           </div>
 
           <button
             onClick={handlePracticeTap}
-            className="w-full py-3.5 rounded-2xl bg-apple-green text-white font-bold text-xs shadow-apple active:scale-[0.98] transition-all"
+            className="w-full py-4 rounded-2xl bg-apple-green hover:opacity-95 text-white font-bold text-sm shadow-apple active:scale-[0.98] transition-all"
           >
-            COCOK (KETUK DI SINI)
+            COCOK (KETUK LAYAR)
           </button>
 
           <div className="flex gap-2">

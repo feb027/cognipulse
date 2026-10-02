@@ -41,7 +41,7 @@ export const CorsiStage: React.FC<CorsiStageProps> = ({ onComplete }) => {
       </div>
 
       {/* Main Arena */}
-      <div className="relative w-full p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 shadow-apple flex flex-col items-center justify-center space-y-5">
+      <div className="relative w-full p-4 sm:p-7 rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 shadow-apple flex flex-col items-center justify-center space-y-4 sm:space-y-5">
         <div className="text-center space-y-1">
           <span className="inline-block px-3 py-0.5 rounded-full bg-apple-purple/10 text-apple-purple text-xs font-semibold">
             {phase === 'demonstrating' ? 'Amati Balok' : phase === 'recalling' ? 'Giliran Anda' : 'Memproses'}
@@ -51,8 +51,8 @@ export const CorsiStage: React.FC<CorsiStageProps> = ({ onComplete }) => {
           </p>
         </div>
 
-        {/* 3x3 Grid of Corsi Blocks (Rock-solid non-moving buttons) */}
-        <div className="grid grid-cols-3 gap-3.5 sm:gap-4 w-64 h-64 sm:w-72 sm:h-72 p-2">
+        {/* 3x3 Grid: Responsive, Large Touch Targets, Strictly Uniform Size */}
+        <div className="grid grid-cols-3 grid-rows-3 gap-3 sm:gap-4 w-full max-w-[310px] sm:max-w-[350px] aspect-square p-1">
           {Array.from({ length: 9 }).map((_, idx) => {
             const isHighlighted = activeHighlightBlock === idx;
             const isUserTapped = userTaps.includes(idx);
@@ -60,22 +60,25 @@ export const CorsiStage: React.FC<CorsiStageProps> = ({ onComplete }) => {
             return (
               <button
                 key={idx}
+                type="button"
                 disabled={phase !== 'recalling'}
                 onClick={() => handleBlockTap(idx)}
                 aria-label={`Balok ${idx + 1}`}
-                className={`rounded-2xl border transition-colors duration-150 flex items-center justify-center select-none w-full h-full ${
+                className={`aspect-square w-full h-full rounded-2xl border-2 transition-colors duration-150 flex items-center justify-center select-none ${
                   isHighlighted
                     ? 'bg-apple-purple text-white border-apple-purple shadow-apple ring-4 ring-apple-purple/30'
                     : isUserTapped
-                    ? 'bg-apple-purple/20 border-apple-purple text-apple-purple'
-                    : 'bg-zinc-100 dark:bg-zinc-800/80 border-black/5 dark:border-white/10 hover:border-apple-purple/40 active:bg-zinc-200 dark:active:bg-zinc-700'
+                    ? 'bg-apple-purple/15 border-apple-purple text-apple-purple'
+                    : 'bg-zinc-100 dark:bg-zinc-800/80 border-transparent hover:border-apple-purple/40 active:bg-zinc-200 dark:active:bg-zinc-700'
                 }`}
               >
-                {isUserTapped ? (
-                  <CheckCircle2 className="w-5 h-5 text-apple-purple" />
-                ) : (
-                  <span className="w-2 h-2 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                )}
+                <div className="w-6 h-6 flex items-center justify-center pointer-events-none">
+                  {isUserTapped ? (
+                    <CheckCircle2 className="w-5 h-5 text-apple-purple" />
+                  ) : (
+                    <span className="w-2.5 h-2.5 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+                  )}
+                </div>
               </button>
             );
           })}

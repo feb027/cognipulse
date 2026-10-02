@@ -12,7 +12,7 @@ export const MotorTutorial: React.FC<MotorTutorialProps> = ({ onStartRealTest })
   const [pulse, setPulse] = useState(false);
 
   const [practiceTaps, setPracticeTaps] = useState<number[]>([]);
-  const [practiceFeedback, setPracticeFeedback] = useState<string>('Ketuk tombol 5 kali dengan ketukan santai & stabil.');
+  const [practiceFeedback, setPracticeFeedback] = useState<string>('Ketuk tombol 5 kali dengan ritme santai & stabil.');
 
   useEffect(() => {
     if (tab !== 'demo') return;
@@ -39,11 +39,11 @@ export const MotorTutorial: React.FC<MotorTutorialProps> = ({ onStartRealTest })
 
   const resetPractice = () => {
     setPracticeTaps([]);
-    setPracticeFeedback('Ketuk tombol 5 kali dengan ketukan santai & stabil.');
+    setPracticeFeedback('Ketuk tombol 5 kali dengan ritme santai & stabil.');
   };
 
   return (
-    <div className="w-full max-w-md mx-auto p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 shadow-apple space-y-4 animate-springUp">
+    <div className="w-full max-w-md mx-auto p-4 sm:p-6 rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 shadow-apple space-y-3.5 animate-springUp">
       <div className="flex items-center justify-between">
         <div>
           <span className="text-[11px] font-bold uppercase tracking-wider text-apple-teal">
@@ -77,28 +77,28 @@ export const MotorTutorial: React.FC<MotorTutorialProps> = ({ onStartRealTest })
       </div>
 
       {tab === 'demo' ? (
-        <div className="space-y-4">
-          <div className="h-44 rounded-2xl bg-zinc-950 flex flex-col items-center justify-center border border-zinc-800 p-4">
+        <div className="space-y-3.5">
+          <div className="h-56 sm:h-60 rounded-3xl bg-zinc-50 dark:bg-zinc-900/40 flex flex-col items-center justify-center border border-black/5 dark:border-white/5 p-4 space-y-3">
             <div className="relative flex items-center justify-center">
               <div
-                className={`w-20 h-20 rounded-full border-2 border-apple-teal/50 flex items-center justify-center transition-all duration-300 ${
-                  pulse ? 'scale-110 bg-apple-teal/20 shadow-apple ring-4 ring-apple-teal/30' : 'scale-95 bg-transparent'
+                className={`w-24 h-24 rounded-full border-2 border-apple-teal/50 flex items-center justify-center transition-all duration-300 ${
+                  pulse ? 'scale-105 bg-apple-teal/20 shadow-apple ring-8 ring-apple-teal/20' : 'scale-95 bg-transparent'
                 }`}
               >
-                <Fingerprint className="w-10 h-10 text-apple-teal" />
+                <Fingerprint className="w-12 h-12 text-apple-teal" />
               </div>
               {pulse && (
-                <div className="absolute w-28 h-28 rounded-full border border-apple-teal/40 animate-ping pointer-events-none" />
+                <div className="absolute w-32 h-32 rounded-full border border-apple-teal/40 animate-ping pointer-events-none" />
               )}
             </div>
-            <div className="flex items-center gap-1.5 text-xs text-apple-teal font-bold mt-3">
-              <Activity className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-1.5 text-xs text-apple-teal font-bold">
+              <Activity className="w-4 h-4" />
               <span>Irama Stabil: Tik... Tik... Tik...</span>
             </div>
           </div>
-          <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed font-medium">
-            <strong>Kunci Utama:</strong> Jangan mengetuk secepat kilat atau terburu-buru! Ketuklah dengan <strong>tempo santai dan konstan</strong> layaknya detak jarum jam.
-          </div>
+          <p className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 text-xs text-zinc-600 dark:text-zinc-300 leading-relaxed font-medium">
+            <strong>Kunci Utama:</strong> Jangan terburu-buru mengetuk secepat kilat! Ketuklah dengan <strong>tempo santai dan konstan</strong> layaknya detak jarum jam.
+          </p>
           <div className="flex gap-2">
             <button
               onClick={() => { setTab('practice'); resetPractice(); }}
@@ -116,26 +116,26 @@ export const MotorTutorial: React.FC<MotorTutorialProps> = ({ onStartRealTest })
           </div>
         </div>
       ) : (
-        <div className="space-y-4">
-          <div className="h-44 rounded-2xl bg-zinc-950 flex flex-col items-center justify-center border border-zinc-800 p-4 text-center">
-            <span className="text-3xl font-black font-mono text-apple-teal mb-1">
+        <div className="space-y-3.5">
+          <div className="h-44 sm:h-48 rounded-3xl bg-zinc-50 dark:bg-zinc-900/40 flex flex-col items-center justify-center border border-black/5 dark:border-white/5 p-4 text-center space-y-1">
+            <span className="text-4xl font-black font-mono text-apple-teal">
               {practiceTaps.length}/5
             </span>
-            <p className="text-xs text-zinc-300 font-semibold">{practiceFeedback}</p>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 font-semibold">{practiceFeedback}</p>
           </div>
 
           <button
             onPointerDown={practiceTaps.length < 5 ? handlePracticeTap : undefined}
             style={{ touchAction: 'none' }}
             disabled={practiceTaps.length >= 5}
-            className={`w-full py-4 rounded-2xl border-2 font-bold text-xs transition-all flex items-center justify-center gap-2 ${
+            className={`w-full py-5 rounded-3xl border-2 font-bold text-xs transition-all flex items-center justify-center gap-2 ${
               practiceTaps.length >= 5
                 ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 border-transparent cursor-default'
-                : 'bg-zinc-50 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border-apple-teal/30 hover:border-apple-teal active:scale-[0.98]'
+                : 'bg-zinc-50 dark:bg-zinc-800/80 text-zinc-800 dark:text-zinc-200 border-apple-teal/30 hover:border-apple-teal active:scale-[0.98]'
             }`}
           >
-            <Fingerprint className="w-5 h-5 text-apple-teal" />
-            <span>{practiceTaps.length >= 5 ? 'Latihan Selesai!' : 'Ketuk Ritme di Sini'}</span>
+            <Fingerprint className="w-6 h-6 text-apple-teal" />
+            <span className="text-sm">{practiceTaps.length >= 5 ? 'Latihan Selesai!' : 'Ketuk Ritme di Sini'}</span>
           </button>
 
           <div className="flex gap-2">
