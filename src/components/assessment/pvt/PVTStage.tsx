@@ -1,15 +1,18 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { PVTTrial } from '@/types/pvt';
 import { usePVTRunner } from '@/hooks/use-pvt-runner';
 import { PVTTimerDisplay } from './PVTTimerDisplay';
+import { PVTTutorial } from '../tutorials/PVTTutorial';
 
 interface PVTStageProps {
   onComplete: (trials: PVTTrial[]) => void;
 }
 
 export const PVTStage: React.FC<PVTStageProps> = ({ onComplete }) => {
+  const [showTutorial, setShowTutorial] = useState(true);
+
   const {
     phase,
     currentTrialNumber,
@@ -20,9 +23,14 @@ export const PVTStage: React.FC<PVTStageProps> = ({ onComplete }) => {
     handlePointerResponse,
   } = usePVTRunner({ totalTrialsGoal: 6, onComplete });
 
-  useEffect(() => {
+  const handleStartRealTest = () => {
+    setShowTutorial(false);
     startNextTrial();
-  }, [startNextTrial]);
+  };
+
+  if (showTutorial) {
+    return <PVTTutorial onStartRealTest={handleStartRealTest} />;
+  }
 
   return (
     <div className="w-full flex flex-col space-y-3">

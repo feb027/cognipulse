@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { StroopTrial } from '@/types/stroop';
 import { useStroopRunner } from '@/hooks/use-stroop-runner';
 import { StroopFeedback } from './StroopFeedback';
+import { StroopTutorial } from '../tutorials/StroopTutorial';
 
 interface StroopStageProps {
   onComplete: (trials: StroopTrial[]) => void;
@@ -29,54 +30,7 @@ export const StroopStage: React.FC<StroopStageProps> = ({ onComplete }) => {
   };
 
   if (showTutorial) {
-    return (
-      <div className="w-full max-w-md mx-auto p-6 sm:p-7 rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 shadow-apple space-y-4 animate-springUp">
-        <div className="space-y-1">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-apple-purple">
-            Tahap 2 • Kontrol Inhibisi
-          </span>
-          <h3 className="text-xl font-extrabold tracking-tight text-zinc-900 dark:text-white">
-            Aturan Uji Fokus Warna
-          </h3>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
-            Periksa apakah warna tinta sesuai dengan arti kata yang tertulis:
-          </p>
-        </div>
-
-        <div className="space-y-2 text-xs">
-          <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-black/5 dark:border-white/5 flex items-center justify-between">
-            <div>
-              <span className="text-sm font-black tracking-tight" style={{ color: '#22c55e' }}>
-                HIJAU
-              </span>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">Tinta hijau & kata Hijau (Cocok)</p>
-            </div>
-            <span className="px-2.5 py-1 rounded-full bg-apple-green text-white font-bold text-[10px]">
-              KETUK TOMBOL
-            </span>
-          </div>
-
-          <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-black/5 dark:border-white/5 flex items-center justify-between">
-            <div>
-              <span className="text-sm font-black tracking-tight" style={{ color: '#ef4444' }}>
-                BIRU
-              </span>
-              <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">Tinta merah tapi kata Biru (Beda)</p>
-            </div>
-            <span className="px-2.5 py-1 rounded-full bg-apple-orange text-white font-bold text-[10px]">
-              JANGAN KETUK
-            </span>
-          </div>
-        </div>
-
-        <button
-          onClick={handleStart}
-          className="w-full py-3 rounded-full bg-apple-purple hover:opacity-90 active:scale-95 text-white font-bold text-xs shadow-sm transition-all"
-        >
-          Saya Mengerti • Mulai Uji
-        </button>
-      </div>
-    );
+    return <StroopTutorial onStartRealTest={handleStart} />;
   }
 
   return (
