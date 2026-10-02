@@ -14,10 +14,10 @@ export const DiagnosticReportCard: React.FC<DiagnosticReportCardProps> = ({
   const { differentialDiagnosis, fourHourRiskForecast } = analysis;
 
   const typeLabels: Record<string, string> = {
-    optimal_vigilance: 'Mode Gacor • Fokus Prima & On-Fire',
-    cognitive_overload: 'RAM Mental Overload • Butuh Refresh',
-    sleep_deprived_microsleep: 'Baterai Drop • Kantuk Berat & Bengong',
-    neuromuscular_exhaustion: 'Fisik Pegal • Otot & Saraf Lelah',
+    optimal_vigilance: 'Kewaspadaan Puncak • Refleks Tajam & Fokus Stabil',
+    cognitive_overload: 'Beban Kognitif Tinggi • Kelelahan Mental',
+    sleep_deprived_microsleep: 'Defisit Tidur Signifikan • Rawan Lapses',
+    neuromuscular_exhaustion: 'Kelelahan Neuromuskular • Tremor Ketukan Meningkat',
   };
 
   return (

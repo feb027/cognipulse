@@ -21,13 +21,14 @@ export function VitalDetailModal({
     switch (vitalKey) {
       case 'cfi':
         const cfi = latestResult?.cfi.cfiScore ?? 18;
+        const readiness = 100 - cfi;
         return {
-          title: 'Tingkat Kelelahan Kognitif',
-          value: `${cfi}`,
-          unit: '/ 100 CFI',
+          title: 'Kesiapan Kognitif & Kelelahan',
+          value: `${readiness}%`,
+          unit: `(Kelelahan: ${cfi}/100)`,
           tier: cfi < 35 ? 'Optimal' : cfi < 70 ? 'Waspada' : 'Kritis',
           percent: Math.min(100, Math.max(5, cfi)),
-          meaning: 'Indeks gabungan kecepatan respon saraf, kontrol inhibisi, dan stabilitas ritme motorik.',
+          meaning: 'Indeks komposit kebugaran kerja mengintegrasikan kecepatan respon saraf, kontrol inhibisi, dan stabilitas ritme motorik.',
           advice: 'Pertahankan hidrasi 250ml dan istirahat mata berkala jika mendekati zona waspada.',
         };
       case 'pvt':

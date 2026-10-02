@@ -17,6 +17,7 @@ export function SummaryFavouritesFeed({
   const hasData = Boolean(latestResult);
 
   const cfiScore = latestResult ? latestResult.cfi.cfiScore : '--';
+  const readinessScore = typeof cfiScore === 'number' ? 100 - cfiScore : '--';
   const tier = latestResult ? latestResult.cfi.impairmentTier : 'fit';
   const meanRT = latestResult ? Math.round(latestResult.pvt.meanReactionTimeMs) : '--';
   const lapses = latestResult ? latestResult.pvt.attentionalLapseCount : 0;
@@ -43,17 +44,17 @@ export function SummaryFavouritesFeed({
   return (
     <div className="space-y-2.5">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {/* 1. Kebugaran Kognitif (CFI) */}
+        {/* 1. Kebugaran Kognitif & Kesiapan Kerja */}
         <AppleVitalsCard
-          icon={<Heart className="w-4 h-4 text-apple-red" />}
-          iconBgColor="bg-apple-red/10 text-apple-red"
-          category="Tingkat Kelelahan"
-          value={cfiScore}
-          unit={hasData ? '/ 100' : ''}
-          description={tierInfo.desc}
+          icon={<Heart className="w-4 h-4 text-apple-green" />}
+          iconBgColor="bg-apple-green/10 text-apple-green"
+          category="Kesiapan Kerja"
+          value={readinessScore}
+          unit={hasData ? '%' : ''}
+          description={typeof cfiScore === 'number' ? `Kelelahan: ${cfiScore}% (${tierInfo.desc})` : tierInfo.desc}
           statusBadge={{ text: tierInfo.text, bgClass: tierInfo.badgeBg, textClass: tierInfo.textCol }}
-          pillBars={hasData && typeof cfiScore === 'number' ? [0.2, 0.4, 0.35, 0.25, 0.3, 0.18, cfiScore / 100] : undefined}
-          barColor={typeof cfiScore === 'number' && cfiScore < 40 ? 'bg-apple-green' : typeof cfiScore === 'number' && cfiScore < 70 ? 'bg-apple-yellow' : 'bg-apple-red'}
+          pillBars={hasData && typeof readinessScore === 'number' ? [0.8, 0.6, 0.65, 0.75, 0.7, 0.82, readinessScore / 100] : undefined}
+          barColor={typeof readinessScore === 'number' && readinessScore >= 60 ? 'bg-apple-green' : typeof readinessScore === 'number' && readinessScore >= 35 ? 'bg-apple-yellow' : 'bg-apple-red'}
           onClick={() => onSelectVital?.('cfi')}
         />
 
