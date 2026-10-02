@@ -35,50 +35,50 @@ export function generateLocalFallbackAnalysis(
   if (cfi.cfiScore >= 75 || pvt.attentionalLapseCount >= 4) {
     primaryType = 'sleep_deprived_microsleep';
     severityLevel = 'critical_hazard';
-    headlineTitle = 'Kelelahan Kritis: Rawan Micro-Sleep';
-    primaryCause = `Defisit Tidur Akut & Terdeteksi ${pvt.attentionalLapseCount}x Lapses`;
-    clinicalRationale = `Terdeteksi penurunan fungsi neurokognitif berat dengan ${pvt.attentionalLapseCount} kali jeda atensi (lapses) dan waktu respon melambat signifikan. Kondisi ini mencerminkan defisit tidur akut di mana sistem saraf pusat mengalami kelelahan struktural. Melanjutkan aktivitas kerja pada kondisi ini meningkatkan risiko kegagalan operasional secara tajam.`;
+    headlineTitle = 'Otak Minta Kasur: Awas Microsleep!';
+    primaryCause = `Defisit Tidur Akut & Terdeteksi ${pvt.attentionalLapseCount}x Bengong`;
+    clinicalRationale = `Sensor mendeteksi Anda sempat ${pvt.attentionalLapseCount} kali bengong dan refleks melambat drastis. Ini bukan lagi melamun romantis, tapi alarm biologis kalau kepala Anda sudah sangat butuh bantal. Melanjutkan aktivitas dalam kondisi begini cuma bakal bikin banyak blunder atau salah klik fatal.`;
     riskIncrease = '+65%';
-    trajectory = 'Refleks sensorimotor akan mengalami degradasi lebih lanjut, dengan lonjakan probabilitas micro-sleep saat mengerjakan tugas monoton.';
-    criticalAlert = 'PERINGATAN: Risiko micro-sleep tinggi! Hentikan aktivitas mengemudi atau pengoperasian alat berat.';
-    immediateAction = 'Tidur singkat terarah (power nap) 20–30 menit dan konsumsi air putih hangat.';
+    trajectory = 'Kalau nekat dipaksakan, 2 jam lagi Anda bakal lebih banyak melamun menatap kursor daripada kerja produktif.';
+    criticalAlert = 'PERINGATAN: Jangan nekat mengemudi atau tugas berisiko tinggi dulu ya, tubuh Anda butuh istirahat beneran!';
+    immediateAction = 'Rebahkan tubuh dan ambil power nap 20 menit sekarang juga, jangan sok kuat.';
     hydrationMl = 400;
     screenBreakMins = 30;
-    circadianNote = 'Cadangan energi harian menipis drastis, prioritaskan tidur malam lebih awal untuk memulihkan homeostasis saraf.';
+    circadianNote = 'Baterai alami tubuh sudah merah berkedip, prioritaskan tidur malam tepat waktu untuk memulihkan kebugaran.';
   } else if (cfi.cfiScore >= 55 || stroop.commissionErrors >= 2 || (corsi && corsi.workingMemoryScore < 50)) {
     primaryType = 'cognitive_overload';
     severityLevel = 'moderate_impairment';
-    headlineTitle = 'Beban Kognitif Tinggi: Kelelahan Mental';
-    primaryCause = 'Kelelahan Korteks Prefrontal & Hambatan Inhibisi';
-    clinicalRationale = `Korteks prefrontal menunjukkan tanda beban kognitif tinggi dengan penurunan akurasi kontrol inhibisi dan rentang memori kerja. Meskipun refleks motorik dasar masih aktif, kemampuan pemecahan masalah dan pengambilan keputusan kompleks mulai mengalami penurunan efisiensi.`;
+    headlineTitle = 'Kepala Mulai Penuh: Butuh Jeda Santai';
+    primaryCause = 'Beban Pikiran Jenuh & Kontrol Fokus Menurun';
+    clinicalRationale = `Hasil tes Stroop dan memori menunjukkan otak Anda mulai kewalahan memilah instruksi. Refleks dasar sebenarnya masih jalan, tapi ketelitian mulai menipis sehingga Anda rawan typo berkali-kali atau bingung mencari kacamata yang padahal sedang dipakai.`;
     riskIncrease = '+35%';
-    trajectory = 'Tingkat ketelitian dan konsentrasi akan menurun bertahap dalam 2–3 jam ke depan jika tidak diselingi jeda istirahat teratur.';
-    immediateAction = 'Ambil jeda istirahat 15 menit menjauh dari layar, lakukan peregangan ringan, dan hindari beban multitasking.';
+    trajectory = 'Daya konsentrasi bakal makin ngedrop dalam 2 jam ke depan kalau tidak segera diselingi jeda bernapas sejenak.';
+    immediateAction = 'Jauhkan mata dari layar selama 15 menit, jalan santai ambil air minum, dan hindari multitasking.';
     hydrationMl = 350;
     screenBreakMins = 15;
-    circadianNote = 'Kurangi paparan cahaya biru (blue-light) untuk meredakan ketegangan sistem visual dan saraf pusat.';
+    circadianNote = 'Redupkan lampu layar dan istirahatkan mata sejenak agar saraf visual bisa rileks.';
   } else if (cfi.cfiScore >= 30 || motor.itiStandardDeviationMs > 25) {
     primaryType = 'neuromuscular_exhaustion';
     severityLevel = 'mild_fatigue';
-    headlineTitle = 'Kelelahan Neuromuskular Awal';
-    primaryCause = 'Fluktuasi Jitter Ketukan & Penurunan Stamina Motorik';
-    clinicalRationale = `Telemetri menunjukkan ritme ketukan motorik mulai mengalami fluktuasi ringan (jitter meningkat), menandakan kelelahan neuromuscular awal. Tingkat fokus kognitif visual masih relatif terjaga, namun stamina motorik membutuhkan pemeliharaan agar tidak berlanjut ke kelelahan sedang.`;
+    headlineTitle = 'Stamina Jari Menipis: Peregangan Dulu!';
+    primaryCause = 'Fluktuasi Ketukan Jari & Ketegangan Otot Ringan';
+    clinicalRationale = `Irama ketukan jari Anda mulai sedikit berfluktuasi tidak teratur. Fokus mata sebenarnya masih cukup tajam, tapi otot dan saraf motorik halus tangan sudah mengirim sinyal pegal. Waktunya lemaskan bahu dan pergelangan tangan sebelum jadi kaku betulan.`;
     riskIncrease = '+15%';
-    trajectory = 'Waktu reaksi visual masih cukup stabil, namun koordinasi motorik halus berpotensi melambat perlahan.';
-    immediateAction = 'Lakukan peregangan tangan, leher, dan bahu selama 3 menit serta minum segelas air mineral.';
+    trajectory = 'Waktu respon masih cukup aman, tapi koordinasi jari bakal pelan-pelan melorot kalau duduk mematung terus.';
+    immediateAction = 'Putar bahu dan lemaskan jemari selama 3 menit, lalu isi ulang botol air mineral.';
     hydrationMl = 300;
     screenBreakMins = 10;
-    circadianNote = 'Pertahankan postur kerja ergonomis dan atur ritme kerja agar ketegangan otot tidak terakumulasi.';
+    circadianNote = 'Perbaiki posisi duduk agar tidak membungkuk, tubuh yang nyaman bikin fokus lebih awet.';
   } else {
-    headlineTitle = 'Kesiapan Kerja Puncak: Fokus Tajam';
-    primaryCause = 'Homeostasis Saraf Prima & Refleks Sensorimotor Cepat';
-    clinicalRationale = `Profil neurokognitif berada pada tingkat kesiapan optimal. Kecepatan refleks sensorimotor (rata-rata ${Math.round(pvt.meanReactionTimeMs)} ms) sangat tajam dengan nol kejadian hilang fokus (lapses), kontrol inhibisi prima, dan koordinasi motorik stabil. Sistem saraf siap menjalankan tugas operasional berintensitas tinggi.`;
+    headlineTitle = 'Refleks Secepat Kilat: Siap Babat Tugas!';
+    primaryCause = 'Koordinasi Mata dan Jari Sedang di Puncak Kejayaan';
+    clinicalRationale = `Refleks Anda secepat kilat (rerata ${Math.round(pvt.meanReactionTimeMs)} ms), bahkan nyamuk lewat pun sepertinya bakal kalah cepat. Tanpa satu pun momen bengong dan akurasi tinggi, sistem saraf Anda sedang dalam performa emas. Manfaatkan momen ini untuk menuntaskan tugas paling rumit sebelum energi alami tubuh turun sore nanti.`;
     riskIncrease = '+0%';
-    trajectory = 'Stabilitas fokus dan ketepatan refleks diperkirakan bertahan stabil selama 2–4 jam ke depan dengan ritme kerja normal.';
-    immediateAction = 'Pertahankan ritme kerja produktif dengan menjaga hidrasi teratur sepanjang jam kerja.';
+    trajectory = 'Fokus tajam diproyeksikan bertahan stabil 3–4 jam ke depan, asalkan jangan lupa berkedip dan tetap minum air.';
+    immediateAction = 'Gas tuntaskan tugas prioritas Anda sekarang, tapi tetap sediakan segelas air putih di meja.';
     hydrationMl = 250;
     screenBreakMins = 5;
-    circadianNote = 'Ritme sirkadian dan kesiapan biologis dalam kondisi prima dan selaras dengan jam produktif tubuh.';
+    circadianNote = 'Jam biologis dan kesiapan fisik sedang sinkron sempurna, kondisi yang sangat ideal untuk produktif.';
   }
 
   return {
