@@ -44,9 +44,7 @@ export async function analyzeFatigueTelemetry(
     'gemini-3.8-flash',
     'gemini-3.5-flash-lite',
     'gemini-3.1-flash-lite',
-    'gemini-2.5-flash',
-    'gemini-2.0-flash',
-    'gemini-2.5-flash-lite',
+    'gemini-3.5-flash',
   ];
 
   const now = Date.now();
@@ -55,12 +53,17 @@ export async function analyzeFatigueTelemetry(
   );
   const modelsToTry = activeModels.length > 0 ? activeModels : candidateModels;
 
+  console.log(`[AI Cascade] Memulai evaluasi klinis. Urutan model: ${modelsToTry.join(' -> ')}`);
   const ai = new GoogleGenAI({ apiKey });
 
-  for (const modelName of modelsToTry) {
+  for (let i = 0; i < modelsToTry.length; i++) {
+    const modelName = modelsToTry[i];
+    const startTime = Date.now();
     try {
+      console.log(`[AI Cascade] Tahap ${i + 1}/${modelsToTry.length}: Mencoba ${modelName}...`);
+      const timeoutMs = modelName === 'gemini-3.5-flash' ? 8000 : 5000;
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error(`Model ${modelName} timeout`)), 7500)
+        setTimeout(() => reject(new Error(`Model ${modelName} timeout (${timeoutMs}ms)`)), timeoutMs)
       );
 
       const callPromise = (async () => {
@@ -84,6 +87,8 @@ export async function analyzeFatigueTelemetry(
           const raw = parsed.differentialDiagnosis.confidenceScore ?? 0.9;
           parsed.differentialDiagnosis.confidenceScore = raw > 1 ? raw / 100 : raw;
         }
+        const durationMs = Date.now() - startTime;
+        console.log(`[AI Cascade] SUKSES! Model ${modelName} berhasil menghasilkan diagnosis klinis dalam ${durationMs}ms.`);
         return {
           ...parsed,
           aiEngineVersion: `${modelName}`,
@@ -92,9 +97,11 @@ export async function analyzeFatigueTelemetry(
       }
     } catch (err: unknown) {
       modelCooldownMap.set(modelName, Date.now() + COOLDOWN_DURATION_MS);
-      console.warn(`Attempt with ${modelName} failed (${err instanceof Error ? err.message : String(err)}). Marking cooldown and falling back.`);
+      const errMsg = err instanceof Error ? err.message : String(err);
+      console.warn(`[AI Cascade] Model ${modelName} gagal (${errMsg}). Beralih bertahap ke model berikutnya...`);
     }
   }
 
+  console.warn('[AI Cascade] Seluruh model Gemini cloud tidak merespons. Mengaktifkan Local Deterministic Fallback Engine.');
   return generateLocalFallbackAnalysis(cfi, pvt, stroop, motor, corsi);
 }

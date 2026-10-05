@@ -28,9 +28,21 @@ export const DiagnosticReportCard: React.FC<DiagnosticReportCardProps> = ({
           <div className="w-6 h-6 rounded-full bg-apple-purple/10 flex items-center justify-center text-apple-purple">
             <Brain className="w-3.5 h-3.5" />
           </div>
-          <h3 className="font-bold text-zinc-900 dark:text-white text-sm">
-            Hasil Diagnosis AI
-          </h3>
+          <div>
+            <h3 className="font-bold text-zinc-900 dark:text-white text-sm leading-tight">
+              Hasil Diagnosis AI
+            </h3>
+            <div className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 flex items-center gap-1 mt-0.5">
+              {analysis.isFallback ? (
+                <span className="text-amber-500 font-semibold">[Fallback Heuristik Lokal]</span>
+              ) : (
+                <>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
+                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{analysis.aiEngineVersion || 'Gemini'}</span>
+                </>
+              )}
+            </div>
+          </div>
         </div>
 
         {(() => {

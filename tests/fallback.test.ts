@@ -36,7 +36,7 @@ describe('Local Resilience Fallback Engine', () => {
   });
 
   it('berhasil memanggil model cascade cloud dan menangani 503 secara seamless', async () => {
-    const realApiKey = process.env.GEMINI_API_KEY || 'AIzaSyCatOsK2Wtdiq3ag8Axg1FWhavqAL2IraQ';
+    const realApiKey = process.env.GEMINI_API_KEY || '';
     const result = await analyzeFatigueTelemetry(cfi, pvt, stroop, motor, undefined, realApiKey);
     expect(result).toBeDefined();
     expect(result.differentialDiagnosis.clinicalRationale).toBeTruthy();
