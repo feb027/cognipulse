@@ -74,7 +74,7 @@ export async function analyzeFatigueTelemetry(
             systemInstruction: CLINICAL_SYSTEM_INSTRUCTION,
             responseMimeType: 'application/json',
             responseSchema: GEMINI_CLINICAL_ANALYSIS_SCHEMA,
-            temperature: 0.2,
+            temperature: 0.65,
           },
         });
         return response.text;

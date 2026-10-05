@@ -73,11 +73,16 @@ export function generateLocalFallbackAnalysis(
     hydrationMl = 300;
     screenBreakMins = 10;
     circadianNote = 'Perbaiki posisi duduk agar tidak membungkuk, tubuh yang nyaman bikin fokus lebih awet.';
-  } else {
-    headlineTitle = 'Refleks Secepat Kilat: Siap Babat Tugas!';
-    primaryCause = 'Koordinasi Mata dan Jari Sedang di Puncak Kejayaan';
-    shortSummary = 'Sistem saraf prima dan refleks secepat kilat siap menuntaskan tugas hari ini.';
-    clinicalRationale = `Refleks Anda secepat kilat (rerata ${Math.round(pvt.meanReactionTimeMs)} ms), bahkan nyamuk lewat pun sepertinya bakal kalah cepat. Tanpa satu pun momen bengong dan akurasi tinggi, sistem saraf Anda sedang dalam performa emas. Manfaatkan momen ini untuk menuntaskan tugas paling rumit sebelum energi alami tubuh turun sore nanti.`;
+    const optimalTitles = [
+      'Respon Tajam & Fokus Kerja Stabil',
+      'Koordinasi Sensorimotor Prima',
+      'Kesiapan Optimal untuk Tugas Presisi',
+      'Atensi Terjaga dengan Irama Konsisten',
+    ];
+    headlineTitle = optimalTitles[Math.floor(Math.random() * optimalTitles.length)];
+    primaryCause = 'Sistem Saraf & Koordinasi Motorik dalam Kondisi Bugar';
+    shortSummary = `Refleks responsif (${Math.round(pvt.meanReactionTimeMs)} ms) tanpa indikasi defisit atensi.`;
+    clinicalRationale = `Refleks sensorimotor Anda berada pada rentang prima (rerata ${Math.round(pvt.meanReactionTimeMs)} ms) tanpa adanya indikasi attentional lapses. Akurasi fokus dan koordinasi motorik menunjukkan kesiapan kerja tinggi untuk menangani tugas berintensitas kompleks.`;
     riskIncrease = '+0%';
     trajectory = 'Fokus tajam diproyeksikan bertahan stabil 3–4 jam ke depan, asalkan jangan lupa berkedip dan tetap minum air.';
     immediateAction = 'Gas tuntaskan tugas prioritas Anda sekarang, tapi tetap sediakan segelas air putih di meja.';
