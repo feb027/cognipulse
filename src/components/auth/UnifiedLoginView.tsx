@@ -55,6 +55,10 @@ export function UnifiedLoginView({ onLoginSuccess }: UnifiedLoginViewProps) {
         localStorage.setItem('cognipulse_auth_session', JSON.stringify(data.session));
       } catch {}
 
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('cognipulse_auth_change'));
+      }
+
       onLoginSuccess(data.session);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Terjadi kesalahan sistem');

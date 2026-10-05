@@ -21,7 +21,7 @@ import { CompositeFatigueResult, UserContext, PVTMetrics, StroopMetrics, MotorMe
 import { Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
 
 export default function Home() {
-  const { session, loading: authLoading, isLoggedIn, isDriver, logout } = useAuthSession();
+  const { session, loading: authLoading, isLoggedIn, isDriver, logout, setSessionDirect } = useAuthSession();
   const [activeTab, setActiveTab] = useState<NavigationTab>('summary');
   const [isTestingActive, setIsTestingActive] = useState(false);
   const [isDriverProfileOpen, setIsDriverProfileOpen] = useState(false);
@@ -46,6 +46,7 @@ export default function Home() {
     return (
       <UnifiedLoginView
         onLoginSuccess={(sess) => {
+          setSessionDirect(sess);
           if (sess.role === 'dispatcher') {
             window.location.href = '/fleet';
           }

@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { ArrowLeft, UserPlus, Search, RefreshCw, LogOut, Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/components/theme/ThemeContext';
 import { FleetSummary, DriverWithLatestAssessment, DriverStatus } from '@/types/fleet';
-import { FleetKpiSummary } from '@/components/fleet/FleetKpiSummary';
-import { FleetDriverCard } from '@/components/fleet/FleetDriverCard';
+import { FleetMetricsStrip } from '@/components/fleet/FleetMetricsStrip';
+import { FleetDriverTable } from '@/components/fleet/FleetDriverTable';
 import { FleetInspectionModal } from '@/components/fleet/FleetInspectionModal';
 import { RegisterDriverModal } from '@/components/driver/RegisterDriverModal';
 import { FleetAccessDenied } from '@/components/fleet/FleetAccessDenied';
@@ -15,7 +15,7 @@ import { useAuthSession } from '@/hooks/use-auth-session';
 
 export default function FleetPage() {
   const { theme, toggleTheme } = useTheme();
-  const { session, loading: authLoading, isLoggedIn, isDispatcher, logout } = useAuthSession();
+  const { session, loading: authLoading, isLoggedIn, isDispatcher, logout, setSessionDirect } = useAuthSession();
   const [summary, setSummary] = useState<FleetSummary | null>(null);
   const [drivers, setDrivers] = useState<DriverWithLatestAssessment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,7 +49,14 @@ export default function FleetPage() {
   }
 
   if (!isLoggedIn || !session) {
-    return <UnifiedLoginView onLoginSuccess={(sess) => { if (sess.role !== 'dispatcher') window.location.href = '/'; }} />;
+    return (
+      <UnifiedLoginView
+        onLoginSuccess={(sess) => {
+          setSessionDirect(sess);
+          if (sess.role !== 'dispatcher') window.location.href = '/';
+        }}
+      />
+    );
   }
 
   if (session.role !== 'dispatcher') {
@@ -108,7 +115,7 @@ export default function FleetPage() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 space-y-4">
-        <FleetKpiSummary summary={summary} />
+        <FleetMetricsStrip summary={summary} />
 
         <div className="p-3.5 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0 text-xs font-semibold">
@@ -119,7 +126,15 @@ export default function FleetPage() {
               { id: 'stand_down', label: 'Stand-Down' },
               { id: 'on_trip', label: 'On-Trip' },
             ].map((tab) => (
-              <button key={tab.id} onClick={() => setStatusFilter(tab.id as any)} className={`px-3 py-1.5 rounded-xl whitespace-nowrap transition-all ${statusFilter === tab.id ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'}`}>
+              <button
+                key={tab.id}
+                onClick={() => setStatusFilter(tab.id as any)}
+                className={`px-3 py-1.5 rounded-xl whitespace-nowrap transition-all ${
+                  statusFilter === tab.id
+                    ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900'
+                    : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
+                }`}
+              >
                 {tab.label}
               </button>
             ))}
@@ -127,15 +142,20 @@ export default function FleetPage() {
 
           <div className="relative w-full sm:w-64">
             <Search className="w-4 h-4 absolute left-3 top-2.5 text-zinc-400" />
-            <input type="text" placeholder="Cari supir atau plat..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-apple-blue outline-none text-zinc-900 dark:text-white placeholder-zinc-400 font-medium" />
+            <input
+              type="text"
+              placeholder="Cari supir atau plat..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-apple-blue outline-none text-zinc-900 dark:text-white placeholder-zinc-400 font-medium"
+            />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {filteredDrivers.map((driver) => (
-            <FleetDriverCard key={driver.id} driver={driver} onInspect={(d) => setSelectedDriver(d)} />
-          ))}
-        </div>
+        <FleetDriverTable
+          drivers={filteredDrivers}
+          onInspect={(driver) => setSelectedDriver(driver)}
+        />
       </main>
 
       <FleetInspectionModal isOpen={Boolean(selectedDriver)} driver={selectedDriver} onClose={() => setSelectedDriver(null)} onStatusUpdated={loadFleetData} />

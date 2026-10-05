@@ -10,16 +10,37 @@ export function useAuthSession() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        setSession(JSON.parse(stored));
+    const syncSession = () => {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        setSession(stored ? JSON.parse(stored) : null);
+      } catch (e) {
+        console.error('Failed to load session:', e);
+        setSession(null);
+      } finally {
+        setLoading(false);
       }
-    } catch (e) {
-      console.error('Failed to load session from storage:', e);
-    } finally {
-      setLoading(false);
-    }
+    };
+
+    syncSession();
+    window.addEventListener('storage', syncSession);
+    window.addEventListener('cognipulse_auth_change', syncSession);
+    return () => {
+      window.removeEventListener('storage', syncSession);
+      window.removeEventListener('cognipulse_auth_change', syncSession);
+    };
+  }, []);
+
+  const setSessionDirect = useCallback((newSession: AuthSession | null) => {
+    setSession(newSession);
+    try {
+      if (newSession) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newSession));
+      } else {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    } catch {}
+    window.dispatchEvent(new Event('cognipulse_auth_change'));
   }, []);
 
   const login = useCallback(async (payload: LoginPayload) => {
@@ -34,23 +55,13 @@ export function useAuthSession() {
       throw new Error(data.error || 'Gagal masuk ke sistem');
     }
 
-    setSession(data.session);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data.session));
-    } catch (e) {
-      console.error('Failed to save session to storage:', e);
-    }
+    setSessionDirect(data.session);
     return data.session as AuthSession;
-  }, []);
+  }, [setSessionDirect]);
 
   const logout = useCallback(() => {
-    setSession(null);
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch (e) {
-      console.error('Failed to clear session:', e);
-    }
-  }, []);
+    setSessionDirect(null);
+  }, [setSessionDirect]);
 
   const updateDriverInSession = useCallback((updatedDriver: any) => {
     setSession((prev) => {
@@ -73,6 +84,7 @@ export function useAuthSession() {
     isDispatcher: session?.role === 'dispatcher',
     login,
     logout,
+    setSessionDirect,
     updateDriverInSession,
   };
 }
