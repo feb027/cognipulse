@@ -5,6 +5,7 @@ export * from './pvt';
 export * from './stroop';
 export * from './corsi';
 export * from './team';
+export * from './fleet';
 
 import { CompositeFatigueResult } from './assessment';
 import { PVTMetrics } from './pvt';

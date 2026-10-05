@@ -91,6 +91,16 @@ export function generateLocalFallbackAnalysis(
     circadianNote = 'Jam biologis dan kesiapan fisik sedang sinkron sempurna, kondisi yang sangat ideal untuk produktif.';
   }
 
+  const rtSec = pvt.meanReactionTimeMs / 1000;
+  const brakingDistanceMeters = parseFloat((rtSec * 27.78).toFixed(1));
+  const brakingHazardDeltaMeters = parseFloat(Math.max(0, brakingDistanceMeters - 6.9).toFixed(1));
+  const microsleepRisk: 'rendah' | 'waspada' | 'kritis' =
+    pvt.attentionalLapseCount >= 4 || cfi.cfiScore >= 70 ? 'kritis' :
+    pvt.attentionalLapseCount >= 2 || cfi.cfiScore >= 45 ? 'waspada' : 'rendah';
+  const dispatcherRecommendation: 'siap_solo' | 'wajib_co_driver' | 'stand_down' =
+    cfi.impairmentTier === 'critical_hazard' || microsleepRisk === 'kritis' ? 'stand_down' :
+    cfi.impairmentTier === 'mild_fatigue' || microsleepRisk === 'waspada' ? 'wajib_co_driver' : 'siap_solo';
+
   return {
     differentialDiagnosis: {
       headlineTitle,
@@ -111,6 +121,30 @@ export function generateLocalFallbackAnalysis(
       hydrationElectrolyteMl: hydrationMl,
       recommendedScreenBreakMins: screenBreakMins,
       circadianAlignmentNote: circadianNote,
+    },
+    travelSafety: {
+      brakingDistanceMeters,
+      brakingHazardDeltaMeters,
+      highwayMicrosleepRisk: microsleepRisk,
+      highwayHypnosisSusceptibility:
+        microsleepRisk === 'kritis'
+          ? 'Kerentanan sangat tinggi terhadap hipnosis tol lurus, refleks pengereman terancam hilang.'
+          : microsleepRisk === 'waspada'
+          ? 'Cenderung melamun pada medan tol monoton setelah 1 jam berkendara.'
+          : 'Daya atensi stabil dalam mengantisipasi dinamika jalur bebas hambatan.',
+      routeCompatibility:
+        dispatcherRecommendation === 'stand_down'
+          ? 'Tidak laik rute. Wajib istirahat tidur sebelum jadwal berikutnya.'
+          : dispatcherRecommendation === 'wajib_co_driver'
+          ? 'Hanya direkomendasikan untuk rute pendek dengan pendampingan co-driver.'
+          : 'Sangat cocok untuk penugasan rute antarkota reguler maupun tol jarak jauh.',
+      dispatcherRecommendation,
+      restAreaProtocol:
+        dispatcherRecommendation === 'stand_down'
+          ? 'Segera parkir di rest area terdekat dan tidur minimal 90 menit.'
+          : dispatcherRecommendation === 'wajib_co_driver'
+          ? 'Wajib pergantian supir tiap 2 jam atau singgah di rest area KM terdekat.'
+          : 'Istirahat berkala standar setiap 3-4 jam perjalanan.',
     },
     aiEngineVersion: 'gemini-3.8-flash',
     isFallback: true,

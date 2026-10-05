@@ -65,10 +65,44 @@ export const GEMINI_CLINICAL_ANALYSIS_SCHEMA = {
         "circadianAlignmentNote",
       ],
     },
+    travelSafety: {
+      type: "OBJECT",
+      properties: {
+        brakingDistanceMeters: {
+          type: "NUMBER",
+          description: "Jarak reaksi pengereman mobil pada 100 km/jam dalam meter",
+        },
+        brakingHazardDeltaMeters: {
+          type: "NUMBER",
+          description: "Selisih jarak bahaya dibanding reaksi normal",
+        },
+        highwayMicrosleepRisk: {
+          type: "STRING",
+          enum: ["rendah", "waspada", "kritis"],
+        },
+        highwayHypnosisSusceptibility: { type: "STRING" },
+        routeCompatibility: { type: "STRING" },
+        dispatcherRecommendation: {
+          type: "STRING",
+          enum: ["siap_solo", "wajib_co_driver", "stand_down"],
+        },
+        restAreaProtocol: { type: "STRING" },
+      },
+      required: [
+        "brakingDistanceMeters",
+        "brakingHazardDeltaMeters",
+        "highwayMicrosleepRisk",
+        "highwayHypnosisSusceptibility",
+        "routeCompatibility",
+        "dispatcherRecommendation",
+        "restAreaProtocol",
+      ],
+    },
   },
   required: [
     "differentialDiagnosis",
     "fourHourRiskForecast",
     "precisionRecoveryPrescription",
+    "travelSafety",
   ],
 };

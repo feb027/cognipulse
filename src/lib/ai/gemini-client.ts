@@ -28,6 +28,14 @@ export async function analyzeFatigueTelemetry(
   options?: {
     deviceBaselineMs?: number;
     clientTimestamp?: string;
+    driverContext?: {
+      nip?: string;
+      name?: string;
+      vehicleType?: string;
+      licensePlate?: string;
+      activeRoute?: string;
+      medicalHistory?: string;
+    };
   }
 ): Promise<GeminiClinicalAnalysis> {
   const apiKey =

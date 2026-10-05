@@ -12,19 +12,18 @@ import { HistoryLogView } from '@/components/dashboard/HistoryLogView';
 import { VitalDetailModal } from '@/components/dashboard/VitalDetailModal';
 import { AssessmentWizard } from '@/components/assessment/AssessmentWizard';
 import { AssessmentLandingCard } from '@/components/assessment/AssessmentLandingCard';
-import { ResultSummaryHeader } from '@/components/results/ResultSummaryHeader';
-import { TelemetryBreakdown } from '@/components/results/TelemetryBreakdown';
-import { ClinicalDetailsTabs } from '@/components/results/ClinicalDetailsTabs';
+import { AssessmentResultView } from '@/components/results/AssessmentResultView';
+import { DriverProfileBar } from '@/components/driver/DriverProfileBar';
+import { DriverSelectionModal } from '@/components/driver/DriverSelectionModal';
+import { RegisterDriverModal } from '@/components/driver/RegisterDriverModal';
 import { useSessionHistory, StoredSession } from '@/hooks/use-session-storage';
+import { useActiveDriver } from '@/hooks/use-active-driver';
 import { toAssessmentResult } from '@/lib/session-utils';
-import { CompositeFatigueResult, UserContext } from '@/types/assessment';
-import { PVTMetrics } from '@/types/pvt';
-import { StroopMetrics } from '@/types/stroop';
-import { MotorMetrics } from '@/types/motor';
-import { CorsiMetrics } from '@/types/corsi';
-import { GeminiClinicalAnalysis } from '@/types/gemini';
-import { DemoScenarioPackage } from '@/lib/demo-scenarios';
-import { RotateCcw, Sparkles } from 'lucide-react';
+import {
+  CompositeFatigueResult, UserContext, PVTMetrics,
+  StroopMetrics, MotorMetrics, CorsiMetrics, GeminiClinicalAnalysis
+} from '@/types';
+import { Sparkles } from 'lucide-react';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<NavigationTab>('summary');
@@ -42,6 +41,10 @@ export default function Home() {
   const [isAiLoading, setIsAiLoading] = useState(false);
 
   const { history, saveSession, clearHistory, seedDemoHistory, deviceBaselineMs } = useSessionHistory();
+  const {
+    drivers, activeDriver, isSelectOpen, setIsSelectOpen,
+    isRegisterOpen, setIsRegisterOpen, selectDriver, handleDriverCreated, refreshDrivers,
+  } = useActiveDriver();
 
   const handleAssessmentCompleted = async (
     cfi: CompositeFatigueResult,
@@ -52,29 +55,47 @@ export default function Home() {
     corsi?: CorsiMetrics
   ) => {
     setIsTestingActive(false);
-    setActiveCfi(cfi);
-    setActivePvt(pvt);
-    setActiveStroop(stroop);
-    setActiveMotor(motor);
-    if (corsi) setActiveCorsi(corsi);
+    setActiveCfi(cfi); setActivePvt(pvt); setActiveStroop(stroop);
+    setActiveMotor(motor); if (corsi) setActiveCorsi(corsi);
     setIsAiLoading(true);
 
+    const driverContext = activeDriver ? {
+      nip: activeDriver.nip, name: activeDriver.name,
+      vehicleType: activeDriver.vehicle_type, licensePlate: activeDriver.license_plate,
+      activeRoute: activeDriver.activeTrip?.route_name || 'Lintas Tol Antarkota',
+      medicalHistory: activeDriver.medical_history,
+    } : undefined;
+
+    let analysisResult: GeminiClinicalAnalysis;
     try {
       const res = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cfi, pvt, stroop, motor, context, corsi, deviceBaselineMs, clientTimestamp: new Date().toISOString() }),
+        body: JSON.stringify({ cfi, pvt, stroop, motor, context, corsi, deviceBaselineMs, clientTimestamp: new Date().toISOString(), driverContext }),
       });
       const data = await res.json();
-      setActiveAnalysis(data.analysis);
-      saveSession(cfi, data.analysis, pvt, stroop, motor, corsi);
+      analysisResult = data.analysis;
     } catch {
       const { generateLocalFallbackAnalysis } = await import('@/lib/ai/local-fallback-engine');
-      const fallback = generateLocalFallbackAnalysis(cfi, pvt, stroop, motor, corsi || undefined);
-      setActiveAnalysis(fallback);
-      saveSession(cfi, fallback, pvt, stroop, motor, corsi);
+      analysisResult = generateLocalFallbackAnalysis(cfi, pvt, stroop, motor, corsi || undefined);
     } finally {
       setIsAiLoading(false);
+    }
+
+    setActiveAnalysis(analysisResult);
+    saveSession(cfi, analysisResult, pvt, stroop, motor, corsi);
+
+    if (activeDriver) {
+      try {
+        await fetch('/api/assessments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ driverId: activeDriver.id, nip: activeDriver.nip, cfi, pvt, stroop, motor, corsi, analysis: analysisResult }),
+        });
+        refreshDrivers();
+      } catch (e) {
+        console.error('Failed to persist assessment:', e);
+      }
     }
   };
 
@@ -82,8 +103,7 @@ export default function Home() {
     const res = toAssessmentResult(session);
     setActiveCfi(res.cfi); setActivePvt(res.pvt); setActiveStroop(res.stroop);
     setActiveMotor(res.motor); setActiveCorsi(res.corsi || null); setActiveAnalysis(res.diagnosis);
-    setIsTestingActive(false);
-    setActiveTab('assessment');
+    setIsTestingActive(false); setActiveTab('assessment');
   };
 
   const handleClearAllHistory = () => {
@@ -92,17 +112,9 @@ export default function Home() {
     setActiveMotor(null); setActiveCorsi(null); setActiveAnalysis(null);
   };
 
-  const handleApplyScenario = async (pkg: DemoScenarioPackage) => {
-    setIsTestingActive(false);
-    setActiveTab('assessment');
-    await handleAssessmentCompleted(pkg.cfi, pkg.pvt, pkg.stroop, pkg.motor, pkg.context, pkg.corsi);
-  };
-
   const latestResult = (activeCfi && activePvt && activeStroop && activeMotor && activeAnalysis)
     ? { cfi: activeCfi, pvt: activePvt, stroop: activeStroop, motor: activeMotor, corsi: activeCorsi || undefined, diagnosis: activeAnalysis, timestamp: new Date().toISOString() }
-    : history.length > 0
-    ? toAssessmentResult(history[0])
-    : null;
+    : history.length > 0 ? toAssessmentResult(history[0]) : null;
 
   return (
     <div className={`min-h-screen transition-colors ${isTestingActive ? 'pb-4 sm:pb-6' : 'pb-36 sm:pb-32'}`}>
@@ -115,19 +127,18 @@ export default function Home() {
       />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 space-y-3.5">
+        {!isTestingActive && (
+          <DriverProfileBar
+            driver={activeDriver}
+            onOpenSelectModal={() => setIsSelectOpen(true)}
+            onOpenRegisterModal={() => setIsRegisterOpen(true)}
+          />
+        )}
+
         {activeTab === 'summary' && (
           <div className="space-y-3.5 animate-springUp">
-            <AppleHighlightsCard
-              latestResult={latestResult}
-              onStartAssessment={() => {
-                setActiveTab('assessment');
-                setIsTestingActive(true);
-              }}
-            />
-            <SummaryFavouritesFeed
-              latestResult={latestResult}
-              onSelectVital={(key) => setSelectedVitalKey(key)}
-            />
+            <AppleHighlightsCard latestResult={latestResult} onStartAssessment={() => { setActiveTab('assessment'); setIsTestingActive(true); }} />
+            <SummaryFavouritesFeed latestResult={latestResult} onSelectVital={(key) => setSelectedVitalKey(key)} />
             <TrendHistoryView history={history} />
           </div>
         )}
@@ -135,39 +146,26 @@ export default function Home() {
         {activeTab === 'assessment' && (
           <div className="space-y-3.5 animate-springUp">
             {isTestingActive ? (
-              <AssessmentWizard
-                onAssessmentCompleted={handleAssessmentCompleted}
-                onCancel={() => setIsTestingActive(false)}
-              />
+              <AssessmentWizard onAssessmentCompleted={handleAssessmentCompleted} onCancel={() => setIsTestingActive(false)} />
             ) : isAiLoading ? (
               <div className="p-10 rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 shadow-apple flex flex-col items-center justify-center space-y-2.5 text-center my-6">
                 <div className="w-10 h-10 rounded-full bg-apple-blue/10 flex items-center justify-center text-apple-blue animate-spin">
                   <Sparkles className="w-5 h-5" />
                 </div>
-                <h3 className="text-sm font-bold text-zinc-900 dark:text-white">Menganalisis Kesiapan Tubuh...</h3>
-                <p className="text-xs text-zinc-500 max-w-xs font-medium">Memproses kecepatan respon dan kestabilan fokus Anda.</p>
+                <h3 className="text-sm font-bold text-zinc-900 dark:text-white">Menganalisis Kesiapan Tempuh Tol...</h3>
+                <p className="text-xs text-zinc-500 max-w-xs font-medium">Memproses estimasi jarak reaksi pengereman mobil dan risiko sirkadian supir.</p>
               </div>
             ) : activeCfi && activePvt && activeStroop && activeMotor && activeAnalysis ? (
-              <div className="space-y-3.5">
-                <div className="flex justify-between items-center px-1">
-                  <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Hasil Tes Kelelahan</span>
-                  <button
-                    onClick={() => setIsTestingActive(true)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 text-xs font-semibold transition-all"
-                  >
-                    <RotateCcw className="w-3.5 h-3.5 text-apple-blue" />
-                    <span>Uji Ulang</span>
-                  </button>
-                </div>
-                <ResultSummaryHeader cfi={activeCfi} analysis={activeAnalysis} />
-                <TelemetryBreakdown pvt={activePvt} stroop={activeStroop} motor={activeMotor} />
-                <ClinicalDetailsTabs analysis={activeAnalysis} cfi={activeCfi} />
-              </div>
-            ) : (
-              <AssessmentLandingCard
-                onStart={() => setIsTestingActive(true)}
-                baselineMs={deviceBaselineMs}
+              <AssessmentResultView
+                cfi={activeCfi}
+                pvt={activePvt}
+                stroop={activeStroop}
+                motor={activeMotor}
+                analysis={activeAnalysis}
+                onRetest={() => setIsTestingActive(true)}
               />
+            ) : (
+              <AssessmentLandingCard onStart={() => setIsTestingActive(true)} baselineMs={deviceBaselineMs} />
             )}
           </div>
         )}
@@ -184,8 +182,10 @@ export default function Home() {
       )}
 
       <ProfileDetailsModal isOpen={isProfileDetailsOpen} onClose={() => setIsProfileDetailsOpen(false)} baselineMs={deviceBaselineMs} />
-      <JuryPresetModal isOpen={isJuryPresetsOpen} onClose={() => setIsJuryPresetsOpen(false)} onApplyScenario={handleApplyScenario} isSimulating={isAiLoading} />
+      <JuryPresetModal isOpen={isJuryPresetsOpen} onClose={() => setIsJuryPresetsOpen(false)} onApplyScenario={async (pkg) => { setIsTestingActive(false); setActiveTab('assessment'); await handleAssessmentCompleted(pkg.cfi, pkg.pvt, pkg.stroop, pkg.motor, pkg.context, pkg.corsi); }} isSimulating={isAiLoading} />
       <VitalDetailModal vitalKey={selectedVitalKey} latestResult={latestResult} onClose={() => setSelectedVitalKey(null)} />
+      <DriverSelectionModal isOpen={isSelectOpen} onClose={() => setIsSelectOpen(false)} drivers={drivers} selectedDriver={activeDriver} onSelectDriver={selectDriver} onOpenRegisterModal={() => setIsRegisterOpen(true)} />
+      <RegisterDriverModal isOpen={isRegisterOpen} onClose={() => setIsRegisterOpen(false)} onDriverCreated={handleDriverCreated} />
     </div>
   );
 }

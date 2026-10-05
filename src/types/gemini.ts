@@ -30,10 +30,21 @@ export interface PrecisionRecoveryPrescription {
   circadianAlignmentNote: string;
 }
 
+export interface TravelSafetyMetrics {
+  brakingDistanceMeters: number;
+  brakingHazardDeltaMeters: number;
+  highwayMicrosleepRisk: 'rendah' | 'waspada' | 'kritis';
+  highwayHypnosisSusceptibility: string;
+  routeCompatibility: string;
+  dispatcherRecommendation: 'siap_solo' | 'wajib_co_driver' | 'stand_down';
+  restAreaProtocol: string;
+}
+
 export interface GeminiClinicalAnalysis {
   differentialDiagnosis: DifferentialDiagnosis;
   fourHourRiskForecast: FourHourRiskForecast;
   precisionRecoveryPrescription: PrecisionRecoveryPrescription;
+  travelSafety?: TravelSafetyMetrics;
   aiEngineVersion: string; // "gemini-3.8-flash"
   isFallback: boolean;
 }

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Sun, Moon } from 'lucide-react';
+import Link from 'next/link';
+import { Sun, Moon, Truck } from 'lucide-react';
 import { useTheme } from '@/components/theme/ThemeContext';
 import { ProfileDropdown } from './ProfileDropdown';
 
@@ -48,6 +49,16 @@ export function AppleHeader({
           {subtitle || todayHeader || 'FIT-FOR-DUTY MONITOR'}
         </span>
         <div className="flex items-center gap-2">
+          {/* Konsol Armada Link */}
+          <Link
+            href="/fleet"
+            aria-label="Buka Konsol Armada"
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 text-xs font-semibold transition-all shadow-sm"
+          >
+            <Truck className="w-3.5 h-3.5 text-apple-blue" />
+            <span className="hidden sm:inline">Konsol Armada</span>
+          </Link>
+
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
