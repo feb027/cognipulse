@@ -41,6 +41,7 @@ function initSchema(db: Database.Database) {
       address TEXT NOT NULL,
       medical_history TEXT NOT NULL,
       status TEXT NOT NULL DEFAULT 'ready',
+      pin TEXT NOT NULL DEFAULT '1234',
       avatar TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -84,4 +85,10 @@ function initSchema(db: Database.Database) {
     CREATE INDEX IF NOT EXISTS idx_assessments_driver ON assessments(driver_id);
     CREATE INDEX IF NOT EXISTS idx_trips_driver ON trip_history(driver_id);
   `);
+
+  try {
+    db.exec("ALTER TABLE drivers ADD COLUMN pin TEXT DEFAULT '1234'");
+  } catch {
+    // Column already exists
+  }
 }

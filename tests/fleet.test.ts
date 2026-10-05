@@ -70,14 +70,14 @@ describe('Travel Fleet Management & SQLite Persistence', () => {
       subjectiveObjectiveDisparity: false,
       calculatedAt: new Date().toISOString(),
     };
-    const analysis = generateLocalFallbackAnalysis(cfi, pvt, stroop, motor);
+    const analysis = generateLocalFallbackAnalysis(cfi, pvt as any, stroop as any, motor as any);
 
     const record = saveAssessmentRecord({
       nip: 'TRV-001',
       cfi,
-      pvt,
-      stroop,
-      motor,
+      pvt: pvt as any,
+      stroop: stroop as any,
+      motor: motor as any,
       analysis,
     });
 
@@ -85,9 +85,26 @@ describe('Travel Fleet Management & SQLite Persistence', () => {
     expect(record.braking_distance_meters).toBeGreaterThan(6.0);
     expect(record.dispatcher_recommendation).toBe('siap_solo');
 
-    // Supir harus berstatus ready
     const updated = getDriverByNip('TRV-001');
     expect(updated?.status).toBe('ready');
+  });
+
+  it('memvalidasi autentikasi supir dan kredensial dispatcher perusahaan', async () => {
+    const { validateDriverLogin, validateDispatcherLogin } = await import('../src/lib/db/driver-service');
+
+    const validDriver = validateDriverLogin('TRV-001', '1234');
+    expect(validDriver).not.toBeNull();
+    expect(validDriver?.name).toBe('Budi Santoso');
+
+    const invalidDriver = validateDriverLogin('TRV-001', '9999');
+    expect(invalidDriver).toBeNull();
+
+    const validDispatcher = validateDispatcherLogin('admin', 'admin123');
+    expect(validDispatcher).not.toBeNull();
+    expect(validDispatcher?.username).toBe('admin');
+
+    const invalidDispatcher = validateDispatcherLogin('admin', 'wrongpass');
+    expect(invalidDispatcher).toBeNull();
   });
 
   it('memperbarui status dispatcher dan persetujuan tugas secara persisten', () => {
