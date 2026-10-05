@@ -39,7 +39,7 @@ export default function Home() {
   const { history, saveSession, clearHistory, seedDemoHistory, deviceBaselineMs } = useSessionHistory();
 
   if (authLoading) {
-    return <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-zinc-500 text-xs">Memuat sesi CogniPulse...</div>;
+    return <div className="min-h-screen bg-[#F2F2F7] dark:bg-black flex items-center justify-center text-zinc-500 text-xs">Memuat sesi CogniPulse...</div>;
   }
 
   if (!isLoggedIn || !session) {
@@ -56,14 +56,14 @@ export default function Home() {
 
   if (session.role === 'dispatcher') {
     return (
-      <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-6 text-center space-y-4">
+      <div className="min-h-screen bg-[#F2F2F7] dark:bg-black flex flex-col items-center justify-center p-6 text-center space-y-4">
         <div className="w-12 h-12 rounded-2xl bg-apple-blue/20 flex items-center justify-center text-apple-blue">
           <ShieldCheck className="w-6 h-6" />
         </div>
-        <h2 className="text-xl font-bold text-white">Akun Dispatcher Terdeteksi</h2>
-        <p className="text-xs text-zinc-400 max-w-sm">Anda masuk sebagai manajemen armada. Silakan buka konsol pengawasan supir travel.</p>
+        <h2 className="text-xl font-bold text-zinc-900 dark:text-white">Akun Dispatcher Terdeteksi</h2>
+        <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-sm">Anda masuk sebagai manajemen armada. Silakan buka konsol pengawasan supir travel.</p>
         <div className="flex gap-2">
-          <button onClick={logout} className="px-4 py-2 rounded-xl text-xs text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800">Ganti Akun</button>
+          <button onClick={logout} className="px-4 py-2 rounded-xl text-xs text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-800 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm">Ganti Akun</button>
           <a href="/fleet" className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-apple-blue hover:bg-apple-blue/90 inline-flex items-center gap-1.5 shadow-md">
             <span>Buka Konsol Armada</span>
             <ArrowRight className="w-3.5 h-3.5" />

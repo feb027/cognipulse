@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, UserPlus, Search, RefreshCw, LogOut } from 'lucide-react';
+import { ArrowLeft, UserPlus, Search, RefreshCw, LogOut, Sun, Moon } from 'lucide-react';
+import { useTheme } from '@/components/theme/ThemeContext';
 import { FleetSummary, DriverWithLatestAssessment, DriverStatus } from '@/types/fleet';
 import { FleetKpiSummary } from '@/components/fleet/FleetKpiSummary';
 import { FleetDriverCard } from '@/components/fleet/FleetDriverCard';
@@ -13,6 +14,7 @@ import { UnifiedLoginView } from '@/components/auth/UnifiedLoginView';
 import { useAuthSession } from '@/hooks/use-auth-session';
 
 export default function FleetPage() {
+  const { theme, toggleTheme } = useTheme();
   const { session, loading: authLoading, isLoggedIn, isDispatcher, logout } = useAuthSession();
   const [summary, setSummary] = useState<FleetSummary | null>(null);
   const [drivers, setDrivers] = useState<DriverWithLatestAssessment[]>([]);
@@ -43,7 +45,7 @@ export default function FleetPage() {
   }, [isDispatcher]);
 
   if (authLoading) {
-    return <div className="min-h-screen bg-zinc-950 flex items-center justify-center text-zinc-500 text-xs">Memuat hak akses dispatcher...</div>;
+    return <div className="min-h-screen bg-[#F2F2F7] dark:bg-black flex items-center justify-center text-zinc-500 text-xs">Memuat hak akses dispatcher...</div>;
   }
 
   if (!isLoggedIn || !session) {
@@ -78,6 +80,13 @@ export default function FleetPage() {
             <span>Mode Supir</span>
           </Link>
           <div className="flex items-center gap-2">
+            <button
+              onClick={toggleTheme}
+              aria-label="Ubah Tema"
+              className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:scale-105 active:scale-95 transition-all"
+            >
+              {theme === 'dark' ? <Sun className="w-4 h-4 text-apple-yellow" /> : <Moon className="w-4 h-4 text-zinc-700" />}
+            </button>
             <button onClick={loadFleetData} className="p-2 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-all" title="Perbarui Data">
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
             </button>
