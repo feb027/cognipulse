@@ -12,7 +12,7 @@
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4_Tokens-38bdf8?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![SQLite](https://img.shields.io/badge/SQLite-WAL_Persistent_DB-003B57?style=flat-square&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.8_Flash_API-4285f4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev/)
-[![Vitest](https://img.shields.io/badge/Vitest-15%2F15_Passing-6e9f18?style=flat-square&logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Vitest](https://img.shields.io/badge/Vitest-16%2F16_Passing-6e9f18?style=flat-square&logo=vitest&logoColor=white)](https://vitest.dev/)
 [![Live Production](https://img.shields.io/badge/Live_Demo-iconfest.febnawanfr.my.id-2563eb?style=flat-square&logo=cloudflare&logoColor=white)](https://iconfest.febnawanfr.my.id)
 [![Standards](https://img.shields.io/badge/Standard-NASA_Dinges--Basner_PVT-red?style=flat-square)](https://www.nasa.gov/)
 [![Privacy](https://img.shields.io/badge/Privacy-UU_PDP_No._27%2F2022_Compliant-emerald?style=flat-square)](https://peraturan.go.id/)
@@ -32,7 +32,7 @@
 > **Ajang Kompetisi:** ICONFEST 2026 (Informatics Conference & Festival, Universitas Siliwangi)  
 > **Kategori:** Software Development: Bidang Kesehatan  
 > **Akses Produksi (Live):** [https://iconfest.febnawanfr.my.id](https://iconfest.febnawanfr.my.id) (Portal Supir) & [https://iconfest.febnawanfr.my.id/fleet](https://iconfest.febnawanfr.my.id/fleet) (Konsol Dispatcher)  
-> **Status Verifikasi:** 15/15 Vitest Unit Tests Passed (100%), 0 TypeScript Errors, SQLite WAL Server Persistence, Production Build Active.
+> **Status Verifikasi:** 16/16 Vitest Unit Tests Passed (100%), 0 TypeScript Errors, SQLite WAL Server Persistence, Strict Role-Based Auth Guard, Production Build Active.
 
 ---
 
@@ -89,6 +89,17 @@ $$\text{Jarak Reaksi (m)} = \left(\frac{\text{RT}_{\text{ms}}}{1000}\right) \tim
 
 ### 2. Database Server Persisten (SQLite WAL Mode)
 Seluruh data pengemudi, riwayat rute perjalanan, dan hasil telemetri neurokognitif tersimpan secara persisten pada basis data SQLite server (`data/travel_fleet.db`), mendukung kueri konkurensi tinggi dengan *Write-Ahead Logging* (WAL).
+
+### 3. Autentikasi Terpadu & Kontrol Akses Berbasis Peran (RBAC)
+Untuk mencegah supir mengakses konsol pengawasan armada atau supir lain saling melihat data privat, CogniPulse dilengkapi pintu otentikasi ketat (`/api/auth/login`):
+* **Portal Supir (`/`)**: Akses berbasis **Nomor Induk Pegawai (NIP)** (contoh: `TRV-001`) dan **PIN rahasia 4-digit**. Supir hanya berinteraksi dengan profil pribadi, menjalankan asesmen kebugaran berkala, dan melihat riwayat rute aktif. Tautan Konsol Armada disembunyikan sepenuhnya dari pandangan supir.
+* **Konsol Armada Dispatcher (`/fleet`)**: Proteksi kredensial manajemen (*Username* & *Password*). Mengamankan ringkasan operasional armada dari akses publik maupun pengemudi. Akses langsung tanpa otorisasi otomatis dialihkan ke antarmuka penolakan izin (*Access Denied*).
+
+### 4. Apple Modern Header & Modal Profil Supir Terdistribusi
+Sesuai filosofi desain minimalis *anti-AI slop*, kartu profil besar di halaman utama dipindahkan ke dalam **Apple-style Avatar Button** di sudut kanan atas:
+* **Indikator Cincin Status Real-Time:** Menampilkan inisial supir dengan cincin warna dinamis (Hijau = Siap Jalan, Kuning = Butuh Co-Driver, Merah = Stand-Down Wajib Istirahat).
+* **Modal Rinci Terpadu:** Sekali klik membuka identitas lengkap pengemudi: Nama, Usia, Unit Kendaraan, Plat Nomor, Alamat Lengkap, Riwayat Kesehatan/Penyakit, Rute Terjadwal, dan tombol Keluar Sesi (*Logout*).
+* **Dasbor Utama Bersih:** Area pandang utama difokuskan seutuhnya pada metrik kebugaran kritis (*Highlights*, *Vitals*, *Trends*).
 
 ---
 
