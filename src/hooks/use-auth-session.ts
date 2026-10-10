@@ -5,6 +5,16 @@ import { AuthSession, LoginPayload } from '@/types/auth';
 
 const STORAGE_KEY = 'cognipulse_auth_session';
 
+/** Baca token dari storage dan format sebagai Authorization header. */
+export function getAuthHeader(): HeadersInit {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    const session = stored ? JSON.parse(stored) : null;
+    if (session?.token) return { Authorization: `Bearer ${session.token}` };
+  } catch {}
+  return {};
+}
+
 export function useAuthSession() {
   const [session, setSession] = useState<AuthSession | null>(null);
   const [loading, setLoading] = useState(true);
@@ -86,5 +96,6 @@ export function useAuthSession() {
     logout,
     setSessionDirect,
     updateDriverInSession,
+    getAuthHeader: () => (session?.token ? { Authorization: `Bearer ${session.token}` } : {}),
   };
 }

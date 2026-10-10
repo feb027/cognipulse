@@ -6,6 +6,7 @@ import { DriverWithLatestAssessment, DriverStatus, DispatcherDecision, Assessmen
 import { InspectionSummaryTab } from './InspectionSummaryTab';
 import { InspectionFullMetricsTab } from './InspectionFullMetricsTab';
 import { InspectionHistoryTab } from './InspectionHistoryTab';
+import { getAuthHeader } from '@/hooks/use-auth-session';
 
 interface FleetInspectionModalProps {
   isOpen: boolean;
@@ -53,7 +54,7 @@ export function FleetInspectionModal({
     try {
       await fetch('/api/fleet', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getAuthHeader() },
         body: JSON.stringify({
           driverId: driver.id,
           status,

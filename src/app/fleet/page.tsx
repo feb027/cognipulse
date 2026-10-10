@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, UserPlus, Search, RefreshCw, LogOut, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, UserPlus, Search, RefreshCw, LogOut, Sun, Moon, ShieldCheck, Users } from 'lucide-react';
 import { useTheme } from '@/components/theme/ThemeContext';
 import { FleetSummary, DriverWithLatestAssessment, DriverStatus } from '@/types/fleet';
 import { FleetMetricsStrip } from '@/components/fleet/FleetMetricsStrip';
 import { FleetDriverTable } from '@/components/fleet/FleetDriverTable';
 import { FleetInspectionModal } from '@/components/fleet/FleetInspectionModal';
 import { RegisterDriverModal } from '@/components/driver/RegisterDriverModal';
+import { AdminSettingsModal } from '@/components/fleet/AdminSettingsModal';
 import { FleetAccessDenied } from '@/components/fleet/FleetAccessDenied';
 import { UnifiedLoginView } from '@/components/auth/UnifiedLoginView';
 import { useAuthSession } from '@/hooks/use-auth-session';
@@ -23,6 +24,7 @@ export default function FleetPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDriver, setSelectedDriver] = useState<DriverWithLatestAssessment | null>(null);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [isAdminSettingsOpen, setIsAdminSettingsOpen] = useState(false);
 
   const loadFleetData = async () => {
     try {
@@ -82,10 +84,16 @@ export default function FleetPage() {
     <div className="min-h-screen pb-24 transition-colors">
       <header className="relative pt-6 pb-3 px-4 sm:px-6 max-w-5xl mx-auto w-full">
         <div className="flex items-center justify-between mb-2">
-          <Link href="/" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 text-xs font-semibold hover:bg-zinc-200 transition-all">
-            <ArrowLeft className="w-3.5 h-3.5 text-apple-blue" />
-            <span>Mode Supir</span>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 text-xs font-semibold hover:bg-zinc-200 transition-all">
+              <ArrowLeft className="w-3.5 h-3.5 text-apple-blue" />
+              <span>Mode Supir</span>
+            </Link>
+            <Link href="/fleet/drivers" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 text-xs font-semibold transition-all border border-amber-500/20">
+              <Users className="w-3.5 h-3.5" />
+              <span>Kelola Data Supir</span>
+            </Link>
+          </div>
           <div className="flex items-center gap-2">
             <button
               onClick={toggleTheme}
@@ -100,6 +108,14 @@ export default function FleetPage() {
             <button onClick={() => setIsRegisterOpen(true)} className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-apple-blue text-white text-xs font-semibold hover:bg-apple-blue/90 transition-all shadow-sm">
               <UserPlus className="w-3.5 h-3.5" />
               <span>Tambah Supir</span>
+            </button>
+            <button
+              onClick={() => setIsAdminSettingsOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 text-xs font-semibold transition-all border border-black/5 dark:border-white/10"
+              title="Kelola Username & Password Admin"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-apple-blue" />
+              <span className="hidden sm:inline">Kelola Akun Admin</span>
             </button>
             <button onClick={logout} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500/10 text-red-500 text-xs font-semibold hover:bg-red-500/20 transition-all border border-red-500/20" title="Logout Dispatcher">
               <LogOut className="w-3.5 h-3.5" />
@@ -160,6 +176,19 @@ export default function FleetPage() {
 
       <FleetInspectionModal isOpen={Boolean(selectedDriver)} driver={selectedDriver} onClose={() => setSelectedDriver(null)} onStatusUpdated={loadFleetData} />
       <RegisterDriverModal isOpen={isRegisterOpen} onClose={() => setIsRegisterOpen(false)} onDriverCreated={() => loadFleetData()} />
+      <AdminSettingsModal
+        isOpen={isAdminSettingsOpen}
+        onClose={() => setIsAdminSettingsOpen(false)}
+        currentUsername={session.username || 'admin'}
+        currentName={session.name || 'Dispatcher Operasional Pusat'}
+        onProfileUpdated={(updated) => {
+          setSessionDirect({
+            ...session,
+            username: updated.username,
+            name: updated.name,
+          });
+        }}
+      />
     </div>
   );
 }

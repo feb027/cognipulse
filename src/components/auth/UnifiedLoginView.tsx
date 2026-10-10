@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Truck, AlertCircle, Sparkles, ArrowRight, Sun, Moon } from 'lucide-react';
+import { Truck, AlertCircle, ArrowRight, Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/components/theme/ThemeContext';
 import { LoginPayload, AuthSession } from '@/types/auth';
+import { PasswordInput } from './PasswordInput';
+import { DemoAccountShortcuts } from './DemoAccountShortcuts';
 
 interface UnifiedLoginViewProps {
   onLoginSuccess: (session: AuthSession) => void;
@@ -130,33 +132,23 @@ export function UnifiedLoginView({ onLoginSuccess }: UnifiedLoginViewProps) {
                 />
               </div>
 
-              <div>
-                <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">PIN Keamanan (4 Digit)</label>
-                <input
-                  type="password"
-                  placeholder="••••"
-                  maxLength={6}
-                  value={driverPin}
-                  onChange={(e) => setDriverPin(e.target.value)}
-                  className="w-full mt-1.5 px-3.5 py-2.5 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 focus:border-apple-blue outline-none text-zinc-900 dark:text-white font-mono placeholder-zinc-400 dark:placeholder-zinc-600 tracking-widest"
-                />
-              </div>
+              <PasswordInput
+                id="driver-pin-input"
+                name="pin"
+                label="PIN Keamanan (4 Digit)"
+                placeholder="••••"
+                maxLength={6}
+                isMono
+                value={driverPin}
+                onChange={(e) => setDriverPin(e.target.value)}
+              />
 
               {/* Demo Driver Shortcuts */}
-              <div className="pt-1 space-y-1.5">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Akun Supir Demo Cepat:</span>
-                <div className="flex flex-wrap gap-1.5">
-                  {[
-                    { nip: 'TRV-001', name: 'Budi (TRV-001)' },
-                    { nip: 'TRV-002', name: 'Hendra (TRV-002)' },
-                    { nip: 'TRV-004', name: 'Dimas (TRV-004)' },
-                  ].map((d) => (
-                    <button key={d.nip} type="button" onClick={() => fillDemoDriver(d.nip)} className="px-2.5 py-1 rounded-lg bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 text-[11px] text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-700/50 font-mono">
-                      {d.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              <DemoAccountShortcuts
+                role="driver"
+                onSelectDriver={fillDemoDriver}
+                onSelectDispatcher={fillDemoDispatcher}
+              />
             </>
           ) : (
             <>
@@ -171,27 +163,20 @@ export function UnifiedLoginView({ onLoginSuccess }: UnifiedLoginViewProps) {
                 />
               </div>
 
-              <div>
-                <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Password</label>
-                <input
-                  type="password"
-                  placeholder="••••••••"
-                  value={adminPass}
-                  onChange={(e) => setAdminPass(e.target.value)}
-                  className="w-full mt-1.5 px-3.5 py-2.5 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 focus:border-apple-blue outline-none text-zinc-900 dark:text-white placeholder-zinc-400 dark:placeholder-zinc-600"
-                />
-              </div>
+              <PasswordInput
+                id="dispatcher-password-input"
+                name="password"
+                label="Password"
+                placeholder="••••••••"
+                value={adminPass}
+                onChange={(e) => setAdminPass(e.target.value)}
+              />
 
-              <div className="pt-1">
-                <button
-                  type="button"
-                  onClick={fillDemoDispatcher}
-                  className="text-[11px] text-apple-blue hover:underline inline-flex items-center gap-1 font-medium"
-                >
-                  <Sparkles className="w-3 h-3" />
-                  <span>Isi Akun Dispatcher Demo (admin / admin123)</span>
-                </button>
-              </div>
+              <DemoAccountShortcuts
+                role="dispatcher"
+                onSelectDriver={fillDemoDriver}
+                onSelectDispatcher={fillDemoDispatcher}
+              />
             </>
           )}
 

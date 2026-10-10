@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { X, UserPlus, AlertCircle } from 'lucide-react';
 import { DriverWithLatestAssessment } from '@/types/fleet';
+import { PasswordInput } from '@/components/auth/PasswordInput';
+import { getAuthHeader } from '@/hooks/use-auth-session';
 
 interface RegisterDriverModalProps {
   isOpen: boolean;
@@ -13,6 +15,7 @@ interface RegisterDriverModalProps {
 export function RegisterDriverModal({ isOpen, onClose, onDriverCreated }: RegisterDriverModalProps) {
   const [form, setForm] = useState({
     nip: '', name: '', age: '',
+    pin: '1234',
     vehicle_type: 'Toyota HiAce Premio', license_plate: '',
     address: '', medical_history: 'Tidak ada riwayat kronis (Bugar)',
   });
@@ -32,11 +35,15 @@ export function RegisterDriverModal({ isOpen, onClose, onDriverCreated }: Regist
     try {
       const res = await fetch('/api/drivers', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
+        },
         body: JSON.stringify({
           nip: form.nip.toUpperCase().trim(),
           name: form.name.trim(),
           age: parseInt(form.age, 10),
+          pin: form.pin.trim() || '1234',
           vehicle_type: form.vehicle_type.trim(),
           license_plate: form.license_plate.toUpperCase().trim(),
           address: form.address.trim(),
@@ -91,6 +98,22 @@ export function RegisterDriverModal({ isOpen, onClose, onDriverCreated }: Regist
           <div>
             <label className="text-[11px] font-bold text-zinc-500 uppercase">Nama Lengkap *</label>
             <input type="text" placeholder="Rian Ardiansyah" value={form.name} onChange={(e) => update('name', e.target.value)} className="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-apple-blue outline-none text-zinc-900 dark:text-white" />
+          </div>
+
+          <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200/60 dark:border-zinc-800 space-y-1">
+            <PasswordInput
+              id="register-driver-pin"
+              name="pin"
+              label="PIN / Kata Sandi Masuk Supir *"
+              placeholder="Contoh: 1234"
+              maxLength={6}
+              isMono
+              value={form.pin}
+              onChange={(e) => update('pin', e.target.value)}
+            />
+            <p className="text-[10px] text-zinc-500 dark:text-zinc-400">
+              Kata sandi/PIN 4-6 digit yang digunakan supir untuk login. Bisa dilihat/diperiksa dengan menekan ikon mata.
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">

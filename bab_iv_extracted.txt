@@ -1,0 +1,288 @@
+[291] BAB IVHASIL DAN PEMBAHASAN
+
+[292] 4.1 Hasil Project
+
+[293] Hasil project berupa aplikasi web yang berfungsi penuh dan dapat diakses pada https://iconfest.febnawanfr.my.id. Aplikasi menyediakan empat modul asesmen dengan tutorial interaktif, perhitungan CFI, analisis AI dengan cadangan, penyimpanan asesmen pada SQLite, portal pengemudi, dan konsol dispatcher. Tabel 4.1 merangkum endpoint API yang diimplementasikan.
+
+[294] Tabel 4.1 Endpoint API pada implementasi
+
+[295] Endpoint
+
+[296] Fungsi
+
+[297] /api/auth/login
+
+[298] Validasi login pengemudi (NIP dan PIN) atau dispatcher (username dan kata sandi)
+
+[299] /api/analyze
+
+[300] Menerima telemetri dan menghasilkan analisis klinis terstruktur melalui rantai model AI
+
+[301] /api/assessments
+
+[302] GET: detail inspeksi pengemudi; POST: menyimpan asesmen, menghitung jarak rem dan risiko microsleep, memperbarui status pengemudi
+
+[303] /api/copilot
+
+[304] Asisten percakapan singkat berbasis hasil asesmen
+
+[305] /api/drivers, /api/fleet
+
+[306] Data pengemudi, pendaftaran pengemudi, ringkasan KPI armada, dan keputusan dispatcher
+
+[307] 4.2 Fitur dan Fungsionalitas
+
+[308] Fitur yang telah diimplementasikan dirangkum pada Tabel 4.2.
+
+[309] Tabel 4.2 Fitur utama CogniPulse
+
+[310] Fitur
+
+[311] Deskripsi
+
+[312] Check-in konteks
+
+[313] Durasi tidur (resolusi 0,5 jam), jam kerja, tipe shift, asupan kafein, kelelahan subjektif, dan beban fisik berat
+
+[314] Tutorial dua tahap
+
+[315] Demo animasi otomatis dan latihan tanpa penalti sebelum setiap uji, dengan tombol mulai yang dikendalikan pengguna
+
+[316] Empat modul uji
+
+[317] PVT-B, inhibisi go/no-go, Corsi, dan ketukan motorik
+
+[318] CFI dan klasifikasi
+
+[319] Skor 0 - 100, empat tingkat gangguan, dan penanda ketidaksesuaian subjektif-objektif
+
+[320] Estimasi keselamatan
+
+[321] Jarak reaksi pada 100 km/jam, risiko microsleep, dan rekomendasi dispatcher
+
+[322] Analisis AI
+
+[323] Diagnosis diferensial, proyeksi risiko empat jam, resep pemulihan, dan asisten percakapan
+
+[324] Dasbor pengemudi
+
+[325] Sorotan, vital, tren, riwayat, dan kalibrasi baseline latensi perangkat
+
+[326] Konsol dispatcher
+
+[327] KPI armada, tabel pengemudi, inspeksi telemetri empat modul, riwayat perjalanan, dan keputusan penugasan
+
+[328] Kontrol akses
+
+[329] Login terpisah untuk pengemudi dan dispatcher; akses /fleet tanpa otorisasi dialihkan ke halaman akses ditolak
+
+[330] 4.3 Pengujian
+
+[331] 4.3.1 Pengujian Unit
+
+[332] Pengujian unit dijalankan dengan Vitest versi 2.1.9 pada salinan repositori. Hasilnya, 3 berkas uji dan 16 pengujian lulus seluruhnya dengan durasi 1,36 detik (Tabel 4.3). Pengujian mencakup perhitungan metrik tiap modul, deteksi kelelahan terselubung, operasi basis data, perhitungan KPI, autentikasi, pembaruan keputusan dispatcher, serta perilaku cadangan AI saat kunci API tidak tersedia atau saat model cloud mengalami galat.
+
+[333] Tabel 4.3 Hasil pengujian unit
+
+[334] Berkas uji
+
+[335] Cakupan
+
+[336] Jumlah uji
+
+[337] Hasil
+
+[338] tests/scoring.test.ts
+
+[339] Metrik PVT, Stroop, motorik, Corsi, dan CFI
+
+[340] 7
+
+[341] Lulus
+
+[342] tests/fleet.test.ts
+
+[343] Basis data SQLite, KPI armada, penyimpanan asesmen, autentikasi, keputusan dispatcher
+
+[344] 6
+
+[345] Lulus
+
+[346] tests/fallback.test.ts
+
+[347] Mesin cadangan lokal dan penanganan galat model cloud
+
+[348] 3
+
+[349] Lulus
+
+[350] Total
+
+[351] 16
+
+[352] 16/16 lulus
+
+[353] 4.3.2 Pengujian Skenario Simulasi
+
+[354] Untuk mengamati perilaku CFI pada kondisi yang berbeda, tiga skenario simulasi dirancang untuk laporan ini dan diproses oleh fungsi skoring sebenarnya pada folder src/lib/scoring, yaitu fungsi metrik untuk keempat modul dan fungsi agregator CFI. Masukan bersifat sintetis dan bukan data pengemudi (Lampiran A). Skenario A mewakili pengemudi bugar, B mewakili kelelahan ringan setelah jam kerja panjang, dan C mewakili kondisi kritis setelah tidur singkat dan shift malam. Rekomendasi dispatcher dan risiko microsleep diperoleh dengan menjalankan fungsi penyimpanan asesmen sebenarnya (saveAssessmentRecord) pada basis data SQLite lokal. Hasilnya disajikan pada Tabel 4.4.
+
+[355] Tabel 4.4 Keluaran fungsi skoring pada tiga skenario simulasi
+
+[356] Parameter
+
+[357] A (bugar)
+
+[358] B (lelah ringan)
+
+[359] C (kritis)
+
+[360] Rata-rata RT PVT (ms)
+
+[361] 240
+
+[362] 372
+
+[363] 600
+
+[364] Kecepatan respons (s-1)
+
+[365] 4,16
+
+[366] 2,78
+
+[367] 1,7
+
+[368] Lapse / false start
+
+[369] 0 / 0
+
+[370] 1 / 0
+
+[371] 4 / 1
+
+[372] Indeks performa PVT (%)
+
+[373] 100
+
+[374] 83,3
+
+[375] 16,7
+
+[376] Skor kontrol inhibisi
+
+[377] 100
+
+[378] 75
+
+[379] 50
+
+[380] Kadens ketukan (ketukan/detik)
+
+[381] 3,3
+
+[382] 2,4
+
+[383] 1,5
+
+[384] Jitter ITI (ms)
+
+[385] 2,6
+
+[386] 18,6
+
+[387] 61,9
+
+[388] Skor kestabilan motorik
+
+[389] 98
+
+[390] 69
+
+[391] 20
+
+[392] Rentang Corsi / skor memori
+
+[393] 6 / 100
+
+[394] 4 / 68
+
+[395] 3 / 46
+
+[396] CFI
+
+[397] 3
+
+[398] 36
+
+[399] 80
+
+[400] Tingkat gangguan
+
+[401] Fit
+
+[402] Mild fatigue
+
+[403] Critical hazard
+
+[404] Ketidaksesuaian subjektif-objektif
+
+[405] Tidak
+
+[406] Tidak
+
+[407] Ya
+
+[408] Jarak reaksi pada 100 km/jam (m)
+
+[409] 6,7
+
+[410] 10,3
+
+[411] 16,7
+
+[412] Risiko microsleep
+
+[413] Rendah
+
+[414] Rendah
+
+[415] Kritis
+
+[416] Rekomendasi dispatcher
+
+[417] Siap solo
+
+[418] Wajib co-driver
+
+[419] Stand-down
+
+[420] Gambar 4.1 menunjukkan kontribusi tiap komponen terhadap CFI. Pada skenario C, komponen PVT menyumbang 30 poin, motorik 20 poin, dan konteks sekitar 11,7 poin dari total 80. Gambar 4.2 menunjukkan hubungan linear antara waktu reaksi dan jarak reaksi pada 100 km/jam, dengan ketiga skenario ditandai.
+
+[421] Gambar 4.1 Kontribusi komponen terhadap CFI pada tiga skenario simulasi
+
+[422] Gambar 4.2 Jarak reaksi pada 100 km/jam terhadap rata-rata waktu reaksi PVT
+
+[423] 4.4 Pembahasan
+
+[424] Hasil unit test menunjukkan bahwa logika skoring, penyimpanan, autentikasi, dan cadangan AI berperilaku sesuai spesifikasi yang ditulis pada pengujian. Hasil skenario simulasi menunjukkan bahwa CFI meningkat monoton dari skenario A ke C dan bahwa aturan klasifikasi serta rekomendasi bekerja sesuai rancangan: skenario A menghasilkan siap solo, B menghasilkan wajib co-driver karena tingkat mild fatigue, dan C menghasilkan stand-down serta penanda ketidaksesuaian subjektif-objektif karena pengemudi melaporkan kelelahan subjektif 2 sementara CFI mencapai 80. Perlu ditegaskan bahwa hasil ini membuktikan konsistensi implementasi terhadap rancangan, bukan akurasi deteksi kelelahan pada manusia.
+
+[425] Besaran waktu reaksi pada skenario simulasi sebanding dengan temuan lapangan yang dilaporkan: pada pengemudi tangki, rata-rata waktu reaksi meningkat dari 286,82 ms sebelum mengemudi menjadi 353,57 ms setelah dua hari mengemudi (Al-Mekhlafi dkk., 2023), sementara skenario B memiliki rata-rata 372 ms. Kesesuaian rentang ini hanya menunjukkan bahwa nilai simulasi berada pada orde yang masuk akal, bukan validasi. Pada modul inhibisi, rancangan go/no-go dengan commission dan omission error selaras dengan paradigma Go/No-Go yang pada meta-analisis menunjukkan efek negatif sedang akibat kurang tidur (Choong dkk., 2024), dan konflik warna-kata dikenal sebagai uji yang melibatkan pemantauan konflik (Ding dkk., 2023). Pada modul motorik, perlambatan ketukan dipakai sebagai indikator kelelahan motorik, konsisten dengan penggunaan ketukan jari berbasis ponsel pintar untuk mengukur fatigabilitas motorik (Heimhofer dkk., 2024).
+
+[426] Dari sisi arsitektur, pemisahan keputusan deterministik dari keluaran model bahasa merupakan pilihan rancangan yang disengaja. Model bahasa besar menunjukkan hasil yang beragam pada aplikasi biomedis (Thirunavukarasu dkk., 2023), sehingga keputusan yang berdampak pada penugasan tidak diserahkan kepada model. Rantai model dan mesin heuristik lokal memastikan pengguna tetap memperoleh keluaran ketika layanan cloud gagal, yang diverifikasi pada unit test cadangan.
+
+[427] 4.5 Keterbatasan dan Ancaman terhadap Validitas
+
+[428] a.Belum ada validasi dengan pengemudi sungguhan. Pengujian terbatas pada unit test dan simulasi sintetis. Bobot CFI, ambang klasifikasi, dan ambang risiko microsleep belum dikalibrasi atau divalidasi terhadap alat ukur baku maupun kejadian keselamatan.
+
+[429] b.PVT versi sangat singkat. Modul PVT-B pada implementasi hanya 6 percobaan. Antler dkk. (2022) menunjukkan bahwa PVT 3 menit tidak dapat dipertukarkan dengan PVT 10 menit, sehingga hasil PVT-B tidak boleh disamakan dengan PVT standar dan paling tepat dipakai sebagai skrining relatif terhadap baseline individu.
+
+[430] c.Ambang lapse dan latensi perangkat. Ambang lapse pada kode ditetapkan 500 ms dengan pertimbangan latensi peramban, sedangkan dokumentasi proyek menyebut 355 ms untuk PVT-B. Anwyl-Irvine dkk. (2021) menunjukkan bahwa akurasi pengukuran web wajar tetapi bergantung pada platform, peramban, dan perangkat. Fitur kalibrasi baseline perangkat membantu, tetapi pengaruh heterogenitas ponsel belum dikuantifikasi.
+
+[431] d.Standardisasi modul. Arce & McMullen (2021) mencatat inkonsistensi metodologis pada Corsi Block-Tapping Test. Implementasi Corsi pada project ini (empat ronde, panjang 3 - 6) perlu dibandingkan dengan protokol baku sebelum dipakai untuk keputusan. Uji inhibisi pada project ini adalah varian go/no-go berbasis konflik warna-kata, bukan uji Stroop klasik dengan hitungan interferensi baku.
+
+[432] e.Keluaran model bahasa tidak deterministik. Isi narasi dan proyeksi risiko dari Gemini dapat bervariasi, dan nilai proyeksi seperti persentase peningkatan risiko tidak berasal dari model statistik yang divalidasi. Keputusan operasional karena itu dibuat oleh aturan deterministik.
+
+[433] f.Privasi dan keamanan. Basis data menyimpan nama, alamat, dan riwayat kesehatan pengemudi, dan sebagian konteks tersebut dikirim ke layanan Gemini. Hal ini perlu dikaji terhadap UU Nomor 27 Tahun 2022 (Syailendra dkk., 2024; Razi dkk., 2024). Pada implementasi saat ini, PIN belum disimpan dalam bentuk hash, token sesi masih sederhana, dan kredensial dispatcher serta data pengemudi bersifat contoh untuk demonstrasi. Aspek ini harus diperkuat sebelum penggunaan operasional.
+
+[434] g.Data contoh. Pengemudi dan riwayat perjalanan pada basis data merupakan data contoh, sehingga KPI armada yang tampil pada konsol belum merepresentasikan armada nyata.
+

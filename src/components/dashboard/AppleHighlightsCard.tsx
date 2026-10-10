@@ -52,7 +52,7 @@ export const AppleHighlightsCard: React.FC<AppleHighlightsCardProps> = ({
             {latestResult
               ? latestResult.diagnosis.differentialDiagnosis.shortSummary ||
                 latestResult.diagnosis.differentialDiagnosis.clinicalRationale.split(/(?<=[.!?])\s+/)[0]
-              : 'Belum ada data evaluasi hari ini. Luangkan 75 detik untuk memeriksa kesiapan refleks dan fokus Anda.'}
+              : 'Belum ada data evaluasi hari ini. Luangkan 90 detik untuk memeriksa kesiapan refleks dan fokus Anda.'}
           </p>
 
           {isSilentFatigue && (

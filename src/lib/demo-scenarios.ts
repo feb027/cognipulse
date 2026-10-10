@@ -67,7 +67,7 @@ export const SCENARIO_FRESH_WORKER: DemoScenarioPackage = {
     subjectiveFatigueScore: 1,
   },
   cfi: {
-    cfiScore: 16,
+    cfiScore: 1,
     impairmentTier: 'fit',
     subjectiveObjectiveDisparity: false,
     calculatedAt: new Date().toISOString(),
@@ -123,7 +123,7 @@ export const SCENARIO_DEV_OVERWORK: DemoScenarioPackage = {
     subjectiveFatigueScore: 2,
   },
   cfi: {
-    cfiScore: 72,
+    cfiScore: 63,
     impairmentTier: 'moderate_impairment',
     subjectiveObjectiveDisparity: true,
     calculatedAt: new Date().toISOString(),
@@ -179,7 +179,7 @@ export const SCENARIO_DRIVER_CRITICAL: DemoScenarioPackage = {
     subjectiveFatigueScore: 5,
   },
   cfi: {
-    cfiScore: 89,
+    cfiScore: 85,
     impairmentTier: 'critical_hazard',
     subjectiveObjectiveDisparity: false,
     calculatedAt: new Date().toISOString(),

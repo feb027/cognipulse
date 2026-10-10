@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getFleetSummary, updateDriverStatus, updateDispatcherDecision } from '@/lib/db/fleet-service';
 import { getAllDrivers } from '@/lib/db/driver-service';
+import { requireDispatcher } from '@/lib/api-auth';
 import { DriverStatus, DispatcherDecision } from '@/types/fleet';
 
 export async function GET() {
@@ -15,6 +16,11 @@ export async function GET() {
 }
 
 export async function PATCH(request: NextRequest) {
+  // Hanya dispatcher yang boleh mengubah status atau keputusan penugasan
+  if (!requireDispatcher(request)) {
+    return NextResponse.json({ error: 'Akses ditolak: sesi dispatcher diperlukan' }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const { driverId, status, assessmentId, decision, notes } = body;

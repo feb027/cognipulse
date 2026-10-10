@@ -2,6 +2,7 @@ import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
 import { seedFleetDataIfNeeded } from './seed-fleet';
+import { JsonDatabase } from './json-storage';
 
 let dbInstance: Database.Database | null = null;
 
@@ -13,14 +14,20 @@ export function getDatabase(): Database.Database {
     fs.mkdirSync(dataDir, { recursive: true });
   }
 
-  const dbPath = path.join(dataDir, 'travel_fleet.db');
-  dbInstance = new Database(dbPath);
+  try {
+    const dbPath = path.join(dataDir, 'travel_fleet.db');
+    dbInstance = new Database(dbPath);
 
-  // WAL mode for fast concurrent reads and writes
-  dbInstance.pragma('journal_mode = WAL');
-  dbInstance.pragma('foreign_keys = ON');
+    // WAL mode for fast concurrent reads and writes
+    dbInstance.pragma('journal_mode = WAL');
+    dbInstance.pragma('foreign_keys = ON');
 
-  initSchema(dbInstance);
+    initSchema(dbInstance);
+  } catch (err) {
+    console.warn('Native better-sqlite3 binding tidak dapat dimuat (Node 24 / tanpa C++ tools). Mengaktifkan fallback JsonDatabase otomatis:', err);
+    dbInstance = new JsonDatabase() as unknown as Database.Database;
+  }
+
   try {
     seedFleetDataIfNeeded(dbInstance);
   } catch (err) {
@@ -81,14 +88,36 @@ function initSchema(db: Database.Database) {
       raw_json TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS dispatchers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      name TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
     CREATE INDEX IF NOT EXISTS idx_drivers_nip ON drivers(nip);
     CREATE INDEX IF NOT EXISTS idx_assessments_driver ON assessments(driver_id);
     CREATE INDEX IF NOT EXISTS idx_trips_driver ON trip_history(driver_id);
+    CREATE INDEX IF NOT EXISTS idx_dispatchers_user ON dispatchers(username);
   `);
 
   try {
     db.exec("ALTER TABLE drivers ADD COLUMN pin TEXT DEFAULT '1234'");
   } catch {
     // Column already exists
+  }
+
+  try {
+    const adminCount = db.prepare('SELECT COUNT(*) as count FROM dispatchers').get() as { count: number };
+    if (!adminCount || adminCount.count === 0) {
+      db.prepare(`
+        INSERT INTO dispatchers (username, password, name)
+        VALUES ('admin', 'admin123', 'Dispatcher Operasional Pusat')
+      `).run();
+    }
+  } catch (err) {
+    console.error('Failed to initialize default dispatcher account:', err);
   }
 }
