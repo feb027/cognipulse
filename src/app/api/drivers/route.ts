@@ -38,6 +38,13 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    if (!requireDispatcher(request)) {
+      return NextResponse.json(
+        { error: 'Akses ditolak: Hanya dispatcher yang diizinkan mendaftarkan supir baru' },
+        { status: 403 }
+      );
+    }
+
     const body = await request.json();
     const { nip, name, age, vehicle_type, license_plate, address, medical_history, pin } = body;
 

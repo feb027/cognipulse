@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { validateDriverLogin, validateDispatcherLogin } from '@/lib/db/driver-service';
+import { createSessionToken } from '@/lib/api-auth';
 import { AuthSession } from '@/types/auth';
 
 export async function POST(req: NextRequest) {
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest) {
       const session: AuthSession = {
         role: 'driver',
         driver,
-        token: `drv_${driver.id}_${Date.now()}`,
+        token: createSessionToken('driver', driver.id),
       };
 
       return NextResponse.json({ success: true, session });
@@ -42,7 +43,7 @@ export async function POST(req: NextRequest) {
         role: 'dispatcher',
         username: dispatcher.username,
         name: dispatcher.name,
-        token: `disp_${Date.now()}`,
+        token: createSessionToken('dispatcher'),
       };
 
       return NextResponse.json({ success: true, session });

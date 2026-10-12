@@ -1,17 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { saveAssessmentRecord } from '@/lib/db/assessment-service';
 import { getDriverFullInspection } from '@/lib/db/fleet-service';
+import { verifySessionToken } from '@/lib/api-auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const driverId = searchParams.get('driverId');
+    const auth = verifySessionToken(request);
+    if (!auth.valid) {
+      return NextResponse.json({ error: 'Akses ditolak: sesi autentikasi diperlukan' }, { status: 401 });
+    }
 
-    if (!driverId) {
+    const { searchParams } = new URL(request.url);
+    const driverIdParam = searchParams.get('driverId');
+
+    if (!driverIdParam) {
       return NextResponse.json({ error: 'Parameter driverId diperlukan' }, { status: 400 });
     }
 
-    const data = getDriverFullInspection(Number(driverId));
+    const targetDriverId = Number(driverIdParam);
+
+    if (auth.role === 'driver' && auth.driverId !== targetDriverId) {
+      return NextResponse.json({ error: 'Akses ditolak: Anda hanya dapat melihat data Anda sendiri' }, { status: 403 });
+    }
+
+    const data = getDriverFullInspection(targetDriverId);
     if (!data) {
       return NextResponse.json({ error: 'Driver tidak ditemukan' }, { status: 404 });
     }

@@ -1,4 +1,5 @@
 import { getDatabase } from './database';
+import { stripPin } from './driver-service';
 import { FleetSummary, Driver, AssessmentRecord, TripHistory, DriverStatus, DispatcherDecision } from '@/types/fleet';
 
 export function getFleetSummary(): FleetSummary {
@@ -80,7 +81,7 @@ export function getDriverFullInspection(driverId: number) {
   `).all(driverId) as TripHistory[];
 
   return {
-    driver,
+    driver: stripPin(driver),
     assessments,
     trips,
     latestAssessment: assessments[0] || null,

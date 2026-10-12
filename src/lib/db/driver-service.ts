@@ -3,7 +3,7 @@ import { Driver, DriverWithLatestAssessment, TripHistory, AssessmentRecord } fro
 import { validateDispatcherLogin as validateDispatcherLoginCore } from './dispatcher-service';
 
 /** Hapus field `pin` sebelum data driver dikirim keluar server. */
-function stripPin<T extends object>(obj: T): T {
+export function stripPin<T extends object>(obj: T): T {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { pin, ...safe } = obj as any;
   return safe as T;

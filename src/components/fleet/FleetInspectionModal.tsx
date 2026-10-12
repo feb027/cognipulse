@@ -33,7 +33,9 @@ export function FleetInspectionModal({
     if (isOpen && driver?.id) {
       setActiveTab('summary');
       setLoadingDetails(true);
-      fetch(`/api/assessments?driverId=${driver.id}`)
+      fetch(`/api/assessments?driverId=${driver.id}`, {
+        headers: getAuthHeader(),
+      })
         .then((res) => res.json())
         .then((data) => setFullData(data))
         .catch((err) => console.error('Failed to load full inspection:', err))

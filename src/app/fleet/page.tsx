@@ -12,7 +12,7 @@ import { RegisterDriverModal } from '@/components/driver/RegisterDriverModal';
 import { AdminSettingsModal } from '@/components/fleet/AdminSettingsModal';
 import { FleetAccessDenied } from '@/components/fleet/FleetAccessDenied';
 import { UnifiedLoginView } from '@/components/auth/UnifiedLoginView';
-import { useAuthSession } from '@/hooks/use-auth-session';
+import { useAuthSession, getAuthHeader } from '@/hooks/use-auth-session';
 
 export default function FleetPage() {
   const { theme, toggleTheme } = useTheme();
@@ -29,7 +29,9 @@ export default function FleetPage() {
   const loadFleetData = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/fleet');
+      const res = await fetch('/api/fleet', {
+        headers: getAuthHeader(),
+      });
       const data = await res.json();
       if (res.ok) {
         setSummary(data.summary);

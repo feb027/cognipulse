@@ -4,8 +4,12 @@ import { getAllDrivers } from '@/lib/db/driver-service';
 import { requireDispatcher } from '@/lib/api-auth';
 import { DriverStatus, DispatcherDecision } from '@/types/fleet';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    if (!requireDispatcher(request)) {
+      return NextResponse.json({ error: 'Akses ditolak: sesi dispatcher diperlukan' }, { status: 401 });
+    }
+
     const summary = getFleetSummary();
     const drivers = getAllDrivers();
     return NextResponse.json({ summary, drivers });
