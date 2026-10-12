@@ -3,10 +3,10 @@ import { Driver, DriverWithLatestAssessment, TripHistory, AssessmentRecord } fro
 import { validateDispatcherLogin as validateDispatcherLoginCore } from './dispatcher-service';
 
 /** Hapus field `pin` sebelum data driver dikirim keluar server. */
-function stripPin<T extends Record<string, unknown>>(obj: T): Omit<T, 'pin'> {
+function stripPin<T extends object>(obj: T): T {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { pin, ...safe } = obj as T & { pin?: unknown };
-  return safe as Omit<T, 'pin'>;
+  const { pin, ...safe } = obj as any;
+  return safe as T;
 }
 
 export function getAllDrivers(): DriverWithLatestAssessment[] {
@@ -95,7 +95,7 @@ export function createDriver(data: {
   });
 
   const created = db.prepare('SELECT * FROM drivers WHERE id = ?').get(info.lastInsertRowid) as Driver;
-  return stripPin(created) as Driver;
+  return stripPin(created);
 }
 
 export function validateDriverLogin(nip: string, pin: string): DriverWithLatestAssessment | null {
@@ -167,7 +167,7 @@ export function updateDriver(
   `).run(updatedName, updatedAge, updatedVeh, updatedPlate, updatedAddr, updatedMed, updatedStatus, updatedPin, id);
 
   const updated = db.prepare('SELECT * FROM drivers WHERE id = ?').get(id) as Driver;
-  return stripPin(updated) as Driver;
+  return stripPin(updated);
 }
 
 export function updateDriverPin(id: number, newPin: string): boolean {

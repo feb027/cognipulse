@@ -16,7 +16,7 @@ interface DriverManagementTableProps {
 }
 
 function StatusBadge({ status }: { status: DriverStatus }) {
-  const configs: Record<DriverStatus, { bg: string; text: string; label: string }> = {
+  const configs: Record<DriverStatus, { bg: string; label: string }> = {
     ready: { bg: 'bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400', label: 'Siap Solo' },
     caution: { bg: 'bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400', label: 'Wajib Co-Driver' },
     stand_down: { bg: 'bg-red-500/10 dark:bg-red-500/20 text-red-600 dark:text-red-400', label: 'Stand-Down' },
