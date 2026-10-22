@@ -15,7 +15,7 @@ import { AssessmentLandingCard } from '@/components/assessment/AssessmentLanding
 import { AssessmentResultView } from '@/components/results/AssessmentResultView';
 import { UnifiedLoginView } from '@/components/auth/UnifiedLoginView';
 import { useSessionHistory, StoredSession } from '@/hooks/use-session-storage';
-import { useAuthSession } from '@/hooks/use-auth-session';
+import { useAuthSession, getAuthHeader } from '@/hooks/use-auth-session';
 import { toAssessmentResult } from '@/lib/session-utils';
 import { CompositeFatigueResult, UserContext, PVTMetrics, StroopMetrics, MotorMetrics, CorsiMetrics, GeminiClinicalAnalysis } from '@/types';
 import { Sparkles, ArrowRight, ArrowLeft, ShieldCheck } from 'lucide-react';
@@ -37,7 +37,8 @@ export default function Home() {
   const [activeAnalysis, setActiveAnalysis] = useState<GeminiClinicalAnalysis | null>(null);
   const [isAiLoading, setIsAiLoading] = useState(false);
 
-  const { history, saveSession, clearHistory, seedDemoHistory, deviceBaselineMs } = useSessionHistory();
+  const activeDriver = session?.role === 'driver' ? session.driver : null;
+  const { history, saveSession, clearHistory, seedDemoHistory, deviceBaselineMs } = useSessionHistory(activeDriver?.id);
 
   if (authLoading) {
     return <div className="min-h-screen bg-[#F2F2F7] dark:bg-black flex items-center justify-center text-zinc-500 text-xs">Memuat sesi CogniPulse...</div>;
@@ -73,7 +74,7 @@ export default function Home() {
     );
   }
 
-  const activeDriver = session.driver;
+  if (!activeDriver) return null;
 
   const handleAssessmentCompleted = async (
     cfi: CompositeFatigueResult, pvt: PVTMetrics, stroop: StroopMetrics,
@@ -113,7 +114,10 @@ export default function Home() {
     try {
       await fetch('/api/assessments', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...getAuthHeader(),
+        },
         body: JSON.stringify({ driverId: activeDriver.id, nip: activeDriver.nip, cfi, pvt, stroop, motor, corsi, analysis: analysisResult }),
       });
     } catch (e) {
