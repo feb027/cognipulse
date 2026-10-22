@@ -7,6 +7,7 @@ import { InspectionSummaryTab } from './InspectionSummaryTab';
 import { InspectionFullMetricsTab } from './InspectionFullMetricsTab';
 import { InspectionHistoryTab } from './InspectionHistoryTab';
 import { getAuthHeader } from '@/hooks/use-auth-session';
+import { getDriverInitials } from '@/lib/driver-utils';
 
 interface FleetInspectionModalProps {
   isOpen: boolean;
@@ -90,7 +91,7 @@ export function FleetInspectionModal({
         <div className="px-5 py-3.5 border-b border-black/5 dark:border-white/10 flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center font-bold text-xs text-zinc-800 dark:text-zinc-200">
-              {driver.name.slice(0, 2).toUpperCase()}
+              {getDriverInitials(driver.name)}
             </div>
             <div>
               <div className="flex items-center gap-2">

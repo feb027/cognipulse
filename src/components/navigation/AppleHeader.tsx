@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Sun, Moon, Truck } from 'lucide-react';
 import { useTheme } from '@/components/theme/ThemeContext';
 import { DriverWithLatestAssessment } from '@/types/fleet';
+import { getDriverInitials } from '@/lib/driver-utils';
 import { ProfileDropdown } from './ProfileDropdown';
 
 interface AppleHeaderProps {
@@ -48,7 +49,7 @@ export function AppleHeader({
     }
   }, []);
 
-  const avatarInitials = driver ? driver.name.slice(0, 2).toUpperCase() : 'CP';
+  const avatarInitials = driver ? getDriverInitials(driver.name) : 'CP';
   const ringColor = driver?.status === 'stand_down'
     ? 'ring-red-500'
     : driver?.status === 'caution'

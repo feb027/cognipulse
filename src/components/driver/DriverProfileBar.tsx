@@ -3,6 +3,7 @@
 import React from 'react';
 import { User, Car, ShieldCheck, AlertTriangle, ShieldAlert, ArrowRightLeft, UserPlus } from 'lucide-react';
 import { DriverWithLatestAssessment } from '@/types/fleet';
+import { getDriverInitials } from '@/lib/driver-utils';
 
 interface DriverProfileBarProps {
   driver: DriverWithLatestAssessment | null;
@@ -61,7 +62,7 @@ export function DriverProfileBar({ driver, onOpenSelectModal, onOpenRegisterModa
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-2xl bg-zinc-100 dark:bg-zinc-800 border border-black/5 dark:border-white/5 flex items-center justify-center text-zinc-700 dark:text-zinc-200 font-bold text-sm">
-            {driver.name.slice(0, 2).toUpperCase()}
+            {getDriverInitials(driver.name)}
           </div>
           <div>
             <div className="flex items-center gap-2">

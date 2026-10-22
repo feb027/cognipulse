@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { AssessmentResult } from '@/types';
+import { useBottomSheetDrag } from '@/hooks/use-bottom-sheet-drag';
 
 interface VitalDetailModalProps {
   vitalKey: string | null;
@@ -14,6 +15,12 @@ export function VitalDetailModal({
   latestResult,
   onClose,
 }: VitalDetailModalProps) {
+  const { sheetStyle, dragHandleProps, triggerClose } = useBottomSheetDrag({
+    isOpen: Boolean(vitalKey),
+    onClose,
+    threshold: 80,
+  });
+
   if (!vitalKey) return null;
 
   const getMetricData = () => {
@@ -75,12 +82,20 @@ export function VitalDetailModal({
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm animate-fadeIn">
       {/* Backdrop click */}
-      <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
+      <div className="fixed inset-0" onClick={triggerClose} aria-hidden="true" />
 
-      {/* Modern Apple Sheet Card */}
-      <div className="relative w-full max-w-sm rounded-t-3xl sm:rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/10 dark:border-white/10 shadow-2xl p-6 space-y-4 animate-springUp z-10">
-        {/* iOS Drag Indicator Handle on Mobile */}
-        <div className="w-10 h-1 rounded-full bg-zinc-300 dark:bg-zinc-700 mx-auto -mt-2 mb-1 sm:hidden" />
+      {/* Modern Apple Sheet Card with Native Pull-Down Dismiss */}
+      <div
+        style={sheetStyle}
+        className="relative w-full max-w-sm rounded-t-3xl sm:rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/10 dark:border-white/10 shadow-2xl p-6 space-y-4 animate-sheetSlideUp sm:animate-springUp z-10 will-change-transform"
+      >
+        {/* iOS Drag Handle Area on Mobile (swipe/pull down to dismiss) */}
+        <div
+          {...dragHandleProps}
+          className="w-full pt-1 pb-3 -mt-3 cursor-grab active:cursor-grabbing flex justify-center touch-none select-none sm:hidden"
+        >
+          <div className="w-12 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-600 transition-colors" />
+        </div>
 
         <div className="flex items-start justify-between gap-2">
           <div>
@@ -114,15 +129,22 @@ export function VitalDetailModal({
           </span>
         </div>
 
-        {/* Minimal Spectrum Range Bar with Dynamic Needle Indicator */}
-        <div className="space-y-1.5 pt-2">
-          <div className="relative w-full pt-2.5 pb-1">
-            {/* Needle Pin Indicator */}
+        {/* Minimal Spectrum Range Bar with Centered Dynamic Needle Indicator */}
+        <div className="space-y-1.5 pt-1">
+          <div className="relative w-full py-2 flex items-center">
+            {/* Tri-Color Spectrum Line */}
+            <div className="w-full h-2.5 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex shadow-inner">
+              <div className="w-1/3 h-full bg-emerald-500/80" />
+              <div className="w-1/3 h-full bg-amber-500/80" />
+              <div className="w-1/3 h-full bg-rose-500/80" />
+            </div>
+
+            {/* Centered Needle Pin Indicator */}
             <div
-              className="absolute top-0 -translate-x-1/2 flex flex-col items-center pointer-events-none transition-all duration-300 z-10"
-              style={{ left: `${m.percent}%` }}
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-none transition-all duration-300 z-10"
+              style={{ left: `${Math.min(97, Math.max(3, m.percent))}%` }}
             >
-              <div className="w-3.5 h-3.5 rounded-full bg-white dark:bg-zinc-900 border-2 border-zinc-900 dark:border-white shadow-md flex items-center justify-center">
+              <div className="w-4 h-4 rounded-full bg-white dark:bg-zinc-900 border-2 border-zinc-900 dark:border-white shadow-md flex items-center justify-center ring-2 ring-black/5 dark:ring-white/10">
                 <div
                   className={`w-1.5 h-1.5 rounded-full ${
                     m.tier === 'Optimal'
@@ -133,13 +155,6 @@ export function VitalDetailModal({
                   }`}
                 />
               </div>
-            </div>
-
-            {/* Tri-Color Spectrum Line */}
-            <div className="relative w-full h-2.5 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex shadow-inner">
-              <div className="w-1/3 h-full bg-emerald-500/80" />
-              <div className="w-1/3 h-full bg-amber-500/80" />
-              <div className="w-1/3 h-full bg-rose-500/80" />
             </div>
           </div>
 
@@ -167,7 +182,7 @@ export function VitalDetailModal({
 
         {/* Apple Style Full Width Close Button */}
         <button
-          onClick={onClose}
+          onClick={triggerClose}
           className="w-full py-2.5 rounded-2xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold text-xs hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors shadow-sm active:scale-[0.98]"
         >
           Selesai

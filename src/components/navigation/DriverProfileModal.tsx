@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
-import { X, Car, LogOut, ShieldCheck, AlertTriangle, ShieldAlert, MapPin, Activity } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { X, Car, LogOut, ShieldCheck, AlertTriangle, ShieldAlert, MapPin } from 'lucide-react';
 import { DriverWithLatestAssessment } from '@/types/fleet';
+import { getDriverInitials } from '@/lib/driver-utils';
 
 interface DriverProfileModalProps {
   isOpen: boolean;
@@ -17,6 +18,23 @@ export function DriverProfileModal({
   driver,
   onLogout,
 }: DriverProfileModalProps) {
+  // Lock body scroll when profile modal is open
+  useEffect(() => {
+    if (!isOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen || !driver) return null;
 
   const isCritical = driver.status === 'stand_down';
@@ -43,12 +61,15 @@ export function DriverProfileModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-white dark:bg-[#1C1C1E] rounded-3xl w-full max-w-md overflow-hidden border border-black/10 dark:border-white/10 shadow-2xl flex flex-col max-h-[90vh] animate-springUp">
+      {/* Backdrop click */}
+      <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
+
+      <div className="relative bg-white dark:bg-[#1C1C1E] rounded-3xl w-full max-w-md overflow-hidden border border-black/10 dark:border-white/10 shadow-2xl flex flex-col max-h-[90vh] animate-springUp z-10">
         {/* Header */}
         <div className="px-5 py-4 border-b border-black/5 dark:border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-apple-orange to-apple-red flex items-center justify-center text-white font-bold text-sm shadow-sm">
-              {driver.name.slice(0, 2).toUpperCase()}
+              {getDriverInitials(driver.name)}
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -62,7 +83,11 @@ export function DriverProfileModal({
               <p className="text-xs text-zinc-500 mt-1">{driver.age} Tahun • Supir Travel Aktif</p>
             </div>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500">
+          <button
+            onClick={onClose}
+            aria-label="Tutup Profil"
+            className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+          >
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -108,20 +133,14 @@ export function DriverProfileModal({
           )}
         </div>
 
-        {/* Footer: Logout */}
-        <div className="p-4 border-t border-black/5 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900/40 flex items-center justify-between">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
-          >
-            Tutup
-          </button>
+        {/* Footer: Dedicated Logout Action (No duplicate close button) */}
+        <div className="p-4 border-t border-black/5 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900/40">
           <button
             onClick={() => {
               onClose();
               onLogout();
             }}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 font-semibold text-xs transition-all border border-red-500/20"
+            className="w-full py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-semibold text-xs transition-all border border-red-500/20 flex items-center justify-center gap-2"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Keluar dari Akun</span>

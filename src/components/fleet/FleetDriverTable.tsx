@@ -3,6 +3,7 @@
 import React from 'react';
 import { DriverWithLatestAssessment, DriverStatus } from '@/types/fleet';
 import { ShieldCheck, AlertTriangle, ShieldAlert, Car, ChevronRight, Clock } from 'lucide-react';
+import { getDriverInitials } from '@/lib/driver-utils';
 
 interface FleetDriverTableProps {
   drivers: DriverWithLatestAssessment[];
@@ -80,7 +81,7 @@ export function FleetDriverTable({ drivers, onInspect }: FleetDriverTableProps) 
                   <td className="py-3.5 px-4">
                     <div className="flex items-center gap-2.5">
                       <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center font-bold text-xs text-zinc-800 dark:text-zinc-200 flex-shrink-0">
-                        {driver.name.slice(0, 2).toUpperCase()}
+                        {getDriverInitials(driver.name)}
                       </div>
                       <div>
                         <div className="font-bold text-zinc-900 dark:text-white flex items-center gap-1.5">
