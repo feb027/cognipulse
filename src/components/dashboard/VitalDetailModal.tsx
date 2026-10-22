@@ -15,10 +15,10 @@ export function VitalDetailModal({
   latestResult,
   onClose,
 }: VitalDetailModalProps) {
-  const { sheetStyle, dragHandleProps, triggerClose } = useBottomSheetDrag({
+  const { sheetRef, backdropRef, triggerClose, dragHandleProps } = useBottomSheetDrag({
     isOpen: Boolean(vitalKey),
     onClose,
-    threshold: 80,
+    threshold: 75,
   });
 
   if (!vitalKey) return null;
@@ -80,14 +80,19 @@ export function VitalDetailModal({
   const m = getMetricData();
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/40 backdrop-blur-sm animate-fadeIn">
-      {/* Backdrop click */}
-      <div className="fixed inset-0" onClick={triggerClose} aria-hidden="true" />
-
-      {/* Modern Apple Sheet Card with Native Pull-Down Dismiss */}
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      {/* Backdrop: Hardware-friendly, no heavy blur on mobile */}
       <div
-        style={sheetStyle}
-        className="relative w-full max-w-sm rounded-t-3xl sm:rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/10 dark:border-white/10 shadow-2xl p-6 space-y-4 animate-sheetSlideUp sm:animate-springUp z-10 will-change-transform"
+        ref={backdropRef}
+        onClick={triggerClose}
+        className="fixed inset-0 bg-black/50 sm:backdrop-blur-sm animate-fadeIn transition-opacity will-change-[opacity]"
+        aria-hidden="true"
+      />
+
+      {/* Modern Apple Sheet Card: Mobile slides from bottom; Desktop stays centered with subtle fade */}
+      <div
+        ref={sheetRef}
+        className="relative w-full max-w-sm rounded-t-3xl sm:rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/10 dark:border-white/10 shadow-lg p-6 space-y-4 z-10 will-change-transform sm:animate-fadeIn"
       >
         {/* iOS Drag Handle Area on Mobile (swipe/pull down to dismiss) */}
         <div

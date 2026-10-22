@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { X, Car, LogOut, ShieldCheck, AlertTriangle, ShieldAlert, MapPin } from 'lucide-react';
 import { DriverWithLatestAssessment } from '@/types/fleet';
 import { getDriverInitials } from '@/lib/driver-utils';
+import { useBottomSheetDrag } from '@/hooks/use-bottom-sheet-drag';
 
 interface DriverProfileModalProps {
   isOpen: boolean;
@@ -18,22 +19,11 @@ export function DriverProfileModal({
   driver,
   onLogout,
 }: DriverProfileModalProps) {
-  // Lock body scroll when profile modal is open
-  useEffect(() => {
-    if (!isOpen) return;
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.body.style.overflow = originalOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isOpen, onClose]);
+  const { sheetRef, backdropRef, triggerClose, dragHandleProps } = useBottomSheetDrag({
+    isOpen: Boolean(isOpen && driver),
+    onClose,
+    threshold: 75,
+  });
 
   if (!isOpen || !driver) return null;
 
@@ -60,13 +50,29 @@ export function DriverProfileModal({
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      {/* Backdrop click */}
-      <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      {/* Backdrop */}
+      <div
+        ref={backdropRef}
+        onClick={triggerClose}
+        className="fixed inset-0 bg-black/50 sm:backdrop-blur-sm animate-fadeIn transition-opacity will-change-[opacity]"
+        aria-hidden="true"
+      />
 
-      <div className="relative bg-white dark:bg-[#1C1C1E] rounded-3xl w-full max-w-md overflow-hidden border border-black/10 dark:border-white/10 shadow-2xl flex flex-col max-h-[90vh] animate-springUp z-10">
+      <div
+        ref={sheetRef}
+        className="relative bg-white dark:bg-[#1C1C1E] rounded-t-3xl sm:rounded-3xl w-full max-w-md overflow-hidden border border-black/10 dark:border-white/10 shadow-lg flex flex-col max-h-[90vh] z-10 will-change-transform sm:animate-fadeIn"
+      >
+        {/* iOS Drag Handle Area on Mobile (swipe/pull down to dismiss) */}
+        <div
+          {...dragHandleProps}
+          className="w-full pt-2 pb-1.5 cursor-grab active:cursor-grabbing flex justify-center touch-none select-none sm:hidden border-b border-black/5 dark:border-white/5"
+        >
+          <div className="w-12 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-600 transition-colors" />
+        </div>
+
         {/* Header */}
-        <div className="px-5 py-4 border-b border-black/5 dark:border-white/10 flex items-center justify-between">
+        <div className="px-5 py-3.5 border-b border-black/5 dark:border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-apple-orange to-apple-red flex items-center justify-center text-white font-bold text-sm shadow-sm">
               {getDriverInitials(driver.name)}
@@ -84,7 +90,7 @@ export function DriverProfileModal({
             </div>
           </div>
           <button
-            onClick={onClose}
+            onClick={triggerClose}
             aria-label="Tutup Profil"
             className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
           >
@@ -137,7 +143,7 @@ export function DriverProfileModal({
         <div className="p-4 border-t border-black/5 dark:border-white/10 bg-zinc-50 dark:bg-zinc-900/40">
           <button
             onClick={() => {
-              onClose();
+              triggerClose();
               onLogout();
             }}
             className="w-full py-2.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-semibold text-xs transition-all border border-red-500/20 flex items-center justify-center gap-2"
