@@ -11,8 +11,8 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0_Strict-3178c6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4_Tokens-38bdf8?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![SQLite](https://img.shields.io/badge/SQLite-WAL_Persistent_DB-003B57?style=flat-square&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
-[![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.8_Flash_API-4285f4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev/)
-[![Vitest](https://img.shields.io/badge/Vitest-16%2F16_Passing-6e9f18?style=flat-square&logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Google Gemini](https://img.shields.io/badge/Google_Gemini-Dual--Engine_AI_Cascade-4285f4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev/)
+[![Vitest](https://img.shields.io/badge/Vitest-21%2F21_Passing-6e9f18?style=flat-square&logo=vitest&logoColor=white)](https://vitest.dev/)
 [![Live Production](https://img.shields.io/badge/Live_Demo-iconfest.febnawanfr.my.id-2563eb?style=flat-square&logo=cloudflare&logoColor=white)](https://iconfest.febnawanfr.my.id)
 [![Standards](https://img.shields.io/badge/Standard-NASA_Dinges--Basner_PVT-red?style=flat-square)](https://www.nasa.gov/)
 [![Privacy](https://img.shields.io/badge/Privacy-UU_PDP_No._27%2F2022_Compliant-emerald?style=flat-square)](https://peraturan.go.id/)
@@ -32,7 +32,7 @@
 > **Ajang Kompetisi:** ICONFEST 2026 (Informatics Conference & Festival, Universitas Siliwangi)  
 > **Kategori:** Software Development: Bidang Kesehatan  
 > **Akses Produksi (Live):** [https://iconfest.febnawanfr.my.id](https://iconfest.febnawanfr.my.id) (Portal Supir) & [https://iconfest.febnawanfr.my.id/fleet](https://iconfest.febnawanfr.my.id/fleet) (Konsol Dispatcher)  
-> **Status Verifikasi:** 16/16 Vitest Unit Tests Passed (100%), 0 TypeScript Errors, SQLite WAL Server Persistence, Strict Role-Based Auth Guard, Production Build Active.
+> **Status Verifikasi:** 21/21 Vitest Unit Tests Passed (100%), 0 TypeScript Errors, SQLite WAL Server Persistence, Multi-Key Pool Balancing, Strict Role-Based Auth Guard, Production Build Active.
 
 ---
 
@@ -261,14 +261,16 @@ flowchart TD
     D --> E["Injeksi Kronobiologi Sirkadian & Jam Tes"]
     E --> F["API Route /api/analyze"]
     
-    subgraph "Resilience Failover Cascade"
-        F --> G{"Gemini 3.8 Flash<br/>(Primary Model)"}
+    subgraph "Resilience Failover Cascade & Key Pool"
+        F --> G{"Gemini 3.5 Flash-Lite<br/>(Fast Primary)"}
         G -- "Sukses" --> H["Diagnosis Klinis Terstruktur"]
-        G -- "503 / Timeout 4s" --> I{"Gemini 3.5 Flash Lite<br/>(Fast Secondary)"}
+        G -- "429 / Rate Limit" --> KPool["Next API Key in Pool (Round-Robin)"]
+        KPool --> G
+        G -- "503 / Timeout 9.5s" --> I{"Gemini 3.5 Flash<br/>(Deep Secondary)"}
         I -- "Sukses" --> H
-        I -- "Gagal / Cooldown" --> J{"Gemini 2.5 Flash<br/>(Tertiary Model)"}
+        I -- "Gagal / Cooldown" --> J{"Gemini 3.8 Flash<br/>(Tertiary Model)"}
         J -- "Sukses" --> H
-        J -- "Offline / Semua Gagal" --> K["Local Clinical Deterministic Heuristics"]
+        J -- "Offline / Semua Gagal" --> K["Local Clinical Deterministic Engine"]
         K --> H
     end
 
@@ -419,34 +421,36 @@ Setiap berkas dalam repositori ini mematuhi prinsip **Single Responsibility Prin
 
 ```
 cognipulse/
+├── data/                         # Basis data SQLite & skema seed armada
 ├── docs/
 │   └── images/                   # Tangkapan layar resolusi tinggi aplikasi
 ├── src/
-│   ├── app/                      # Next.js 15 App Router
-│   │   ├── api/analyze/          # Route handler Gemini 3.8 Flash & failover
-│   │   ├── layout.tsx            # Root layout & konfigurasi font
-│   │   └── page.tsx              # Halaman utama & orkestrator tab
+│   ├── app/                      # Next.js 15 App Router & API routes
+│   │   ├── api/analyze/          # AI Cascade: Gemini + Key Pool + Fallback
+│   │   ├── api/assessments/      # REST API riwayat telemetri supir
+│   │   ├── api/auth/             # Autentikasi sesi berbasis NIP & peran
+│   │   ├── api/fleet/            # API pengawasan armada travel
+│   │   ├── fleet/                # Konsol Dispatcher (/fleet & /fleet/drivers)
+│   │   ├── layout.tsx            # Root layout & konfigurasi font Inter
+│   │   └── page.tsx              # Portal Utama Asesmen Supir
 │   ├── components/
-│   │   ├── assessment/           # Modul asesmen neurokognitif
-│   │   │   ├── corsi/            # Modul Corsi Block (Memory grid stage)
-│   │   │   ├── motor/            # Modul Tapping (Cadence, rhythmic target)
-│   │   │   ├── pvt/              # Modul PVT-B (Timer display, stage)
-│   │   │   ├── stroop/           # Modul Stroop (Visual conflict stage)
-│   │   │   └── tutorials/        # 2-Stage Interactive Tutorials (Demo & Sandbox)
-│   │   ├── dashboard/            # Modul ringkasan, riwayat & bottom sheet
-│   │   ├── navigation/           # Apple header, profile dropdown & tab bar
+│   │   ├── assessment/           # Modul asesmen 4 modalitas neurokognitif
+│   │   ├── auth/                 # Form login & demo account shortcuts
+│   │   ├── dashboard/            # Ringkasan, grafik tren & bottom sheet
+│   │   ├── fleet/                # Tabel armada, inspeksi supir & modal edit
+│   │   ├── navigation/           # Apple header & navigation tab bar
 │   │   ├── results/              # Diagnosis visual & rekomendasi pemulihan
-│   │   └── ui/                   # Primitif UI (Button, Card, Badge, Modal)
-│   ├── hooks/                    # Custom hooks untuk runner asesmen & session
+│   │   └── ui/                   # Primitif UI (Button, Badge, Modal, Divider)
+│   ├── hooks/                    # Custom hooks state transien & runner
 │   ├── lib/
-│   │   ├── ai/                   # Gemini client & local resilience fallback
+│   │   ├── ai/                   # Gemini client, multi-key pool & fallback
 │   │   ├── audio/                # Web Audio API native synthesizer
+│   │   ├── db/                   # Layanan database SQLite (WAL Mode)
 │   │   ├── scoring/              # Kalkulator matematika murni (CFI, PVT, dll)
-│   │   └── session-utils.ts      # Utilitas sesi, waktu & kronobiologi
+│   │   └── session-utils.ts      # Utilitas sesi & format kronobiologi
 │   └── types/                    # Kontrak TypeScript terpusat
-├── tests/                        # 10 Unit tests Vitest
-├── AGENTS.md                     # Aturan rekayasa workspace & antislop
-└── package.json                  # Dependensi proyek
+├── tests/                        # 21 Unit tests Vitest (Scoring, Auth, Fleet)
+└── package.json                  # Dependensi proyek Next.js 15
 ```
 
 ---
