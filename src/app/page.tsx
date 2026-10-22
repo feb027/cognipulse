@@ -18,15 +18,16 @@ import { useSessionHistory, StoredSession } from '@/hooks/use-session-storage';
 import { useAuthSession } from '@/hooks/use-auth-session';
 import { toAssessmentResult } from '@/lib/session-utils';
 import { CompositeFatigueResult, UserContext, PVTMetrics, StroopMetrics, MotorMetrics, CorsiMetrics, GeminiClinicalAnalysis } from '@/types';
-import { Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Sparkles, ArrowRight, ArrowLeft, ShieldCheck } from 'lucide-react';
 
 export default function Home() {
-  const { session, loading: authLoading, isLoggedIn, isDriver, logout, setSessionDirect } = useAuthSession();
+  const { session, loading: authLoading, isLoggedIn, logout, setSessionDirect } = useAuthSession();
   const [activeTab, setActiveTab] = useState<NavigationTab>('summary');
   const [isTestingActive, setIsTestingActive] = useState(false);
   const [isDriverProfileOpen, setIsDriverProfileOpen] = useState(false);
   const [isJuryPresetsOpen, setIsJuryPresetsOpen] = useState(false);
   const [selectedVitalKey, setSelectedVitalKey] = useState<string | null>(null);
+  const [selectedHistorySession, setSelectedHistorySession] = useState<StoredSession | null>(null);
 
   const [activeCfi, setActiveCfi] = useState<CompositeFatigueResult | null>(null);
   const [activePvt, setActivePvt] = useState<PVTMetrics | null>(null);
@@ -47,9 +48,7 @@ export default function Home() {
       <UnifiedLoginView
         onLoginSuccess={(sess) => {
           setSessionDirect(sess);
-          if (sess.role === 'dispatcher') {
-            window.location.href = '/fleet';
-          }
+          if (sess.role === 'dispatcher') window.location.href = '/fleet';
         }}
       />
     );
@@ -122,19 +121,14 @@ export default function Home() {
     }
   };
 
-  const handleSelectHistorySession = (s: StoredSession) => {
-    const res = toAssessmentResult(s);
-    setActiveCfi(res.cfi); setActivePvt(res.pvt); setActiveStroop(res.stroop);
-    setActiveMotor(res.motor); setActiveCorsi(res.corsi || null); setActiveAnalysis(res.diagnosis);
-    setIsTestingActive(false); setActiveTab('assessment');
-  };
-
   const latestResult = (activeCfi && activePvt && activeStroop && activeMotor && activeAnalysis)
     ? { cfi: activeCfi, pvt: activePvt, stroop: activeStroop, motor: activeMotor, corsi: activeCorsi || undefined, diagnosis: activeAnalysis, timestamp: new Date().toISOString() }
     : history.length > 0 ? toAssessmentResult(history[0]) : null;
 
+  const historyResult = selectedHistorySession ? toAssessmentResult(selectedHistorySession) : null;
+
   return (
-    <div className={`min-h-screen transition-colors ${isTestingActive ? 'pb-4 sm:pb-6' : 'pb-36 sm:pb-32'}`}>
+    <div className={`min-h-screen transition-colors ${isTestingActive ? 'pb-4 sm:pb-6' : 'pb-44 sm:pb-36'}`}>
       <AppleHeader
         title={activeTab === 'summary' ? 'Ringkasan' : activeTab === 'assessment' ? 'Asesmen' : 'Riwayat'}
         driver={activeDriver}
@@ -142,7 +136,7 @@ export default function Home() {
         onOpenProfileDetails={() => setIsDriverProfileOpen(true)}
         onOpenJuryPresets={() => setIsJuryPresetsOpen(true)}
         onSeedDemo={seedDemoHistory}
-        onClearHistory={() => { clearHistory(); setActiveCfi(null); setActivePvt(null); setActiveStroop(null); setActiveMotor(null); setActiveAnalysis(null); }}
+        onClearHistory={() => { clearHistory(); setActiveCfi(null); setActivePvt(null); setActiveStroop(null); setActiveMotor(null); setActiveAnalysis(null); setSelectedHistorySession(null); }}
         onLogout={logout}
       />
 
@@ -174,14 +168,49 @@ export default function Home() {
         )}
 
         {activeTab === 'history' && (
-          <div className="animate-springUp">
-            <HistoryLogView history={history} onSelectSession={handleSelectHistorySession} />
+          <div className="animate-springUp space-y-3">
+            {selectedHistorySession && historyResult ? (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between px-1">
+                  <button
+                    onClick={() => setSelectedHistorySession(null)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs font-semibold transition-all shadow-sm active:scale-95"
+                  >
+                    <ArrowLeft className="w-3.5 h-3.5" />
+                    <span>Kembali ke Riwayat</span>
+                  </button>
+                  <span className="text-[11px] font-mono text-zinc-400">
+                    {new Date(selectedHistorySession.timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+                <AssessmentResultView
+                  cfi={historyResult.cfi}
+                  pvt={historyResult.pvt}
+                  stroop={historyResult.stroop}
+                  motor={historyResult.motor}
+                  analysis={historyResult.diagnosis}
+                  onRetest={() => {
+                    setSelectedHistorySession(null);
+                    setActiveTab('assessment');
+                    setIsTestingActive(true);
+                  }}
+                />
+              </div>
+            ) : (
+              <HistoryLogView history={history} onSelectSession={(s) => setSelectedHistorySession(s)} />
+            )}
           </div>
         )}
       </main>
 
       {!isTestingActive && (
-        <AppleTabBar activeTab={activeTab} onTabChange={(t) => { setIsTestingActive(false); setActiveTab(t); }} />
+        <AppleTabBar
+          activeTab={activeTab}
+          onTabChange={(t) => {
+            setIsTestingActive(false);
+            setActiveTab(t);
+          }}
+        />
       )}
 
       <DriverProfileModal isOpen={isDriverProfileOpen} onClose={() => setIsDriverProfileOpen(false)} driver={activeDriver} onLogout={logout} />

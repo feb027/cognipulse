@@ -5,7 +5,7 @@ import { GeminiClinicalAnalysis } from '@/types/gemini';
 import { CompositeFatigueResult } from '@/types/assessment';
 import { DiagnosticReportCard } from './DiagnosticReportCard';
 import { RecoveryRoadmap } from './RecoveryRoadmap';
-import { Brain, HeartPulse } from 'lucide-react';
+import { Brain, ShieldCheck, HeartPulse } from 'lucide-react';
 
 interface ClinicalDetailsTabsProps {
   analysis: GeminiClinicalAnalysis;
@@ -18,6 +18,7 @@ export const ClinicalDetailsTabs: React.FC<ClinicalDetailsTabsProps> = ({
   analysis,
 }) => {
   const [activeTab, setActiveTab] = useState<DetailTab>('diagnosis');
+  const isFit = analysis.differentialDiagnosis?.severityLevel === 'fit';
 
   return (
     <div className="space-y-3">
@@ -45,8 +46,12 @@ export const ClinicalDetailsTabs: React.FC<ClinicalDetailsTabsProps> = ({
               : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
           }`}
         >
-          <HeartPulse className="w-3.5 h-3.5 text-apple-green" />
-          <span>Saran Pemulihan</span>
+          {isFit ? (
+            <ShieldCheck className="w-3.5 h-3.5 text-apple-green" />
+          ) : (
+            <HeartPulse className="w-3.5 h-3.5 text-apple-orange" />
+          )}
+          <span>{isFit ? 'Kesiapan Jalan' : 'Saran Pemulihan'}</span>
         </button>
       </div>
 
@@ -54,7 +59,10 @@ export const ClinicalDetailsTabs: React.FC<ClinicalDetailsTabsProps> = ({
       <div className="animate-springUp">
         {activeTab === 'diagnosis' && <DiagnosticReportCard analysis={analysis} />}
         {activeTab === 'recovery' && (
-          <RecoveryRoadmap prescription={analysis.precisionRecoveryPrescription} />
+          <RecoveryRoadmap
+            prescription={analysis.precisionRecoveryPrescription}
+            severityLevel={analysis.differentialDiagnosis?.severityLevel}
+          />
         )}
       </div>
     </div>

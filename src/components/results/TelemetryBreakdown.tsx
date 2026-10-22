@@ -29,15 +29,15 @@ export const TelemetryBreakdown: React.FC<TelemetryBreakdownProps> = ({
         <span>Rincian Hasil Tes</span>
       </div>
 
-      {/* 4-Channel Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-black/5 dark:divide-white/10 bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 rounded-3xl overflow-hidden shadow-apple">
+      {/* 4-Channel Clean Grid with Hairline Dividers */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-black/5 dark:bg-white/10 border border-black/5 dark:border-white/10 rounded-3xl overflow-hidden shadow-apple">
         {/* Channel 1: Kecepatan Refleks */}
-        <div className="p-4 space-y-1">
+        <div className="p-4 bg-white dark:bg-[#1C1C1E] space-y-1">
           <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
             Kecepatan Refleks
           </span>
           <div className="flex items-baseline gap-1">
-            <span className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${getSpeedColor(pvt.responseSpeed)}`}>
+            <span className={`text-2xl sm:text-3xl font-extrabold tracking-tight font-mono tabular-nums ${getSpeedColor(pvt.responseSpeed)}`}>
               {pvt.responseSpeed}
             </span>
             <span className="text-xs font-semibold text-zinc-400">s⁻¹</span>
@@ -48,12 +48,12 @@ export const TelemetryBreakdown: React.FC<TelemetryBreakdownProps> = ({
         </div>
 
         {/* Channel 2: Hilang Fokus (Bengong) */}
-        <div className="p-4 space-y-1">
+        <div className="p-4 bg-white dark:bg-[#1C1C1E] space-y-1">
           <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
             Hilang Fokus
           </span>
           <div className="flex items-baseline gap-1">
-            <span className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${getLapseColor(pvt.attentionalLapseCount)}`}>
+            <span className={`text-2xl sm:text-3xl font-extrabold tracking-tight font-mono tabular-nums ${getLapseColor(pvt.attentionalLapseCount)}`}>
               {pvt.attentionalLapseCount}
             </span>
             <span className="text-xs font-semibold text-zinc-400">x</span>
@@ -64,12 +64,12 @@ export const TelemetryBreakdown: React.FC<TelemetryBreakdownProps> = ({
         </div>
 
         {/* Channel 3: Akurasi Respon */}
-        <div className="p-4 space-y-1">
+        <div className="p-4 bg-white dark:bg-[#1C1C1E] space-y-1">
           <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
             Akurasi Respon
           </span>
           <div className="flex items-baseline gap-1">
-            <span className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${getStroopColor(stroop.inhibitoryControlScore)}`}>
+            <span className={`text-2xl sm:text-3xl font-extrabold tracking-tight font-mono tabular-nums ${getStroopColor(stroop.inhibitoryControlScore)}`}>
               {stroop.inhibitoryControlScore}
             </span>
             <span className="text-xs font-semibold text-zinc-400">/100</span>
@@ -80,12 +80,12 @@ export const TelemetryBreakdown: React.FC<TelemetryBreakdownProps> = ({
         </div>
 
         {/* Channel 4: Variasi Ketukan */}
-        <div className="p-4 space-y-1">
+        <div className="p-4 bg-white dark:bg-[#1C1C1E] space-y-1">
           <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
             Variasi Ketukan
           </span>
           <div className="flex items-baseline gap-1">
-            <span className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${getJitterColor(motor.itiStandardDeviationMs)}`}>
+            <span className={`text-2xl sm:text-3xl font-extrabold tracking-tight font-mono tabular-nums ${getJitterColor(motor.itiStandardDeviationMs)}`}>
               ±{motor.itiStandardDeviationMs}
             </span>
             <span className="text-xs font-semibold text-zinc-400">ms</span>

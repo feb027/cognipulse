@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { X } from 'lucide-react';
 import { AssessmentResult } from '@/types';
 
 interface VitalDetailModalProps {
@@ -19,7 +18,7 @@ export function VitalDetailModal({
 
   const getMetricData = () => {
     switch (vitalKey) {
-      case 'cfi':
+      case 'cfi': {
         const cfi = latestResult?.cfi.cfiScore ?? 18;
         const readiness = 100 - cfi;
         return {
@@ -27,43 +26,47 @@ export function VitalDetailModal({
           value: `${readiness}%`,
           unit: `(Kelelahan: ${cfi}/100)`,
           tier: cfi < 35 ? 'Optimal' : cfi < 70 ? 'Waspada' : 'Kritis',
-          percent: Math.min(100, Math.max(5, cfi)),
+          percent: Math.min(95, Math.max(5, cfi)),
           meaning: 'Indeks komposit kebugaran kerja mengintegrasikan kecepatan respon saraf, kontrol inhibisi, dan stabilitas ritme motorik.',
-          advice: 'Pertahankan hidrasi 250ml dan istirahat mata berkala jika mendekati zona waspada.',
+          advice: 'Pertahankan hidrasi kabin 500ml dan lakukan jeda istirahat berkala tiap 3-4 jam perjalanan tol.',
         };
-      case 'pvt':
+      }
+      case 'pvt': {
         const rt = Math.round(latestResult?.pvt.meanReactionTimeMs ?? 218);
         return {
           title: 'Kecepatan Refleks Visual',
           value: `${rt}`,
           unit: 'ms',
           tier: rt < 260 ? 'Optimal' : rt < 355 ? 'Waspada' : 'Kritis',
-          percent: Math.min(100, Math.max(5, ((rt - 180) / (450 - 180)) * 100)),
-          meaning: 'Mengukur waktu transmisi impuls dari retina mata ke korteks motorik otak.',
-          advice: 'Kelambatan refleks menambah jarak henti pengereman darurat dan risiko kelalaian tugas.',
+          percent: Math.min(95, Math.max(5, ((rt - 180) / (450 - 180)) * 100)),
+          meaning: 'Mengukur waktu transmisi impuls dari visual jalan raya ke respon pengereman motorik supir.',
+          advice: 'Kelambatan refleks menambah jarak henti pengereman darurat dan risiko tabrak belakang di jalan tol.',
         };
-      case 'stroop':
+      }
+      case 'stroop': {
         const acc = Math.round(latestResult?.stroop.accuracyRate ?? 96);
         return {
           title: 'Kontrol Inhibisi & Fokus',
           value: `${acc}`,
           unit: '% Akurasi',
           tier: acc >= 90 ? 'Optimal' : acc >= 70 ? 'Waspada' : 'Kritis',
-          percent: Math.min(100, Math.max(5, 100 - acc + 10)),
-          meaning: 'Daya tahan prefrontal untuk menahan respon impulsif dan memilah informasi bertentangan.',
-          advice: 'Penurunan akurasi menandakan beban mental jenuh. Ambil jeda 10 menit tanpa layar.',
+          percent: Math.min(95, Math.max(5, 100 - acc + 10)),
+          meaning: 'Daya tahan prefrontal cortex untuk mempertahankan konsentrasi stabil dan menyaring distraksi saat berkendara.',
+          advice: 'Penurunan akurasi menandakan beban mental jenuh. Segera lakukan rotasi supir atau istirahat di rest area.',
         };
-      default:
+      }
+      default: {
         const sd = Math.round(latestResult?.motor.itiStandardDeviationMs ?? 18);
         return {
           title: 'Kestabilan Ritme Motorik',
           value: `±${sd}`,
           unit: 'ms Jitter',
           tier: sd <= 20 ? 'Optimal' : sd <= 35 ? 'Waspada' : 'Kritis',
-          percent: Math.min(100, Math.max(5, (sd / 50) * 100)),
-          meaning: 'Tingkat tremor dan keteraturan impuls saraf motorik halus pada jari tangan.',
-          advice: 'Lakukan relaksasi peregangan jari dan pergelangan tangan untuk meredakan ketegangan fisik.',
+          percent: Math.min(95, Math.max(5, (sd / 50) * 100)),
+          meaning: 'Tingkat tremor dan keteraturan impuls saraf motorik halus saat mengendalikan kemudi.',
+          advice: 'Lakukan peregangan otot lengan, bahu, dan pergelangan tangan untuk meredakan ketegangan fisik berkendara.',
         };
+      }
     }
   };
 
@@ -75,11 +78,11 @@ export function VitalDetailModal({
       <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
 
       {/* Modern Apple Sheet Card */}
-      <div className="relative w-full max-w-sm rounded-t-3xl sm:rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/10 dark:border-white/10 shadow-2xl p-6 space-y-5 animate-springUp z-10">
+      <div className="relative w-full max-w-sm rounded-t-3xl sm:rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/10 dark:border-white/10 shadow-2xl p-6 space-y-4 animate-springUp z-10">
         {/* iOS Drag Indicator Handle on Mobile */}
-        <div className="w-10 h-1 rounded-full bg-zinc-300 dark:bg-zinc-700 mx-auto -mt-2 mb-2 sm:hidden" />
+        <div className="w-10 h-1 rounded-full bg-zinc-300 dark:bg-zinc-700 mx-auto -mt-2 mb-1 sm:hidden" />
 
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between gap-2">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-400 block mb-0.5">
               Parameter Klinis
@@ -88,12 +91,17 @@ export function VitalDetailModal({
               {m.title}
             </h3>
           </div>
-          <button
-            onClick={onClose}
-            className="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
+          <span
+            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border shrink-0 ${
+              m.tier === 'Optimal'
+                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                : m.tier === 'Waspada'
+                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
+            }`}
           >
-            <X className="w-4 h-4" />
-          </button>
+            {m.tier}
+          </span>
         </div>
 
         {/* Big Apple Clean Display */}
@@ -106,17 +114,45 @@ export function VitalDetailModal({
           </span>
         </div>
 
-        {/* Minimal Spectrum Range Bar */}
-        <div className="space-y-1.5 pt-1">
-          <div className="relative w-full h-2 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex">
-            <div className="w-1/3 h-full bg-emerald-500/70" />
-            <div className="w-1/3 h-full bg-amber-500/70" />
-            <div className="w-1/3 h-full bg-rose-500/70" />
+        {/* Minimal Spectrum Range Bar with Dynamic Needle Indicator */}
+        <div className="space-y-1.5 pt-2">
+          <div className="relative w-full pt-2.5 pb-1">
+            {/* Needle Pin Indicator */}
+            <div
+              className="absolute top-0 -translate-x-1/2 flex flex-col items-center pointer-events-none transition-all duration-300 z-10"
+              style={{ left: `${m.percent}%` }}
+            >
+              <div className="w-3.5 h-3.5 rounded-full bg-white dark:bg-zinc-900 border-2 border-zinc-900 dark:border-white shadow-md flex items-center justify-center">
+                <div
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    m.tier === 'Optimal'
+                      ? 'bg-emerald-500'
+                      : m.tier === 'Waspada'
+                      ? 'bg-amber-500'
+                      : 'bg-rose-500'
+                  }`}
+                />
+              </div>
+            </div>
+
+            {/* Tri-Color Spectrum Line */}
+            <div className="relative w-full h-2.5 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex shadow-inner">
+              <div className="w-1/3 h-full bg-emerald-500/80" />
+              <div className="w-1/3 h-full bg-amber-500/80" />
+              <div className="w-1/3 h-full bg-rose-500/80" />
+            </div>
           </div>
+
           <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-            <span className="text-emerald-500">Optimal</span>
-            <span className="text-amber-500">Waspada</span>
-            <span className="text-rose-500">Kritis</span>
+            <span className={m.tier === 'Optimal' ? 'text-emerald-500 font-extrabold' : 'text-zinc-400'}>
+              Optimal
+            </span>
+            <span className={m.tier === 'Waspada' ? 'text-amber-500 font-extrabold' : 'text-zinc-400'}>
+              Waspada
+            </span>
+            <span className={m.tier === 'Kritis' ? 'text-rose-500 font-extrabold' : 'text-zinc-400'}>
+              Kritis
+            </span>
           </div>
         </div>
 
@@ -129,9 +165,10 @@ export function VitalDetailModal({
           </p>
         </div>
 
+        {/* Apple Style Full Width Close Button */}
         <button
           onClick={onClose}
-          className="w-full py-2.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 font-bold text-xs hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+          className="w-full py-2.5 rounded-2xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 font-bold text-xs hover:bg-zinc-800 dark:hover:bg-zinc-100 transition-colors shadow-sm active:scale-[0.98]"
         >
           Selesai
         </button>
