@@ -10,6 +10,7 @@ import { FleetDriverTable } from '@/components/fleet/FleetDriverTable';
 import { FleetInspectionModal } from '@/components/fleet/FleetInspectionModal';
 import { RegisterDriverModal } from '@/components/driver/RegisterDriverModal';
 import { AdminSettingsModal } from '@/components/fleet/AdminSettingsModal';
+import { EditDriverModal } from '@/components/fleet/drivers/EditDriverModal';
 import { FleetAccessDenied } from '@/components/fleet/FleetAccessDenied';
 import { UnifiedLoginView } from '@/components/auth/UnifiedLoginView';
 import { useAuthSession, getAuthHeader } from '@/hooks/use-auth-session';
@@ -23,6 +24,7 @@ export default function FleetPage() {
   const [statusFilter, setStatusFilter] = useState<'all' | DriverStatus>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDriver, setSelectedDriver] = useState<DriverWithLatestAssessment | null>(null);
+  const [editingDriver, setEditingDriver] = useState<DriverWithLatestAssessment | null>(null);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isAdminSettingsOpen, setIsAdminSettingsOpen] = useState(false);
 
@@ -173,11 +175,20 @@ export default function FleetPage() {
         <FleetDriverTable
           drivers={filteredDrivers}
           onInspect={(driver) => setSelectedDriver(driver)}
+          onEdit={(driver) => setEditingDriver(driver)}
         />
       </main>
 
       <FleetInspectionModal isOpen={Boolean(selectedDriver)} driver={selectedDriver} onClose={() => setSelectedDriver(null)} onStatusUpdated={loadFleetData} />
       <RegisterDriverModal isOpen={isRegisterOpen} onClose={() => setIsRegisterOpen(false)} onDriverCreated={() => loadFleetData()} />
+      {editingDriver && (
+        <EditDriverModal
+          isOpen={Boolean(editingDriver)}
+          driver={editingDriver}
+          onClose={() => setEditingDriver(null)}
+          onDriverUpdated={loadFleetData}
+        />
+      )}
       <AdminSettingsModal
         isOpen={isAdminSettingsOpen}
         onClose={() => setIsAdminSettingsOpen(false)}

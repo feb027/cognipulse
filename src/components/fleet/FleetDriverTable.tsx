@@ -2,15 +2,16 @@
 
 import React from 'react';
 import { DriverWithLatestAssessment, DriverStatus } from '@/types/fleet';
-import { ShieldCheck, AlertTriangle, ShieldAlert, Car, ChevronRight, Clock } from 'lucide-react';
+import { ShieldCheck, AlertTriangle, ShieldAlert, Car, ChevronRight, Pencil } from 'lucide-react';
 import { getDriverInitials } from '@/lib/driver-utils';
 
 interface FleetDriverTableProps {
   drivers: DriverWithLatestAssessment[];
   onInspect: (driver: DriverWithLatestAssessment) => void;
+  onEdit: (driver: DriverWithLatestAssessment) => void;
 }
 
-export function FleetDriverTable({ drivers, onInspect }: FleetDriverTableProps) {
+export function FleetDriverTable({ drivers, onInspect, onEdit }: FleetDriverTableProps) {
   const getStatusBadge = (status: DriverStatus) => {
     switch (status) {
       case 'stand_down':
@@ -30,7 +31,7 @@ export function FleetDriverTable({ drivers, onInspect }: FleetDriverTableProps) 
       case 'on_trip':
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 whitespace-nowrap">
-            <Car className="w-3 h-3 text-apple-blue" />
+            <Car className="w-3 h-3 text-blue-500" />
             On-Trip
           </span>
         );
@@ -64,7 +65,9 @@ export function FleetDriverTable({ drivers, onInspect }: FleetDriverTableProps) 
               <th className="py-3 px-4">Status Kesiapan</th>
               <th className="py-3 px-4 text-center">Skor CFI</th>
               <th className="py-3 px-4 text-center">Refleks PVT</th>
-              <th className="py-3 px-4 text-center">Rem Tol</th>
+              <th className="py-3 px-4 text-center" title="Jarak Reaksi Pengereman Kendaraan pada Kecepatan Tol 100 km/jam">
+                Reaksi Rem Tol
+              </th>
               <th className="py-3 px-4 text-right">Aksi</th>
             </tr>
           </thead>
@@ -128,7 +131,7 @@ export function FleetDriverTable({ drivers, onInspect }: FleetDriverTableProps) 
                     )}
                   </td>
 
-                  {/* Braking Distance */}
+                  {/* Braking Reaction Distance */}
                   <td className="py-3.5 px-4 text-center">
                     <span className="font-mono font-bold text-xs tabular-nums text-apple-blue">
                       {latest ? `${latest.braking_distance_meters} m` : '—'}
@@ -138,17 +141,32 @@ export function FleetDriverTable({ drivers, onInspect }: FleetDriverTableProps) 
 
                   {/* Action */}
                   <td className="py-3.5 px-4 text-right">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onInspect(driver);
-                      }}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 text-xs font-semibold transition-all group-hover:bg-apple-blue group-hover:text-white shadow-sm"
-                    >
-                      <span>Inspeksi</span>
-                      <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEdit(driver);
+                        }}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-200 text-xs font-semibold transition-all shadow-sm"
+                        title="Edit Data & Rute Supir"
+                      >
+                        <Pencil className="w-3 h-3 text-apple-blue" />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onInspect(driver);
+                        }}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-apple-blue/10 hover:bg-apple-blue/20 text-apple-blue text-xs font-semibold transition-all shadow-sm"
+                        title="Inspeksi Hasil Asesmen"
+                      >
+                        <span>Inspeksi</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );

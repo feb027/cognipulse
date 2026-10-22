@@ -14,7 +14,14 @@ interface EditDriverModalProps {
 
 export function EditDriverModal({ isOpen, onClose, driver, onDriverUpdated }: EditDriverModalProps) {
   const [form, setForm] = useState({
-    name: '', age: '', vehicle_type: '', license_plate: '', address: '', medical_history: '', status: 'ready' as DriverStatus,
+    name: '',
+    age: '',
+    vehicle_type: '',
+    license_plate: '',
+    address: '',
+    medical_history: '',
+    status: 'ready' as DriverStatus,
+    route_name: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -29,6 +36,7 @@ export function EditDriverModal({ isOpen, onClose, driver, onDriverUpdated }: Ed
         address: driver.address || '',
         medical_history: driver.medical_history || '',
         status: driver.status || 'ready',
+        route_name: driver.activeTrip?.route_name || '',
       });
       setError(null);
     }
@@ -62,6 +70,7 @@ export function EditDriverModal({ isOpen, onClose, driver, onDriverUpdated }: Ed
           address: form.address.trim(),
           medical_history: form.medical_history.trim(),
           status: form.status,
+          route_name: form.route_name.trim(),
         }),
       });
 
@@ -81,7 +90,7 @@ export function EditDriverModal({ isOpen, onClose, driver, onDriverUpdated }: Ed
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-      <div className="bg-white dark:bg-[#1C1C1E] rounded-3xl w-full max-w-lg overflow-hidden border border-black/10 dark:border-white/10 shadow-2xl flex flex-col max-h-[90vh] animate-springUp">
+      <div className="bg-white dark:bg-[#1C1C1E] rounded-3xl w-full max-w-lg overflow-hidden border border-black/10 dark:border-white/10 shadow-2xl flex flex-col max-h-[90vh] animate-fadeIn">
         <div className="px-5 py-4 border-b border-black/5 dark:border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Pencil className="w-5 h-5 text-apple-blue" />
@@ -136,6 +145,30 @@ export function EditDriverModal({ isOpen, onClose, driver, onDriverUpdated }: Ed
               <label className="text-[11px] font-bold text-zinc-500 uppercase">Alamat Domisili *</label>
               <input type="text" value={form.address} onChange={(e) => update('address', e.target.value)} className="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-apple-blue outline-none text-zinc-900 dark:text-white" />
             </div>
+          </div>
+
+          <div>
+            <label className="text-[11px] font-bold text-zinc-500 uppercase flex items-center justify-between">
+              <span>Rute Perjalanan Aktif</span>
+              <span className="text-[10px] text-apple-blue font-semibold">Konteks Evaluasi AI</span>
+            </label>
+            <input
+              type="text"
+              list="popular-routes"
+              value={form.route_name}
+              onChange={(e) => update('route_name', e.target.value)}
+              placeholder="Pilih atau ketik rute (misal: Bandung Pasteur - Bandara Soetta T3)"
+              className="w-full mt-1 px-3 py-2 text-xs rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-transparent focus:border-apple-blue outline-none text-zinc-900 dark:text-white"
+            />
+            <datalist id="popular-routes">
+              <option value="Bandung Pasteur - Bandara Soetta T3 (165 km)" />
+              <option value="Bandara Soetta - Bandung Pasteur (165 km)" />
+              <option value="Cirebon - Bandung Dipatiukur (130 km)" />
+              <option value="Tasikmalaya - Jakarta Semanggi (250 km)" />
+              <option value="Bandung Buahbatu - Jakarta Blok M (152 km)" />
+              <option value="Jakarta Rawamangun - Bandung Pasteur (155 km)" />
+              <option value="Semarang - Surabaya Tol Trans-Jawa (350 km)" />
+            </datalist>
           </div>
 
           <div>

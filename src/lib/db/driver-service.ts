@@ -145,6 +145,7 @@ export function updateDriver(
     medical_history?: string;
     status?: string;
     pin?: string;
+    route_name?: string;
   }
 ): Driver | null {
   const db = getDatabase();
@@ -165,6 +166,19 @@ export function updateDriver(
     SET name = ?, age = ?, vehicle_type = ?, license_plate = ?, address = ?, medical_history = ?, status = ?, pin = ?, updated_at = CURRENT_TIMESTAMP
     WHERE id = ?
   `).run(updatedName, updatedAge, updatedVeh, updatedPlate, updatedAddr, updatedMed, updatedStatus, updatedPin, id);
+
+  if (data.route_name !== undefined && data.route_name.trim()) {
+    const cleanRoute = data.route_name.trim();
+    const existingTrip = db.prepare('SELECT id FROM trip_history WHERE driver_id = ? ORDER BY id DESC LIMIT 1').get(id) as { id: number } | undefined;
+    if (existingTrip) {
+      db.prepare('UPDATE trip_history SET route_name = ? WHERE id = ?').run(cleanRoute, existingTrip.id);
+    } else {
+      db.prepare(`
+        INSERT INTO trip_history (driver_id, route_name, departure_time, distance_km, status, notes)
+        VALUES (?, ?, 'Hari ini', 150, 'scheduled', 'Rute ditugaskan oleh Dispatcher')
+      `).run(id, cleanRoute);
+    }
+  }
 
   const updated = db.prepare('SELECT * FROM drivers WHERE id = ?').get(id) as Driver;
   return stripPin(updated);

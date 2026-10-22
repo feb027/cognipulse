@@ -140,6 +140,16 @@ export class JsonDatabase {
       return { changes: 1, lastInsertRowid: newId };
     }
 
+    if (sql.includes('UPDATE trip_history SET route_name =')) {
+      const [routeName, tripId] = params;
+      const target = globalState.trip_history.find((t) => t.id === Number(tripId));
+      if (target) {
+        target.route_name = routeName;
+        saveState(globalState);
+        return { changes: 1, lastInsertRowid: target.id };
+      }
+    }
+
     if (sql.includes('UPDATE drivers SET pin =')) {
       const [pin, driverId] = params;
       const target = globalState.drivers.find((d) => d.id === Number(driverId));

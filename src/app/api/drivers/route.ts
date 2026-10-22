@@ -85,7 +85,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { id, name, age, vehicle_type, license_plate, address, medical_history, status, pin } = body;
+    const { id, name, age, vehicle_type, license_plate, address, medical_history, status, pin, route_name } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'ID driver wajib disertakan' }, { status: 400 });
@@ -100,6 +100,7 @@ export async function PATCH(request: NextRequest) {
       medical_history,
       status,
       pin,
+      route_name,
     });
 
     if (!updated) {

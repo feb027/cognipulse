@@ -21,14 +21,22 @@ export const TrendHistoryView: React.FC<TrendHistoryViewProps> = ({ history }) =
   const chartData = history
     .slice()
     .reverse()
-    .map((item) => ({
-      time: new Date(item.timestamp).toLocaleDateString([], {
-        weekday: 'short',
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-      cfi: item.cfi.cfiScore,
-    }));
+    .map((item) => {
+      const d = new Date(item.timestamp);
+      let day = '';
+      try {
+        day = new Intl.DateTimeFormat('id-ID', { weekday: 'short' }).format(d);
+      } catch {
+        day = '';
+      }
+      const hours = String(d.getHours()).padStart(2, '0');
+      const minutes = String(d.getMinutes()).padStart(2, '0');
+
+      return {
+        time: `${day} ${hours}:${minutes}`.trim(),
+        cfi: Math.round(item.cfi.cfiScore),
+      };
+    });
 
   return (
     <div className="p-5 sm:p-6 rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 shadow-apple space-y-4">
@@ -62,13 +70,16 @@ export const TrendHistoryView: React.FC<TrendHistoryViewProps> = ({ history }) =
               <YAxis domain={[0, 100]} stroke="#8E8E93" fontSize={11} tickLine={false} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#FFFFFF',
-                  borderColor: 'rgba(0,0,0,0.08)',
-                  borderRadius: '16px',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                  backgroundColor: '#1C1C1E',
+                  borderColor: 'rgba(255,255,255,0.1)',
+                  borderRadius: '14px',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
                   fontSize: '12px',
                   fontWeight: 600,
+                  color: '#FFFFFF',
                 }}
+                labelFormatter={(label) => `Waktu: ${label}`}
+                formatter={(val: any) => [`${val} / 100`, 'Skor Kelelahan (CFI)']}
               />
               <ReferenceLine y={30} stroke="#34C759" strokeDasharray="3 3" />
               <ReferenceLine y={65} stroke="#FF2D55" strokeDasharray="3 3" />
