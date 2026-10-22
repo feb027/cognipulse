@@ -2,8 +2,7 @@
 
 import React from 'react';
 import { DriverWithLatestAssessment, DriverStatus } from '@/types/fleet';
-import { ShieldCheck, AlertTriangle, ShieldAlert, Car, ChevronRight, Pencil } from 'lucide-react';
-import { getDriverInitials } from '@/lib/driver-utils';
+import { ShieldCheck, Car, ChevronRight, Pencil } from 'lucide-react';
 
 interface FleetDriverTableProps {
   drivers: DriverWithLatestAssessment[];
@@ -46,6 +45,21 @@ export function FleetDriverTable({ drivers, onInspect, onEdit }: FleetDriverTabl
     }
   };
 
+  const formatImpairmentTier = (tier?: string) => {
+    switch (tier) {
+      case 'fit':
+        return 'Bugar';
+      case 'mild_fatigue':
+        return 'Lelah Ringan';
+      case 'moderate_impairment':
+        return 'Lelah Sedang';
+      case 'critical_hazard':
+        return 'Kritis';
+      default:
+        return tier ? tier.replace(/_/g, ' ') : 'Belum Uji';
+    }
+  };
+
   if (drivers.length === 0) {
     return (
       <div className="p-8 text-center rounded-2xl bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 text-xs text-zinc-500">
@@ -68,7 +82,7 @@ export function FleetDriverTable({ drivers, onInspect, onEdit }: FleetDriverTabl
               <th className="py-3 px-4 text-center" title="Jarak Reaksi Pengereman Kendaraan pada Kecepatan Tol 100 km/jam">
                 Reaksi Rem Tol
               </th>
-              <th className="py-3 px-4 text-right">Aksi</th>
+              <th className="py-3 px-4 text-center">Aksi</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-black/5 dark:divide-white/5">
@@ -82,17 +96,12 @@ export function FleetDriverTable({ drivers, onInspect, onEdit }: FleetDriverTabl
                 >
                   {/* Driver & NIP */}
                   <td className="py-3.5 px-4">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center font-bold text-xs text-zinc-800 dark:text-zinc-200 flex-shrink-0">
-                        {getDriverInitials(driver.name)}
+                    <div className="space-y-0.5">
+                      <div className="font-bold text-zinc-900 dark:text-white flex items-center gap-1.5 flex-wrap">
+                        <span>{driver.name}</span>
+                        <span className="text-[10px] text-zinc-400 font-normal">({driver.age} th)</span>
                       </div>
-                      <div>
-                        <div className="font-bold text-zinc-900 dark:text-white flex items-center gap-1.5">
-                          <span>{driver.name}</span>
-                          <span className="text-[10px] text-zinc-400 font-normal">({driver.age} th)</span>
-                        </div>
-                        <span className="font-mono text-[10px] text-zinc-500">{driver.nip}</span>
-                      </div>
+                      <span className="font-mono text-[10px] text-zinc-500 block">{driver.nip}</span>
                     </div>
                   </td>
 
@@ -114,8 +123,8 @@ export function FleetDriverTable({ drivers, onInspect, onEdit }: FleetDriverTabl
                     <span className="font-mono font-bold text-sm tabular-nums text-zinc-900 dark:text-white">
                       {latest ? Math.round(latest.cfi_score) : '—'}
                     </span>
-                    <span className="block text-[10px] text-zinc-400 capitalize">
-                      {latest?.impairment_tier || 'Belum Uji'}
+                    <span className="block text-[10px] text-zinc-400">
+                      {latest ? formatImpairmentTier(latest.impairment_tier) : 'Belum Uji'}
                     </span>
                   </td>
 
@@ -140,8 +149,8 @@ export function FleetDriverTable({ drivers, onInspect, onEdit }: FleetDriverTabl
                   </td>
 
                   {/* Action */}
-                  <td className="py-3.5 px-4 text-right">
-                    <div className="flex items-center justify-end gap-1.5">
+                  <td className="py-3.5 px-4 text-center">
+                    <div className="flex items-center justify-center gap-1.5">
                       <button
                         type="button"
                         onClick={(e) => {

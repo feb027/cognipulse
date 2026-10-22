@@ -50,7 +50,7 @@ export function DriverManagementTable({ drivers, onEdit, onChangePin, onDelete }
             <th className="py-3 px-4">Armada & Plat</th>
             <th className="py-3 px-4">Status</th>
             <th className="py-3 px-4">PIN Akses</th>
-            <th className="py-3 px-4 text-right">Tindakan Admin</th>
+            <th className="py-3 px-4 text-center">Tindakan Admin</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-black/5 dark:divide-white/5">
@@ -92,8 +92,8 @@ export function DriverManagementTable({ drivers, onEdit, onChangePin, onDelete }
                   </div>
                 </td>
 
-                <td className="py-3 px-4 text-right">
-                  <div className="inline-flex items-center gap-1">
+                <td className="py-3 px-4 text-center">
+                  <div className="inline-flex items-center justify-center gap-1">
                     <button
                       type="button"
                       onClick={() => onChangePin(driver)}
