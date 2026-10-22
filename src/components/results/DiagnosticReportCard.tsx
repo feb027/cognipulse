@@ -96,9 +96,16 @@ export const DiagnosticReportCard: React.FC<DiagnosticReportCardProps> = ({
             <span className="text-[10px] font-bold text-zinc-400 uppercase block">
               Potensi Turunnya Performa
             </span>
-            <span className="text-base sm:text-lg font-extrabold text-apple-orange">
-              {fourHourRiskForecast.decisionErrorProbabilityIncrease}
-            </span>
+            {(() => {
+              const raw = fourHourRiskForecast.decisionErrorProbabilityIncrease || '0%';
+              const isZero = raw === '+0%' || raw === '0%' || raw.toLowerCase().includes('stabil') || raw.includes('0%');
+              const displayVal = raw === '+0%' || raw === '0%' ? '0% (Stabil)' : raw;
+              return (
+                <span className={`text-base sm:text-lg font-extrabold ${isZero ? 'text-emerald-500' : 'text-apple-orange'}`}>
+                  {displayVal}
+                </span>
+              );
+            })()}
           </div>
           <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 space-y-0.5">
             <span className="text-[10px] font-bold text-zinc-400 uppercase block">

@@ -18,7 +18,7 @@ export function VitalDetailModal({
   const { sheetRef, backdropRef, triggerClose, dragHandleProps } = useBottomSheetDrag({
     isOpen: Boolean(vitalKey),
     onClose,
-    threshold: 75,
+    threshold: 60,
   });
 
   if (!vitalKey) return null;
@@ -92,13 +92,11 @@ export function VitalDetailModal({
       {/* Modern Apple Sheet Card: Mobile slides from bottom; Desktop stays centered with subtle fade */}
       <div
         ref={sheetRef}
-        className="relative w-full max-w-sm rounded-t-3xl sm:rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/10 dark:border-white/10 shadow-lg p-6 space-y-4 z-10 will-change-transform sm:animate-fadeIn"
+        {...dragHandleProps}
+        className="relative w-full max-w-sm rounded-t-3xl sm:rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/10 dark:border-white/10 shadow-lg p-6 space-y-4 z-10 will-change-transform sm:animate-fadeIn cursor-grab active:cursor-grabbing touch-none sm:touch-auto select-none"
       >
-        {/* iOS Drag Handle Area on Mobile (swipe/pull down to dismiss) */}
-        <div
-          {...dragHandleProps}
-          className="w-full pt-1 pb-3 -mt-3 cursor-grab active:cursor-grabbing flex justify-center touch-none select-none sm:hidden"
-        >
+        {/* iOS Drag Handle Area on Mobile (swipe/pull down from anywhere to dismiss) */}
+        <div className="w-full pt-1 pb-3 -mt-3 flex justify-center touch-none select-none sm:hidden pointer-events-none">
           <div className="w-12 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-600 transition-colors" />
         </div>
 
