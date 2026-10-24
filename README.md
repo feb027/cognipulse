@@ -231,37 +231,31 @@ CogniPulse dirancang dari fondasi awal dengan pendekatan **Mobile-First Ergonomi
 
 ## Formulasi Composite Fatigue Index (CFI)
 
-CogniPulse menggabungkan telemetri dari keempat modalitas neurokognitif beserta profil fisiologis pengemudi menjadi satu metrik komposit terstandarisasi: **Composite Fatigue Index (CFI)** pada rentang skor $0 - 100$ (`src/lib/scoring/cfi-aggregator.ts`).
+CogniPulse menggabungkan telemetri dari keempat modalitas neurokognitif beserta profil fisiologis pengemudi menjadi satu metrik komposit terstandarisasi: **Composite Fatigue Index (CFI)** pada rentang skor kelelahan $0 - 100$, serta **Skor Kesiapan Kerja** sebesar $100 - \text{CFI}$ (`src/lib/scoring/cfi-aggregator.ts`).
 
-Setiap modalitas terlebih dahulu dikonversi menjadi **Skor Kesiapan Ternormalisasi ($S_i \in [0, 100]$)** menggunakan pendekatan $100 - \text{Penalti}_i$, kemudian diagregasikan melalui rumus rata-rata tertimbang (*weighted readiness sum*):
+$$\text{CFI} = \text{round}\left(0.30 \cdot F_{\text{PVT}} + 0.20 \cdot F_{\text{GoNoGo}} + 0.20 \cdot F_{\text{Motor}} + 0.15 \cdot F_{\text{Corsi}} + 0.15 \cdot F_{\text{Context}}\right)$$
 
-$$\text{CFI}_{\text{weighted}} = 0.30 \cdot S_{\text{PVT}} + 0.20 \cdot S_{\text{Stroop}} + 0.20 \cdot S_{\text{Motor}} + 0.15 \cdot S_{\text{Corsi}} + 0.15 \cdot S_{\text{Context}}$$
+*(Catatan: Untuk sesi 3-modalitas tanpa Corsi, bobot otomatis menyesuaikan ke $0.35 \cdot F_{\text{PVT}} + 0.25 \cdot F_{\text{GoNoGo}} + 0.25 \cdot F_{\text{Motor}} + 0.15 \cdot F_{\text{Context}}$).*
 
-*(Catatan: Untuk kompatibilitas mundur sesi lama 3-modalitas tanpa Corsi, bobot otomatis menyesuaikan ke $0.35 \cdot S_{\text{PVT}} + 0.25 \cdot S_{\text{Stroop}} + 0.25 \cdot S_{\text{Motor}} + 0.15 \cdot S_{\text{Context}}$).*
+### 1. Rincian Perhitungan Sub-Skor Kelelahan ($0 - 100$)
+- **$F_{\text{PVT}}$ (Bobot $30\%$ - Refleks Visual PVT-B):**
+  $$\text{ResponseSpeed} = \frac{1}{N}\sum_{i=1}^{N}\frac{1000}{\text{RT}_i}, \quad F_{\text{PVT}} = \min\Big(100,\; \text{round}\big(\max(0, 4.5 - \text{ResponseSpeed}) \times 20 + (\text{Lapses} \times 18) + (\text{FalseStarts} \times 8)\big)\Big)$$
+- **$F_{\text{GoNoGo}}$ (Bobot $20\%$ - Kontrol Inhibisi Go/No-Go):**
+  $$\text{InhibitoryScore} = \max\Big(0,\; 100 - \big[(\text{CommissionErrors} \times 15) + (\text{OmissionErrors} \times 10) + \min(25, \text{round}(\text{InterferenceMs} / 8))\big]\Big)$$
+  $$F_{\text{GoNoGo}} = 100 - \text{InhibitoryScore}$$
+- **$F_{\text{Motor}}$ (Bobot $20\%$ - Kestabilan Ketukan Motorik):**
+  $$\text{SteadinessScore} = \max\Big(0,\; 100 - \big[\min(50, \text{round}(\text{StdDevITI} \times 0.9)) + \min(30, \text{round}(\max(0, \text{DecaySlope}) \times 10))\big]\Big)$$
+  $$F_{\text{Motor}} = \min\Big(100,\; \text{round}\big((100 - \text{SteadinessScore}) + \max(0, \text{StdDevITI} - 15) \times 2.5\big)\Big)$$
+- **$F_{\text{Corsi}}$ (Bobot $15\%$ - Corsi Block-Tapping Test):**
+  $$\text{MemoryScore} = \text{round}\big(0.70 \times \text{BaseSpanScore} + 0.30 \times \text{SequenceAccuracy\%}\big), \quad F_{\text{Corsi}} = 100 - \text{MemoryScore}$$
+- **$F_{\text{Context}}$ (Bobot $15\%$ - Kuesioner Konteks Fisiologis):**
+  $$F_{\text{Context}} = \min\Big(100,\; \max(0, 6 - \text{JamTidur}) \times 8 + \max(0, \text{JamKerja} - 7) \times 6 + P_{\text{fisikBerat}(+18)} + P_{\text{shiftMalam}(+12)}\Big)$$
 
-### 1. Rincian Bobot & Sub-Skor Modalitas ($0 - 100$)
-- **$S_{\text{PVT}}$ (Bobot $30\%$ - Atensi Sustained & Refleks Sensorimotor):**
-  $$S_{\text{PVT}} = \text{clamp}_{0..100}\left(\text{round}\left(100 - \left[\max\left(0, \frac{\text{MedianRT} - 220}{2.5}\right) + (\text{Lapses} \times 12) + (\text{FalseStarts} \times 6)\right]\right)\right)$$
-- **$S_{\text{Stroop}}$ (Bobot $20\%$ - Kontrol Inhibisi Eksekutif):**
-  $$S_{\text{Stroop}} = \text{clamp}_{0..100}\left(\text{round}\left(100 - \left[(1 - \text{Akurasi}) \times 85 + \max\left(0, \frac{\text{InterferenceMs} - 60}{4}\right) + \max\left(0, \frac{\text{IncongruentRT} - 480}{7}\right)\right]\right)\right)$$
-- **$S_{\text{Motor}}$ (Bobot $20\%$ - Koordinasi Neuromuskular & Stamina Ketukan):**
-  $$S_{\text{Motor}} = \text{clamp}_{0..100}\left(\text{round}\left(100 - \left[\max(0, (5.5 - \text{FreqHz}) \times 12) + \max\left(0, \frac{\text{StdDevITI} - 22}{1.4}\right) + \max\left(0, \frac{\text{DegradationPct} - 8}{0.8}\right)\right]\right)\right)$$
-- **$S_{\text{Corsi}}$ (Bobot $15\%$ - Memori Kerja Visuospasial):**
-  $$S_{\text{Corsi}} = \text{clamp}_{0..100}\left(\text{round}\left(100 - \left[\max(0, (5 - \text{CorsiSpan}) \times 18) + (1 - \text{Akurasi}) \times 35 + \max\left(0, \frac{\text{MeanRT} - 600}{20}\right)\right]\right)\right)$$
-- **$S_{\text{Context}}$ (Bobot $15\%$ - Konteks Fisiologis & Kronobiologi):**
-  $$S_{\text{Context}} = \text{clamp}_{0..100}\left(\text{round}\left(100 - \left[\max(0, (7.5 - \text{JamTidur}) \times 11) + (5 - \text{KualitasTidur}) \times 5 + (\text{BebanKerja} - 1) \times 6 + P_{\text{kafein}} + P_{\text{kantuk}} + P_{\text{stres}}\right]\right)\right)$$
-
-### 2. Mekanisme Pengaman Klinis (*Hard Clinical Safety Cap*)
-Agar skor rata-rata tinggi pada satu tes tidak menutupi kegagalan fatal pada tes kritis lainnya (misalnya gejala *micro-sleep*), CogniPulse menerapkan **plafon batas atas klinis**:
-- **Batas Kritis ($\text{CFI} \le 48$):** Aktif otomatis apabila ditemukan $\text{PVT Lapses} \ge 4$ **atau** $\text{Stroop Accuracy} < 60\%$.
-- **Batas Waspada ($\text{CFI} \le 68$):** Aktif otomatis apabila ditemukan $\text{PVT Lapses} \ge 2$ **atau** durasi tidur malam terakhir $\le 4\text{ jam}$.
-
-$$\text{CFI}_{\text{final}} = \text{clamp}_{0..100}\left(\text{round}\left(\min\left(\text{CFI}_{\text{weighted}}, \text{SafetyCap}\right)\right)\right)$$
-
-### 3. Klasifikasi Status Kebugaran Kerja (`classifyRiskBand`)
-- **Optimal / Layak (`Skor 75 - 100`):** Refleks motorik prima, atensi sustained stabil, aman untuk keberangkatan solo (*Fit for Duty*).
-- **Waspada / Moderate Strain (`Skor 50 - 74`):** Penurunan kecepatan kognitif ringan hingga sedang, disarankan pendampingan *co-driver* atau istirahat mikro sebelum bertugas.
-- **Kritis / Tidak Layak (`Skor < 50`):** Terdeteksi gejala *micro-sleep* atau defisit kontrol inhibisi signifikan. Pengemudi diwajibkan *stand-down* (istirahat wajib).
+### 2. Klasifikasi Status Kebugaran Kerja (`impairmentTier`)
+- **Bugar / Fit (`CFI 0 - 24` | Kesiapan `76% - 100%`):** Refleks motorik prima, atensi sustained stabil, layak keberangkatan solo (*Fit for Duty*).
+- **Kelelahan Ringan (`CFI 25 - 44` | Kesiapan `56% - 75%`):** Penurunan kecepatan kognitif ringan, disarankan peregangan dan hidrasi kabin.
+- **Kelelahan Sedang / Waspada (`CFI 45 - 69` | Kesiapan `31% - 55%`):** Penurunan fokus menengah, disarankan pendampingan *co-driver* atau istirahat mikro.
+- **Kritis / Tidak Layak (`CFI >= 70` | Kesiapan `<= 30%`):** Terdeteksi gejala *micro-sleep* atau defisit kontrol inhibisi signifikan. Pengemudi diwajibkan *stand-down*.
 
 ---
 
