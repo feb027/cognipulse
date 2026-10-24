@@ -41,7 +41,7 @@ export const StroopStage: React.FC<StroopStageProps> = ({ onComplete }) => {
       {/* Sub-Progress Trial Dots */}
       <div className="flex items-center justify-between px-3.5 py-2 rounded-2xl bg-zinc-100/80 dark:bg-zinc-800/60 text-xs backdrop-blur-sm">
         <span className="font-bold text-zinc-700 dark:text-zinc-300">
-          Uji Fokus Warna & Kata (Stroop)
+          Go/No-Go (Uji Fokus Warna & Kata)
         </span>
 
         <div className="flex items-center gap-1.5">

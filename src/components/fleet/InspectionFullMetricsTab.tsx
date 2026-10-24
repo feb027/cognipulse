@@ -89,10 +89,10 @@ export function InspectionFullMetricsTab({ latest }: InspectionFullMetricsTabPro
             </span>
           </div>
 
-          {/* 2. Stroop Test */}
+          {/* 2. Go/No-Go Test */}
           <div className="p-3 rounded-xl bg-white dark:bg-zinc-900 border border-black/5 dark:border-white/5 shadow-sm space-y-1">
             <div className="flex items-center justify-between text-zinc-400">
-              <span className="font-semibold text-[11px]">Stroop Inhibisi</span>
+              <span className="font-semibold text-[11px]">Go/No-Go Inhibisi</span>
               <Brain className="w-3.5 h-3.5 text-apple-blue" />
             </div>
             <div className="font-mono font-bold text-base text-zinc-900 dark:text-white">

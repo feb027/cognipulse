@@ -50,10 +50,10 @@ export const StroopTutorial: React.FC<StroopTutorialProps> = ({ onStartRealTest 
       <div className="flex items-center justify-between">
         <div>
           <span className="text-[11px] font-bold uppercase tracking-wider text-apple-purple">
-            Tahap 2 • Panduan Inhibisi Stroop
+            Tahap 2 • Panduan Go/No-Go
           </span>
           <h3 className="text-lg font-extrabold text-zinc-900 dark:text-white">
-            Cara Main Uji Fokus Warna
+            Cara Main Go/No-Go
           </h3>
         </div>
         <button

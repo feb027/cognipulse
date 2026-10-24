@@ -91,11 +91,11 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
   const getStepInfo = () => {
     switch (phase) {
       case 'pvt_active':
-        return { step: 1, label: 'Refleks Visual PVT' };
+        return { step: 1, label: 'PVT-B' };
       case 'stroop_active':
-        return { step: 2, label: 'Inhibisi Fokus Stroop' };
+        return { step: 2, label: 'Go/No-Go' };
       case 'corsi_active':
-        return { step: 3, label: 'Memori Kerja Spasial' };
+        return { step: 3, label: 'Corsi Block-Tapping Test' };
       case 'motor_active':
         return { step: 4, label: 'Ritme Ketukan Motorik' };
       default:
@@ -158,7 +158,7 @@ export const AssessmentWizard: React.FC<AssessmentWizardProps> = ({
               Menghitung Kesiapan Kognitif 4-Modalitas...
             </h3>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 max-w-xs mx-auto">
-              Memproses PVT, Stroop, Memori Spasial Corsi, dan Ritme Motorik.
+              Memproses PVT-B, Go/No-Go, Corsi Block-Tapping Test, dan Ritme Motorik.
             </p>
           </div>
         </div>

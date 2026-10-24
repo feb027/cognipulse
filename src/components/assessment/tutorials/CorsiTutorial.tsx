@@ -49,8 +49,8 @@ export const CorsiTutorial: React.FC<CorsiTutorialProps> = ({ onStartRealTest })
     <div className="w-full max-w-md mx-auto p-4 sm:p-6 rounded-3xl bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/10 shadow-apple space-y-3.5 animate-springUp">
       <div className="flex items-center justify-between">
         <div>
-          <span className="text-[11px] font-bold uppercase tracking-wider text-apple-purple">Tahap 3 • Panduan Memori Spasial</span>
-          <h3 className="text-lg font-extrabold text-zinc-900 dark:text-white">Cara Main Uji Balok Corsi</h3>
+          <span className="text-[11px] font-bold uppercase tracking-wider text-apple-purple">Tahap 3 • Panduan Corsi Block-Tapping Test</span>
+          <h3 className="text-lg font-extrabold text-zinc-900 dark:text-white">Cara Main Corsi Block-Tapping Test</h3>
         </div>
         <button onClick={onStartRealTest} className="text-[11px] font-bold text-zinc-400 hover:text-apple-purple transition-colors">
           Lewati Tutorial

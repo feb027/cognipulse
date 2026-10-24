@@ -31,8 +31,8 @@ export const AssessmentLandingCard: React.FC<AssessmentLandingCardProps> = ({
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
         <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 space-y-1">
           <div className="flex items-center gap-1.5 text-apple-orange font-bold text-xs">
-            <Zap className="w-3.5 h-3.5" />
-            <span>1. Refleks</span>
+            <Zap className="w-3.5 h-3.5 shrink-0" />
+            <span>1. PVT-B</span>
           </div>
           <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium leading-snug">
             Ketuk layar saat stimulus muncul.
@@ -41,8 +41,8 @@ export const AssessmentLandingCard: React.FC<AssessmentLandingCardProps> = ({
 
         <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 space-y-1">
           <div className="flex items-center gap-1.5 text-apple-purple font-bold text-xs">
-            <Brain className="w-3.5 h-3.5" />
-            <span>2. Fokus Warna</span>
+            <Brain className="w-3.5 h-3.5 shrink-0" />
+            <span>2. Go/No-Go</span>
           </div>
           <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium leading-snug">
             Inhibisi kata dan warna tinta.
@@ -51,8 +51,8 @@ export const AssessmentLandingCard: React.FC<AssessmentLandingCardProps> = ({
 
         <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 space-y-1">
           <div className="flex items-center gap-1.5 text-apple-blue font-bold text-xs">
-            <Grid3X3 className="w-3.5 h-3.5" />
-            <span>3. Memori Kerja</span>
+            <Grid3X3 className="w-3.5 h-3.5 shrink-0" />
+            <span>3. Corsi Block-Tapping Test</span>
           </div>
           <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium leading-snug">
             Ulangi urutan balok spasial.
@@ -61,7 +61,7 @@ export const AssessmentLandingCard: React.FC<AssessmentLandingCardProps> = ({
 
         <div className="p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 space-y-1">
           <div className="flex items-center gap-1.5 text-apple-teal font-bold text-xs">
-            <Activity className="w-3.5 h-3.5" />
+            <Activity className="w-3.5 h-3.5 shrink-0" />
             <span>4. Ketukan Ritme</span>
           </div>
           <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium leading-snug">
