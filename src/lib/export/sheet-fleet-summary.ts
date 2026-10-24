@@ -41,7 +41,7 @@ export function buildFleetSummarySheet(
   // 2. KPI Summary Strip (Row 4 Labels, Row 5 Values)
   const kpiItems = [
     { col: 'B', label: 'TOTAL ARMADA', val: `${summary.totalDrivers} Unit`, variant: 'neutral' as const },
-    { col: 'D', label: 'SIAP SOLO (LAIK)', val: `${summary.readyCount} Supir`, variant: 'emerald' as const },
+    { col: 'D', label: 'SIAP SOLO (LAYAK)', val: `${summary.readyCount} Supir`, variant: 'emerald' as const },
     { col: 'F', label: 'WAJIB CO-DRIVER', val: `${summary.cautionCount} Supir`, variant: 'amber' as const },
     { col: 'H', label: 'STAND-DOWN (KRITIS)', val: `${summary.standDownCount} Supir`, variant: 'rose' as const },
     { col: 'J', label: 'SEDANG ON-TRIP', val: `${summary.onTripCount} Unit`, variant: 'blue' as const },
