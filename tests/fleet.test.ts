@@ -3,14 +3,13 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { getAllDrivers, getDriverByNip, createDriver } from '../src/lib/db/driver-service';
-import { getFleetSummary, updateDriverStatus, updateDispatcherDecision } from '../src/lib/db/fleet-service';
+import ExcelJS from 'exceljs';
+import { getAllDrivers, getDriverByNip } from '../src/lib/db/driver-service';
+import { getFleetSummary, updateDriverStatus, getDriverFullInspection } from '../src/lib/db/fleet-service';
 import { saveAssessmentRecord } from '../src/lib/db/assessment-service';
-import { calculatePVTMetrics } from '../src/lib/scoring/pvt-metrics';
-import { calculateStroopMetrics } from '../src/lib/scoring/stroop-metrics';
-import { calculateMotorMetrics } from '../src/lib/scoring/motor-metrics';
-import { calculateCompositeFatigueIndex } from '../src/lib/scoring/cfi-aggregator';
 import { generateLocalFallbackAnalysis } from '../src/lib/ai/local-fallback-engine';
+import { buildFleetSummarySheet } from '../src/lib/export/sheet-fleet-summary';
+import { buildAssessmentLogsSheet, buildTripHistorySheet } from '../src/lib/export/sheet-assessment-logs';
 
 describe('Travel Fleet Management & SQLite Persistence', () => {
   it('berhasil memuat seluruh supir terdaftar dari database SQLite', () => {
@@ -120,5 +119,24 @@ describe('Travel Fleet Management & SQLite Persistence', () => {
 
     // Kembalikan ke caution untuk konsistensi demo
     updateDriverStatus(driver.id, 'caution');
+  });
+
+  it('berhasil menghasilkan workbook Excel (.xlsx) 3-Sheet terformat untuk laporan perusahaan', async () => {
+    const summary = getFleetSummary();
+    const drivers = getAllDrivers();
+    const full = getDriverFullInspection(drivers[0].id);
+
+    const workbook = new ExcelJS.Workbook();
+    buildFleetSummarySheet(workbook, summary, drivers);
+    buildAssessmentLogsSheet(workbook, full?.assessments || []);
+    buildTripHistorySheet(workbook, full?.trips || []);
+
+    expect(workbook.worksheets.length).toBe(3);
+    expect(workbook.worksheets[0].name).toBe('1. Status & KPI Armada');
+    expect(workbook.worksheets[1].name).toBe('2. Log Riwayat Asesmen K3');
+    expect(workbook.worksheets[2].name).toBe('3. Jadwal & Riwayat Rute');
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    expect(buffer.byteLength).toBeGreaterThan(5000);
   });
 });

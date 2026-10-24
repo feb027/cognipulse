@@ -48,4 +48,5 @@ data/*.db-wal
 # agent scaffolding & skills (local developer environment)
 .agents/
 AGENTS.md
+PANDUAN_PRESENTASI_DEMO.md
 skills-lock.json

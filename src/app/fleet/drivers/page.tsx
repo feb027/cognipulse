@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, UserPlus, Search, RefreshCw, LogOut, Sun, Moon, Users } from 'lucide-react';
+import { ArrowLeft, UserPlus, Search, RefreshCw, LogOut, Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/components/theme/ThemeContext';
 import { DriverWithLatestAssessment, DriverStatus } from '@/types/fleet';
 import { useAuthSession, getAuthHeader } from '@/hooks/use-auth-session';
 import { UnifiedLoginView } from '@/components/auth/UnifiedLoginView';
 import { FleetAccessDenied } from '@/components/fleet/FleetAccessDenied';
+import { ExportExcelButton } from '@/components/fleet/ExportExcelButton';
 import { RegisterDriverModal } from '@/components/driver/RegisterDriverModal';
 import { DriverManagementTable } from '@/components/fleet/drivers/DriverManagementTable';
 import { EditDriverModal } from '@/components/fleet/drivers/EditDriverModal';
@@ -68,20 +69,21 @@ export default function FleetDriversPage() {
   return (
     <div className="min-h-screen pb-24 transition-colors">
       <header className="relative pt-6 pb-3 px-4 sm:px-6 max-w-5xl mx-auto w-full">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2">
             <Link href="/fleet" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 text-xs font-semibold hover:bg-zinc-200 transition-all">
               <ArrowLeft className="w-3.5 h-3.5 text-apple-blue" />
               <span>Monitoring Armada</span>
             </Link>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <button onClick={toggleTheme} className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:scale-105 active:scale-95 transition-all">
               {theme === 'dark' ? <Sun className="w-4 h-4 text-apple-yellow" /> : <Moon className="w-4 h-4 text-zinc-700" />}
             </button>
             <button onClick={loadDrivers} className="p-2 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-all" title="Perbarui Data">
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
             </button>
+            <ExportExcelButton />
             <button onClick={() => setIsRegisterOpen(true)} className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-apple-blue text-white text-xs font-semibold hover:bg-apple-blue/90 transition-all shadow-sm">
               <UserPlus className="w-3.5 h-3.5" />
               <span>Tambah Supir</span>
