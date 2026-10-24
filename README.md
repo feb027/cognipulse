@@ -12,7 +12,7 @@
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4_Tokens-38bdf8?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![SQLite](https://img.shields.io/badge/SQLite-WAL_Persistent_DB-003B57?style=flat-square&logo=sqlite&logoColor=white)](https://www.sqlite.org/)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-Dual--Engine_AI_Cascade-4285f4?style=flat-square&logo=google&logoColor=white)](https://ai.google.dev/)
-[![Vitest](https://img.shields.io/badge/Vitest-21%2F21_Passing-6e9f18?style=flat-square&logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Vitest](https://img.shields.io/badge/Vitest-22%2F22_Passing-6e9f18?style=flat-square&logo=vitest&logoColor=white)](https://vitest.dev/)
 [![Live Production](https://img.shields.io/badge/Live_Demo-iconfest.febnawanfr.my.id-2563eb?style=flat-square&logo=cloudflare&logoColor=white)](https://iconfest.febnawanfr.my.id)
 [![Standards](https://img.shields.io/badge/Standard-NASA_Dinges--Basner_PVT-red?style=flat-square)](https://www.nasa.gov/)
 [![Privacy](https://img.shields.io/badge/Privacy-UU_PDP_No._27%2F2022_Compliant-emerald?style=flat-square)](https://peraturan.go.id/)
@@ -32,7 +32,7 @@
 > **Ajang Kompetisi:** ICONFEST 2026 (Informatics Conference & Festival, Universitas Siliwangi)  
 > **Kategori:** Software Development: Bidang Kesehatan  
 > **Akses Produksi (Live):** [https://iconfest.febnawanfr.my.id](https://iconfest.febnawanfr.my.id) (Portal Supir) & [https://iconfest.febnawanfr.my.id/fleet](https://iconfest.febnawanfr.my.id/fleet) (Konsol Dispatcher)  
-> **Status Verifikasi:** 21/21 Vitest Unit Tests Passed (100%), 0 TypeScript Errors, SQLite WAL Server Persistence, Multi-Key Pool Balancing, Strict Role-Based Auth Guard, Production Build Active.
+> **Status Verifikasi:** 22/22 Vitest Unit Tests Passed (100%), 0 TypeScript Errors, SQLite WAL Server Persistence, Multi-Key Pool Balancing, Corporate 3-Sheet Excel (.xlsx) Export, Strict Role-Based Auth Guard, Production Build Active.
 
 ---
 
@@ -77,7 +77,7 @@ Dalam ekosistem transportasi antarkota (Travel & Logistik Armada), CogniPulse be
 | * Tes Kebugaran Mandiri 90 Detik   | * Inspeksi Lengkap Telemetri 4 Modalitas           |
 | * Estimasi Jarak Rem Tol (100km/h) | * Log Perjalanan & Tren Skor CFI Historis          |
 | * Deteksi Risiko Microsleep Tol    | * Aksi Interaktif Dispatcher (Persetujuan / Tolak) |
-| * Sinkronisasi Real-time ke SQLite | * Terbit Surat Stand-Down Terpusat ke Database     |
+| * Sinkronisasi Real-time ke SQLite | * Export Laporan K3 Excel (.xlsx) 3-Sheet Korporat |
 +------------------------------------+----------------------------------------------------+
 ```
 
@@ -231,21 +231,37 @@ CogniPulse dirancang dari fondasi awal dengan pendekatan **Mobile-First Ergonomi
 
 ## Formulasi Composite Fatigue Index (CFI)
 
-CogniPulse menggabungkan telemetri dari keempat modalitas menjadi satu metrik komposit terstandarisasi: **Composite Fatigue Index (CFI)** dengan rentang skor $0 - 100$:
+CogniPulse menggabungkan telemetri dari keempat modalitas neurokognitif beserta profil fisiologis pengemudi menjadi satu metrik komposit terstandarisasi: **Composite Fatigue Index (CFI)** pada rentang skor $0 - 100$ (`src/lib/scoring/cfi-aggregator.ts`).
 
-$$\text{CFI} = 100 - \left( w_{\text{pvt}} \cdot P_{\text{pvt}} + w_{\text{stroop}} \cdot P_{\text{stroop}} + w_{\text{corsi}} \cdot P_{\text{corsi}} + w_{\text{motor}} \cdot P_{\text{motor}} + P_{\text{context}} \right)$$
+Setiap modalitas terlebih dahulu dikonversi menjadi **Skor Kesiapan Ternormalisasi ($S_i \in [0, 100]$)** menggunakan pendekatan $100 - \text{Penalti}_i$, kemudian diagregasikan melalui rumus rata-rata tertimbang (*weighted readiness sum*):
 
-Di mana bobot kontribusi klinis:
-- $w_{\text{pvt}} = 0.35$ (Penalti waktu reaksi lambat, defisit $1/\text{RT}$, dan jumlah *attentional lapses*)
-- $w_{\text{stroop}} = 0.25$ (Penalti kesalahan inhibisi dan waktu interferensi konflik)
-- $w_{\text{corsi}} = 0.20$ (Penalti kegagalan retensi memori spasial)
-- $w_{\text{motor}} = 0.15$ (Penalti instabilitas irama dan jitter neuromuskular)
-- $P_{\text{context}} = 0.05$ (Penyesuaian kontekstual: durasi tidur $\le 5$ jam atau konsumsi stimulan berlebih)
+$$\text{CFI}_{\text{weighted}} = 0.30 \cdot S_{\text{PVT}} + 0.20 \cdot S_{\text{Stroop}} + 0.20 \cdot S_{\text{Motor}} + 0.15 \cdot S_{\text{Corsi}} + 0.15 \cdot S_{\text{Context}}$$
 
-### Klasifikasi Status Kebugaran Kerja
-- **Optimal (Skor 80 - 100):** Refleks motorik prima, atensi sustained stabil, aman untuk tugas berisiko tinggi.
-- **Waspada (Skor 50 - 79):** Penurunan kecepatan kognitif ringan, disarankan istirahat mikro sebelum mengoperasikan mesin.
-- **Kritis (Skor < 50):** Terdeteksi gejala *micro-sleep* atau defisit kontrol inhibisi signifikan. Pekerja diwajibkan *stand-down*.
+*(Catatan: Untuk kompatibilitas mundur sesi lama 3-modalitas tanpa Corsi, bobot otomatis menyesuaikan ke $0.35 \cdot S_{\text{PVT}} + 0.25 \cdot S_{\text{Stroop}} + 0.25 \cdot S_{\text{Motor}} + 0.15 \cdot S_{\text{Context}}$).*
+
+### 1. Rincian Bobot & Sub-Skor Modalitas ($0 - 100$)
+- **$S_{\text{PVT}}$ (Bobot $30\%$ - Atensi Sustained & Refleks Sensorimotor):**
+  $$S_{\text{PVT}} = \text{clamp}_{0..100}\left(\text{round}\left(100 - \left[\max\left(0, \frac{\text{MedianRT} - 220}{2.5}\right) + (\text{Lapses} \times 12) + (\text{FalseStarts} \times 6)\right]\right)\right)$$
+- **$S_{\text{Stroop}}$ (Bobot $20\%$ - Kontrol Inhibisi Eksekutif):**
+  $$S_{\text{Stroop}} = \text{clamp}_{0..100}\left(\text{round}\left(100 - \left[(1 - \text{Akurasi}) \times 85 + \max\left(0, \frac{\text{InterferenceMs} - 60}{4}\right) + \max\left(0, \frac{\text{IncongruentRT} - 480}{7}\right)\right]\right)\right)$$
+- **$S_{\text{Motor}}$ (Bobot $20\%$ - Koordinasi Neuromuskular & Stamina Ketukan):**
+  $$S_{\text{Motor}} = \text{clamp}_{0..100}\left(\text{round}\left(100 - \left[\max(0, (5.5 - \text{FreqHz}) \times 12) + \max\left(0, \frac{\text{StdDevITI} - 22}{1.4}\right) + \max\left(0, \frac{\text{DegradationPct} - 8}{0.8}\right)\right]\right)\right)$$
+- **$S_{\text{Corsi}}$ (Bobot $15\%$ - Memori Kerja Visuospasial):**
+  $$S_{\text{Corsi}} = \text{clamp}_{0..100}\left(\text{round}\left(100 - \left[\max(0, (5 - \text{CorsiSpan}) \times 18) + (1 - \text{Akurasi}) \times 35 + \max\left(0, \frac{\text{MeanRT} - 600}{20}\right)\right]\right)\right)$$
+- **$S_{\text{Context}}$ (Bobot $15\%$ - Konteks Fisiologis & Kronobiologi):**
+  $$S_{\text{Context}} = \text{clamp}_{0..100}\left(\text{round}\left(100 - \left[\max(0, (7.5 - \text{JamTidur}) \times 11) + (5 - \text{KualitasTidur}) \times 5 + (\text{BebanKerja} - 1) \times 6 + P_{\text{kafein}} + P_{\text{kantuk}} + P_{\text{stres}}\right]\right)\right)$$
+
+### 2. Mekanisme Pengaman Klinis (*Hard Clinical Safety Cap*)
+Agar skor rata-rata tinggi pada satu tes tidak menutupi kegagalan fatal pada tes kritis lainnya (misalnya gejala *micro-sleep*), CogniPulse menerapkan **plafon batas atas klinis**:
+- **Batas Kritis ($\text{CFI} \le 48$):** Aktif otomatis apabila ditemukan $\text{PVT Lapses} \ge 4$ **atau** $\text{Stroop Accuracy} < 60\%$.
+- **Batas Waspada ($\text{CFI} \le 68$):** Aktif otomatis apabila ditemukan $\text{PVT Lapses} \ge 2$ **atau** durasi tidur malam terakhir $\le 4\text{ jam}$.
+
+$$\text{CFI}_{\text{final}} = \text{clamp}_{0..100}\left(\text{round}\left(\min\left(\text{CFI}_{\text{weighted}}, \text{SafetyCap}\right)\right)\right)$$
+
+### 3. Klasifikasi Status Kebugaran Kerja (`classifyRiskBand`)
+- **Optimal / Layak (`Skor 75 - 100`):** Refleks motorik prima, atensi sustained stabil, aman untuk keberangkatan solo (*Fit for Duty*).
+- **Waspada / Moderate Strain (`Skor 50 - 74`):** Penurunan kecepatan kognitif ringan hingga sedang, disarankan pendampingan *co-driver* atau istirahat mikro sebelum bertugas.
+- **Kritis / Tidak Layak (`Skor < 50`):** Terdeteksi gejala *micro-sleep* atau defisit kontrol inhibisi signifikan. Pengemudi diwajibkan *stand-down* (istirahat wajib).
 
 ---
 
@@ -395,10 +411,12 @@ npx tsc --noEmit
 ```
  ✓ tests/scoring.test.ts (7 tests)
  ✓ tests/fallback.test.ts (3 tests)
+ ✓ tests/auth.test.ts (7 tests)
+ ✓ tests/fleet.test.ts (5 tests)
 
- Test Files  2 passed (2)
-      Tests  10 passed (10)
-   Duration  1.86s
+ Test Files  4 passed (4)
+      Tests  22 passed (22)
+   Duration  1.58s
 ```
 
 ---
@@ -446,10 +464,11 @@ cognipulse/
 │   │   ├── ai/                   # Gemini client, multi-key pool & fallback
 │   │   ├── audio/                # Web Audio API native synthesizer
 │   │   ├── db/                   # Layanan database SQLite (WAL Mode)
+│   │   ├── export/               # Generator laporan K3 Excel (.xlsx) 3-Sheet
 │   │   ├── scoring/              # Kalkulator matematika murni (CFI, PVT, dll)
 │   │   └── session-utils.ts      # Utilitas sesi & format kronobiologi
 │   └── types/                    # Kontrak TypeScript terpusat
-├── tests/                        # 21 Unit tests Vitest (Scoring, Auth, Fleet)
+├── tests/                        # 22 Unit tests Vitest (Scoring, Auth, Fleet, Export)
 └── package.json                  # Dependensi proyek Next.js 15
 ```
 
