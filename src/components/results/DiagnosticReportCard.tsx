@@ -30,7 +30,7 @@ export const DiagnosticReportCard: React.FC<DiagnosticReportCardProps> = ({
           </div>
           <div>
             <h3 className="font-bold text-zinc-900 dark:text-white text-sm leading-tight">
-              Hasil Diagnosis AI
+              Hasil Diagnosis
             </h3>
             <div className="text-[10px] font-mono text-zinc-500 dark:text-zinc-400 flex items-center gap-1 mt-0.5">
               {analysis.isFallback ? (
