@@ -42,7 +42,7 @@ export function ProfileDetailsModal({
         <div className="divide-y divide-black/5 dark:divide-white/5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-black/5 dark:border-white/5 overflow-hidden text-xs">
           <div className="p-3.5 flex items-center justify-between">
             <span className="text-zinc-500 dark:text-zinc-400 font-medium">Status Kebugaran</span>
-            <span className="font-bold text-emerald-500">Fit-For-Duty Aktif</span>
+            <span className="font-bold text-emerald-500">Siap Bertugas</span>
           </div>
 
           <div className="p-3.5 flex items-center justify-between">

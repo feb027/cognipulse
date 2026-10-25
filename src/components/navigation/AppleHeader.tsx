@@ -43,9 +43,9 @@ export function AppleHeader({
         day: 'numeric',
         month: 'long',
       }).format(now).toUpperCase();
-      setTodayHeader(`${datePart} • FIT-FOR-DUTY`);
+      setTodayHeader(datePart);
     } catch {
-      setTodayHeader('HARI INI • FIT-FOR-DUTY');
+      setTodayHeader('HARI INI');
     }
   }, []);
 
@@ -63,7 +63,7 @@ export function AppleHeader({
       {/* Top Meta Bar */}
       <div className="flex items-center justify-between mb-1.5">
         <span className="text-[11px] font-bold tracking-wider uppercase text-zinc-500 dark:text-zinc-400">
-          {subtitle || todayHeader || 'FIT-FOR-DUTY MONITOR'}
+          {subtitle || todayHeader || 'HARI INI'}
         </span>
         <div className="flex items-center gap-2">
           {/* Konsol Armada Link - ONLY visible if dispatcher */}

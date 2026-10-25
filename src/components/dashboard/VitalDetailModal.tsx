@@ -31,7 +31,7 @@ export function VitalDetailModal({
         return {
           title: 'Kesiapan Kognitif & Kelelahan',
           value: `${readiness}%`,
-          unit: `(Kelelahan: ${cfi}/100)`,
+          unit: `(CFI: ${cfi})`,
           tier: cfi < 35 ? 'Optimal' : cfi < 70 ? 'Waspada' : 'Kritis',
           percent: Math.min(95, Math.max(5, cfi)),
           meaning: 'Indeks komposit kebugaran kerja mengintegrasikan kecepatan respon saraf, kontrol inhibisi, dan stabilitas ritme motorik.',

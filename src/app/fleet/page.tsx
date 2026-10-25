@@ -102,10 +102,6 @@ export default function FleetPage() {
               <Calendar className="w-3.5 h-3.5 text-apple-blue" />
               <span className="capitalize">{todayString || 'Operasional Armada'}</span>
             </div>
-            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[11px] font-semibold border border-emerald-500/20">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Monitoring Aktif</span>
-            </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">

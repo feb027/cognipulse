@@ -117,7 +117,7 @@ export const ResultSummaryHeader: React.FC<ResultSummaryHeaderProps> = ({ cfi, a
               {tier.badge}
             </span>
             <span className="text-[11px] font-mono text-zinc-400 dark:text-zinc-500">
-              • CFI: {fatigueScore}%
+              • CFI: {fatigueScore}
             </span>
           </div>
           <h2 className="text-lg sm:text-xl font-extrabold tracking-tight text-zinc-900 dark:text-white break-words">
