@@ -67,10 +67,19 @@ export function calculateCompositeFatigueIndex(
     impairmentTier = 'mild_fatigue';
   }
 
-  // Deteksi Silent Fatigue / Adrenaline Masking Sehabis Mandi
+  // Deteksi Silent Fatigue / Adrenaline Masking / 0 Jam Tidur / Kerja Maraton >= 24 Jam
   let subjectiveObjectiveDisparity = false;
+  const hasZeroSleep = Boolean(context && context.hoursSleptLastNight === 0);
+  const hasMarathonWork = Boolean(context && context.hoursWorkedToday >= 24);
   const hasHeavyExertion = Boolean(context?.heavyPhysicalLabor && (context?.hoursWorkedToday ?? 0) >= 7);
-  if (context && context.subjectiveFatigueScore <= 2 && (cfiScore >= 40 || hasHeavyExertion)) {
+
+  if (hasZeroSleep || hasMarathonWork) {
+    // Pengemudi 0 jam tidur atau kerja >= 24 jam wajib Co-Driver (waspada) karena risiko serangan microsleep mendadak
+    subjectiveObjectiveDisparity = true;
+    if (impairmentTier === 'fit') {
+      impairmentTier = 'mild_fatigue';
+    }
+  } else if (context && context.subjectiveFatigueScore <= 2 && (cfiScore >= 40 || hasHeavyExertion)) {
     subjectiveObjectiveDisparity = true;
   }
 

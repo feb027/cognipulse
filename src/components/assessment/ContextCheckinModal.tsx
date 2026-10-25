@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { UserContext, CaffeineIntake, ShiftType } from '@/types/assessment';
+import { StepperField } from './StepperField';
 
 interface ContextCheckinModalProps {
   initialContext?: UserContext;
@@ -28,8 +29,8 @@ export const ContextCheckinModal: React.FC<ContextCheckinModalProps> = ({
   onSubmit,
   onCancel,
 }) => {
-  const [hoursSlept, setHoursSlept] = useState<number>(initialContext?.hoursSleptLastNight || 7);
-  const [hoursWorked, setHoursWorked] = useState<number>(initialContext?.hoursWorkedToday || 6);
+  const [hoursSlept, setHoursSlept] = useState<number>(initialContext?.hoursSleptLastNight ?? 7);
+  const [hoursWorked, setHoursWorked] = useState<number>(initialContext?.hoursWorkedToday ?? 6);
   const [shiftType, setShiftType] = useState<ShiftType>(initialContext?.shiftType || 'morning');
   const [caffeine, setCaffeine] = useState<CaffeineIntake>(initialContext?.caffeineIntake || 'low');
   const [subjective, setSubjective] = useState<number>(initialContext?.subjectiveFatigueScore || 2);
@@ -54,8 +55,8 @@ export const ContextCheckinModal: React.FC<ContextCheckinModalProps> = ({
     });
   };
 
-  const handleSleptStep = makeStepHandler(setHoursSlept, sleptStepRef, 0.5, 1, 14);
-  const handleWorkedStep = makeStepHandler(setHoursWorked, workedStepRef, 1, 0, 18);
+  const handleSleptStep = makeStepHandler(setHoursSlept, sleptStepRef, 0.5, 0, 14);
+  const handleWorkedStep = makeStepHandler(setHoursWorked, workedStepRef, 1, 0, 48);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,9 +71,6 @@ export const ContextCheckinModal: React.FC<ContextCheckinModalProps> = ({
     });
   };
 
-  const stepperBtnClass =
-    'w-9 h-9 rounded-xl bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 font-bold text-lg flex items-center justify-center shadow-sm active:scale-90 disabled:opacity-30 disabled:pointer-events-none transition-all touch-manipulation';
-
   return (
     <div className="w-full max-w-md mx-auto p-5 sm:p-6 bg-white dark:bg-[#1C1C1E] rounded-3xl shadow-apple border border-black/5 dark:border-white/10 text-zinc-900 dark:text-white space-y-4 animate-springUp">
       <div className="pb-2 border-b border-black/[0.04] dark:border-white/[0.08]">
@@ -81,37 +79,28 @@ export const ContextCheckinModal: React.FC<ContextCheckinModalProps> = ({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3.5 text-xs font-medium">
-        {/* 1. Jam Tidur */}
-        <div className="p-3 bg-zinc-50 dark:bg-zinc-800/60 rounded-2xl flex items-center justify-between">
-          <div>
-            <label className="text-xs text-zinc-600 dark:text-zinc-300 font-semibold block">Tidur Semalam</label>
-            <span className="text-[11px] text-zinc-400">Berapa jam Anda tidur?</span>
-          </div>
-          <div className="flex items-center bg-zinc-200/70 dark:bg-zinc-700/60 p-1 rounded-2xl border border-black/5 dark:border-white/10 touch-manipulation select-none">
-            <button type="button" onClick={() => handleSleptStep(-1)} disabled={hoursSlept <= 1} aria-label="Kurangi jam tidur" className={stepperBtnClass}>−</button>
-            <span className="min-w-16 px-1.5 text-center font-mono font-bold text-sm text-zinc-900 dark:text-white tabular-nums select-none">
-              {hoursSlept} <span className="font-sans text-[11px] font-medium text-zinc-400">jam</span>
-            </span>
-            <button type="button" onClick={() => handleSleptStep(1)} disabled={hoursSlept >= 14} aria-label="Tambah jam tidur" className={stepperBtnClass}>+</button>
-          </div>
-        </div>
+        <StepperField
+          label="Tidur Semalam"
+          sublabel="Berapa jam Anda tidur? (Ketik / Klik)"
+          value={hoursSlept}
+          min={0}
+          max={14}
+          step={0.5}
+          onStep={handleSleptStep}
+          onChange={setHoursSlept}
+        />
 
-        {/* 2. Jam Kerja Hari Ini */}
-        <div className="p-3 bg-zinc-50 dark:bg-zinc-800/60 rounded-2xl flex items-center justify-between">
-          <div>
-            <label className="text-xs text-zinc-600 dark:text-zinc-300 font-semibold block">Jam Kerja Hari Ini</label>
-            <span className="text-[11px] text-zinc-400">Sudah berapa jam bekerja?</span>
-          </div>
-          <div className="flex items-center bg-zinc-200/70 dark:bg-zinc-700/60 p-1 rounded-2xl border border-black/5 dark:border-white/10 touch-manipulation select-none">
-            <button type="button" onClick={() => handleWorkedStep(-1)} disabled={hoursWorked <= 0} aria-label="Kurangi jam kerja" className={stepperBtnClass}>−</button>
-            <span className="min-w-16 px-1.5 text-center font-mono font-bold text-sm text-zinc-900 dark:text-white tabular-nums select-none">
-              {hoursWorked} <span className="font-sans text-[11px] font-medium text-zinc-400">jam</span>
-            </span>
-            <button type="button" onClick={() => handleWorkedStep(1)} disabled={hoursWorked >= 18} aria-label="Tambah jam kerja" className={stepperBtnClass}>+</button>
-          </div>
-        </div>
+        <StepperField
+          label="Jam Kerja Hari Ini"
+          sublabel="Sudah berapa jam bekerja? (Ketik / Klik)"
+          value={hoursWorked}
+          min={0}
+          max={48}
+          step={1}
+          onStep={handleWorkedStep}
+          onChange={setHoursWorked}
+        />
 
-        {/* 3. Tipe Shift */}
         <div>
           <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-300 mb-1.5">Tipe Shift Saat Ini</label>
           <div className="grid grid-cols-4 gap-1 p-1 bg-zinc-100 dark:bg-zinc-800 rounded-2xl text-center">
@@ -130,7 +119,6 @@ export const ContextCheckinModal: React.FC<ContextCheckinModalProps> = ({
           </div>
         </div>
 
-        {/* 4. Kafein */}
         <div>
           <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-300 mb-1.5">Konsumsi Kopi / Kafein Hari Ini</label>
           <div className="grid grid-cols-4 gap-1 p-1 bg-zinc-100 dark:bg-zinc-800 rounded-2xl text-center">
@@ -149,7 +137,6 @@ export const ContextCheckinModal: React.FC<ContextCheckinModalProps> = ({
           </div>
         </div>
 
-        {/* 5. Status Kebugaran */}
         <div>
           <div className="flex justify-between items-center text-xs mb-1.5">
             <span className="text-zinc-600 dark:text-zinc-300 font-semibold">Status Kebugaran</span>
@@ -179,7 +166,6 @@ export const ContextCheckinModal: React.FC<ContextCheckinModalProps> = ({
           </div>
         </div>
 
-        {/* 6. Aktivitas Fisik Berat */}
         <div
           role="checkbox"
           aria-checked={heavyLabor}

@@ -86,6 +86,17 @@ export function generateLocalFallbackAnalysis(
     circadianNote = 'Jam biologis dan kesiapan fisik berada pada kondisi ideal untuk operasional perjalanan.';
   }
 
+  // Khusus kompensasi adrenalin semu (0 jam tidur / kerja maraton tapi refleks fisik cepat)
+  if (cfi.subjectiveObjectiveDisparity && cfi.impairmentTier === 'mild_fatigue' && pvt.attentionalLapseCount < 2) {
+    headlineTitle = 'Waspada: Kompensasi Adrenalin Semu';
+    primaryCause = 'Defisit Tidur Ekstrem / Jam Kerja Maraton';
+    shortSummary = 'Refleks tampak responsif terpicu adrenalin, namun risiko microsleep mendadak tinggi. Wajib Co-Driver.';
+    clinicalRationale = 'Meskipun respons motorik dan refleks saat ini tampak cepat, riwayat tanpa tidur (0 jam) atau kerja maraton memicu kompensasi saraf semu. Tekanan biologis kantuk (akumulasi adenosin) sangat tinggi dan rentan memicu kolaps fokus mendadak di jalan tol.';
+    immediateAction = 'Wajib didampingi co-driver untuk berbagi kemudi, dan jadwalkan istirahat tidur setelah 1-2 jam perjalanan.';
+    riskIncrease = '+25%';
+    circadianNote = 'Hutang tidur biologis tinggi. Jangan biarkan pengemudi mengemudi sendirian tanpa pengawas.';
+  }
+
   const rtSec = pvt.meanReactionTimeMs / 1000;
   const brakingDistanceMeters = parseFloat((rtSec * 27.78).toFixed(1));
   const brakingHazardDeltaMeters = parseFloat(Math.max(0, brakingDistanceMeters - 6.9).toFixed(1));

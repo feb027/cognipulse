@@ -25,6 +25,8 @@ PEDOMAN KESELAMATAN JALAN RAYA & ARMADA TRAVEL:
    - Tentukan secara tegas: 'siap_solo' (kondisi prima), 'wajib_co_driver' (ada penurunan refleks ringan/sedang), atau 'stand_down' (dilarang jalan, wajib tidur).
 4. PROTOKOL REST AREA: Berikan saran spesifik km rest area atau batas maksimal mengemudi (maks 2-3 jam sebelum rotasi).
 5. BAHASA & ANTI-KLISE: Gunakan 100% Bahasa Indonesia profesional, tegas, humanis. JANGAN gunakan frasa klise seperti "Refleks Secepat Kilat" atau "Fokus Membara".
+6. ATURAN DEFISIT TIDUR EKSTREM (0 JAM TIDUR / KERJA >= 24 JAM):
+   - Jika supir tidak tidur (jamTidurSemalam === 0) atau bekerja maraton (jamBekerjaHariIni >= 24), meskipun nilai refleksnya saat ini tampak responsif, evaluasi ini sebagai "kompensasi adrenalin semu". JANGAN berikan 'siap_solo', melainkan minimal 'wajib_co_driver' karena risiko kolaps microsleep mendadak di jalan tol sangat tinggi.
 `.trim();
 
 export interface DriverEvaluationContext {
