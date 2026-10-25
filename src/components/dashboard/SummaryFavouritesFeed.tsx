@@ -51,7 +51,7 @@ export function SummaryFavouritesFeed({
           category="Kesiapan Kerja"
           value={readinessScore}
           unit={hasData ? '%' : ''}
-          description={typeof cfiScore === 'number' ? `Skor CFI: ${cfiScore} (${tierInfo.desc})` : tierInfo.desc}
+          description={typeof cfiScore === 'number' ? `CFI: ${cfiScore}% (${tierInfo.desc})` : tierInfo.desc}
           statusBadge={{ text: tierInfo.text, bgClass: tierInfo.badgeBg, textClass: tierInfo.textCol }}
           pillBars={hasData && typeof readinessScore === 'number' ? [0.8, 0.6, 0.65, 0.75, 0.7, 0.82, readinessScore / 100] : undefined}
           barColor={typeof readinessScore === 'number' && readinessScore >= 60 ? 'bg-apple-green' : typeof readinessScore === 'number' && readinessScore >= 35 ? 'bg-apple-yellow' : 'bg-apple-red'}
