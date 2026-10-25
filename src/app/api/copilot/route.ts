@@ -5,14 +5,22 @@ import { CLINICAL_SYSTEM_INSTRUCTION } from '@/lib/ai/prompts';
 export async function POST(req: NextRequest) {
   try {
     const { message, analysis, cfi } = await req.json();
-    const apiKey = process.env.GEMINI_API_KEY || process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+    const apiKeys = (
+      process.env.GEMINI_API_KEY ||
+      process.env.NEXT_PUBLIC_GEMINI_API_KEY ||
+      ''
+    )
+      .split(',')
+      .map((k) => k.trim())
+      .filter(Boolean);
 
-    if (!apiKey) {
+    if (apiKeys.length === 0) {
       return NextResponse.json({
         reply: `Santai bro/sis! Berdasarkan skor CFI kamu (${cfi?.cfiScore ?? 50}/100), baterai kognitif kamu lagi butuh charging. Mending jeda layar 15 menit, teguk air putih dingin, dan stretching santai sebelum lanjut grinding ya!`,
       });
     }
 
+    const apiKey = apiKeys[0];
     const ai = new GoogleGenAI({ apiKey });
     const prompt = `
 Konteks Pengguna:
