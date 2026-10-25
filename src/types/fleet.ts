@@ -17,6 +17,7 @@ export interface Driver {
   medical_history: string;
   status: DriverStatus;
   avatar?: string;
+  pin?: string;
   created_at?: string;
   updated_at?: string;
 }

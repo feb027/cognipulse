@@ -200,6 +200,7 @@ export class JsonDatabase {
           if (params[4] !== undefined) target.address = params[4];
           if (params[5] !== undefined) target.medical_history = params[5];
           if (params[6] !== undefined) target.status = params[6];
+          if (params[7] !== undefined) target.pin = String(params[7]).trim();
           target.updated_at = new Date().toISOString();
           saveState(globalState);
           return { changes: 1, lastInsertRowid: target.id };

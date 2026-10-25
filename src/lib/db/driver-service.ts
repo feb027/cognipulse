@@ -9,9 +9,9 @@ export function stripPin<T extends object>(obj: T): T {
   return safe as T;
 }
 
-export function getAllDrivers(): DriverWithLatestAssessment[] {
+export function getAllDrivers(includePin = false): (DriverWithLatestAssessment & { pin?: string })[] {
   const db = getDatabase();
-  const drivers = db.prepare('SELECT * FROM drivers ORDER BY id ASC').all() as Driver[];
+  const drivers = db.prepare('SELECT * FROM drivers ORDER BY id ASC').all() as (Driver & { pin?: string })[];
 
   const getLatestAssessment = db.prepare(`
     SELECT * FROM assessments 
@@ -35,12 +35,14 @@ export function getAllDrivers(): DriverWithLatestAssessment[] {
     const latestAssessment = (getLatestAssessment.get(driver.id) as AssessmentRecord) || null;
     const activeTrip = (getActiveTrip.get(driver.id) as TripHistory) || null;
     const countRow = countAssessments.get(driver.id) as { count: number };
-    return stripPin({
+    const base = {
       ...driver,
+      pin: driver.pin || '1234',
       latestAssessment,
       activeTrip,
       assessmentsCount: countRow?.count || 0,
-    });
+    };
+    return includePin ? base : stripPin(base);
   }) as DriverWithLatestAssessment[];
 }
 
@@ -116,22 +118,7 @@ export function validateDispatcherLogin(username: string, pass: string): { usern
 }
 
 export function getAllDriversForAdmin(): (DriverWithLatestAssessment & { pin: string })[] {
-  const db = getDatabase();
-  const drivers = db.prepare('SELECT * FROM drivers ORDER BY id ASC').all() as (Driver & { pin: string })[];
-
-  return drivers.map((driver) => {
-    const latestAssessment = db.prepare(`
-      SELECT * FROM assessments WHERE driver_id = ? ORDER BY timestamp DESC, id DESC LIMIT 1
-    `).get(driver.id) as AssessmentRecord | undefined;
-
-    return {
-      ...driver,
-      pin: driver.pin || '1234',
-      latestAssessment: latestAssessment || null,
-      activeTrip: null,
-      assessmentsCount: 0,
-    };
-  });
+  return getAllDrivers(true) as (DriverWithLatestAssessment & { pin: string })[];
 }
 
 export function updateDriver(

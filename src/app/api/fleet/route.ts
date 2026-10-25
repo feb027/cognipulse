@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     }
 
     const summary = getFleetSummary();
-    const drivers = getAllDrivers();
+    const drivers = getAllDrivers(true);
     return NextResponse.json({ summary, drivers });
   } catch (error) {
     console.error('Error in GET /api/fleet:', error);
@@ -44,7 +44,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     const summary = getFleetSummary();
-    const drivers = getAllDrivers();
+    const drivers = getAllDrivers(true);
 
     return NextResponse.json({
       success: true,

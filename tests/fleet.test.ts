@@ -4,7 +4,7 @@
 
 import { describe, it, expect } from 'vitest';
 import ExcelJS from 'exceljs';
-import { getAllDrivers, getDriverByNip } from '../src/lib/db/driver-service';
+import { getAllDrivers, getDriverByNip, createDriver, updateDriver, deleteDriver, validateDriverLogin } from '../src/lib/db/driver-service';
 import { getFleetSummary, updateDriverStatus, getDriverFullInspection } from '../src/lib/db/fleet-service';
 import { saveAssessmentRecord } from '../src/lib/db/assessment-service';
 import { generateLocalFallbackAnalysis } from '../src/lib/ai/local-fallback-engine';
@@ -138,5 +138,42 @@ describe('Travel Fleet Management & SQLite Persistence', () => {
 
     const buffer = await workbook.xlsx.writeBuffer();
     expect(buffer.byteLength).toBeGreaterThan(5000);
+  });
+
+  it('dapat memperbarui kredensial PIN supir dan menghapus data supir dengan bersih', () => {
+    // 1. Daftarkan supir uji
+    const created = createDriver({
+      nip: 'TRV-TEST',
+      name: 'Supir Uji Coba',
+      age: 28,
+      vehicle_type: 'Innova Reborn',
+      license_plate: 'B 9999 TST',
+      address: 'Pool Cimahi',
+      medical_history: 'Sehat',
+      pin: '1234',
+    });
+    expect(created).toBeDefined();
+
+    // 2. Verifikasi login PIN default
+    const validDefault = validateDriverLogin('TRV-TEST', '1234');
+    expect(validDefault).not.toBeNull();
+
+    // 3. Update PIN supir menjadi 8888
+    const updated = updateDriver(created.id, { pin: '8888' });
+    expect(updated).not.toBeNull();
+
+    // 4. Verifikasi PIN lama ditolak, PIN baru diterima
+    const oldLogin = validateDriverLogin('TRV-TEST', '1234');
+    expect(oldLogin).toBeNull();
+    const newLogin = validateDriverLogin('TRV-TEST', '8888');
+    expect(newLogin).not.toBeNull();
+
+    // 5. Hapus supir uji
+    const deleted = deleteDriver(created.id);
+    expect(deleted).toBe(true);
+
+    // 6. Verifikasi supir tidak lagi ditemukan
+    const checkDeleted = getDriverByNip('TRV-TEST');
+    expect(checkDeleted).toBeNull();
   });
 });
