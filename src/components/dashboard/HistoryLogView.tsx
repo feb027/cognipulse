@@ -123,7 +123,7 @@ export function HistoryLogView({ history, onSelectSession }: HistoryLogViewProps
                     Buka Hasil Lengkap Asesmen →
                   </span>
                   <span className="text-[10px] text-zinc-400 font-mono">
-                    Kelelahan: {session.cfi.cfiScore}%
+                    Skor CFI: {session.cfi.cfiScore}
                   </span>
                 </div>
               </div>

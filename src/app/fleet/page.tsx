@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { ArrowLeft, UserPlus, Search, RefreshCw, LogOut, Sun, Moon } from 'lucide-react';
+import { UserPlus, Search, RefreshCw, LogOut, Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/components/theme/ThemeContext';
 import { FleetSummary, DriverWithLatestAssessment, DriverStatus } from '@/types/fleet';
 import { FleetMetricsStrip } from '@/components/fleet/FleetMetricsStrip';
@@ -85,12 +84,7 @@ export default function FleetPage() {
     <div className="min-h-screen pb-24 transition-colors">
       <header className="relative pt-6 pb-3 px-4 sm:px-6 max-w-5xl mx-auto w-full">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-          <div className="flex items-center gap-2">
-            <Link href="/" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 text-xs font-semibold hover:bg-zinc-200 transition-all">
-              <ArrowLeft className="w-3.5 h-3.5 text-apple-blue" />
-              <span>Mode Supir</span>
-            </Link>
-          </div>
+          <span className="text-[11px] font-bold tracking-wider uppercase text-zinc-400">DISPATCHER CONTROL CENTER</span>
           <div className="flex flex-wrap items-center gap-2">
             <button onClick={toggleTheme} aria-label="Ubah Tema" className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:scale-105 active:scale-95 transition-all">
               {theme === 'dark' ? <Sun className="w-4 h-4 text-apple-yellow" /> : <Moon className="w-4 h-4 text-zinc-700" />}

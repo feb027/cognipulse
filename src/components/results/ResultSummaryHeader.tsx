@@ -16,7 +16,7 @@ export const ResultSummaryHeader: React.FC<ResultSummaryHeaderProps> = ({ cfi, a
   const radius = 44;
   const strokeWidth = 8;
   const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (readinessScore / 100) * circumference;
+  const strokeDashoffset = circumference - (fatigueScore / 100) * circumference;
 
   const getTierInfo = () => {
     switch (cfi.impairmentTier) {
@@ -99,10 +99,10 @@ export const ResultSummaryHeader: React.FC<ResultSummaryHeaderProps> = ({ cfi, a
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
             <span className={`text-2xl sm:text-3xl font-extrabold tracking-tight font-mono tabular-nums ${tier.textColor}`}>
-              {readinessScore}
+              {fatigueScore}
             </span>
             <span className="text-[9px] font-bold text-zinc-400 uppercase tracking-wider">
-              Kesiapan
+              Skor CFI
             </span>
           </div>
         </div>
@@ -117,7 +117,7 @@ export const ResultSummaryHeader: React.FC<ResultSummaryHeaderProps> = ({ cfi, a
               {tier.badge}
             </span>
             <span className="text-[11px] font-mono text-zinc-400 dark:text-zinc-500">
-              • Kelelahan: {fatigueScore}%
+              • Kesiapan: {readinessScore}%
             </span>
           </div>
           <h2 className="text-lg sm:text-xl font-extrabold tracking-tight text-zinc-900 dark:text-white break-words">
