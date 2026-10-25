@@ -141,6 +141,7 @@ export function FleetInspectionModal({
               {activeTab === 'summary' && (
                 <InspectionSummaryTab
                   latest={latest}
+                  currentStatus={driver.status}
                   dispatcherNote={dispatcherNote}
                   setDispatcherNote={setDispatcherNote}
                   submitting={submitting}

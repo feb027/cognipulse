@@ -2,10 +2,11 @@
 
 import React from 'react';
 import { AssessmentRecord, DriverStatus, DispatcherDecision } from '@/types/fleet';
-import { ShieldCheck, AlertTriangle, ShieldAlert } from 'lucide-react';
+import { ShieldCheck, AlertTriangle, ShieldAlert, Car, Building2 } from 'lucide-react';
 
 interface InspectionSummaryTabProps {
   latest: AssessmentRecord | null;
+  currentStatus?: DriverStatus;
   dispatcherNote: string;
   setDispatcherNote: (note: string) => void;
   submitting: boolean;
@@ -14,6 +15,7 @@ interface InspectionSummaryTabProps {
 
 export function InspectionSummaryTab({
   latest,
+  currentStatus = 'ready',
   dispatcherNote,
   setDispatcherNote,
   submitting,
@@ -82,11 +84,15 @@ export function InspectionSummaryTab({
           onChange={(e) => setDispatcherNote(e.target.value)}
           className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 focus:border-apple-blue outline-none text-zinc-900 dark:text-white placeholder-zinc-400"
         />
+
+        {/* Status Evaluasi Kelaikan Medis */}
         <div className="grid grid-cols-3 gap-2 pt-1">
           <button
             onClick={() => onDecision('ready', 'dispatched_solo')}
             disabled={submitting}
-            className="py-2.5 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all text-center shadow-sm disabled:opacity-50 inline-flex items-center justify-center gap-1.5"
+            className={`py-2.5 px-2 rounded-xl text-white text-xs font-bold transition-all text-center shadow-sm disabled:opacity-50 inline-flex items-center justify-center gap-1.5 ${
+              currentStatus === 'ready' ? 'bg-emerald-600 ring-2 ring-emerald-400/50' : 'bg-emerald-600 hover:bg-emerald-700'
+            }`}
           >
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Setujui Solo</span>
@@ -94,7 +100,9 @@ export function InspectionSummaryTab({
           <button
             onClick={() => onDecision('caution', 'co_driver_assigned')}
             disabled={submitting}
-            className="py-2.5 px-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-all text-center shadow-sm disabled:opacity-50 inline-flex items-center justify-center gap-1.5"
+            className={`py-2.5 px-2 rounded-xl text-white text-xs font-bold transition-all text-center shadow-sm disabled:opacity-50 inline-flex items-center justify-center gap-1.5 ${
+              currentStatus === 'caution' ? 'bg-amber-600 ring-2 ring-amber-400/50' : 'bg-amber-600 hover:bg-amber-700'
+            }`}
           >
             <AlertTriangle className="w-3.5 h-3.5" />
             <span>Wajib Co-Driver</span>
@@ -102,11 +110,38 @@ export function InspectionSummaryTab({
           <button
             onClick={() => onDecision('stand_down', 'stand_down_issued')}
             disabled={submitting}
-            className="py-2.5 px-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-all text-center shadow-sm disabled:opacity-50 inline-flex items-center justify-center gap-1.5"
+            className={`py-2.5 px-2 rounded-xl text-white text-xs font-bold transition-all text-center shadow-sm disabled:opacity-50 inline-flex items-center justify-center gap-1.5 ${
+              currentStatus === 'stand_down' ? 'bg-red-600 ring-2 ring-red-400/50' : 'bg-red-600 hover:bg-red-700'
+            }`}
           >
             <ShieldAlert className="w-3.5 h-3.5" />
             <span>Stand-Down</span>
           </button>
+        </div>
+
+        {/* Tombol Aksi Operasional Perjalanan (On-Trip / Tiba di Pool) */}
+        <div className="pt-1.5">
+          {currentStatus === 'on_trip' ? (
+            <button
+              type="button"
+              onClick={() => onDecision('ready', 'pending')}
+              disabled={submitting}
+              className="w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all text-center shadow-sm disabled:opacity-50 inline-flex items-center justify-center gap-2"
+            >
+              <Building2 className="w-4 h-4" />
+              <span>Armada Tiba di Pool</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => onDecision('on_trip', 'dispatched_solo')}
+              disabled={submitting || currentStatus === 'stand_down'}
+              className="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-zinc-200 dark:disabled:bg-zinc-800 disabled:text-zinc-400 text-white text-xs font-bold transition-all text-center shadow-sm disabled:opacity-50 inline-flex items-center justify-center gap-2"
+            >
+              <Car className="w-4 h-4" />
+              <span>Berangkatkan Armada</span>
+            </button>
+          )}
         </div>
       </div>
     </div>
