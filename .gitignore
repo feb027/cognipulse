@@ -49,4 +49,5 @@ data/*.db-wal
 .agents/
 AGENTS.md
 PANDUAN_PRESENTASI_DEMO.md
+PANDUAN_TANYA_JAWAB_JURI.md
 skills-lock.json
