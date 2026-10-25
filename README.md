@@ -372,7 +372,7 @@ cp .env.example .env.local
 ```
 Isi konfigurasi kunci API:
 ```env
-GEMINI_API_KEY=AIzaSyCatOsK2Wtdiq3ag8Axg1FWhavqAL2IraQ
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
 ### 4. Menjalankan Server Pengembangan
