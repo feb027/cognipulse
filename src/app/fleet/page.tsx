@@ -83,8 +83,7 @@ export default function FleetPage() {
   return (
     <div className="min-h-screen pb-24 transition-colors">
       <header className="relative pt-6 pb-3 px-4 sm:px-6 max-w-5xl mx-auto w-full">
-        <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-          <span className="text-[11px] font-bold tracking-wider uppercase text-zinc-400">DISPATCHER CONTROL CENTER</span>
+        <div className="flex items-center justify-end gap-2 mb-2">
           <div className="flex flex-wrap items-center gap-2">
             <button onClick={toggleTheme} aria-label="Ubah Tema" className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:scale-105 active:scale-95 transition-all">
               {theme === 'dark' ? <Sun className="w-4 h-4 text-apple-yellow" /> : <Moon className="w-4 h-4 text-zinc-700" />}
